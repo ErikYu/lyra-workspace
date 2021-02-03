@@ -6,6 +6,7 @@
     "outDir": "./dist/out-tsc",
     "forceConsistentCasingInFileNames": true,
     "strict": true,
+    "strictNullChecks": true,
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
     "sourceMap": true,
@@ -24,6 +25,7 @@
     "module": "es2020",
     "lib": [
       "es2018",
+      "es2019",
       "dom"
     ]
   },

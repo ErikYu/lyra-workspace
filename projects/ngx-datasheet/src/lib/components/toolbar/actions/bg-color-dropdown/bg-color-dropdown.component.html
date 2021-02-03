@@ -1,0 +1,20 @@
+<div
+  class="bg-color-icon-container"
+  cdkOverlayOrigin
+  #trigger="cdkOverlayOrigin"
+>
+  <i class="nd-toolbar-icon bg-color-icon"></i>
+</div>
+
+<ng-template
+  cdkConnectedOverlay
+  [cdkConnectedOverlayOrigin]="trigger"
+  [cdkConnectedOverlayOpen]="isOpen"
+  [cdkConnectedOverlayHasBackdrop]="true"
+  [cdkConnectedOverlayBackdropClass]="'hidden-backdrop'"
+  (backdropClick)="isOpen = false"
+>
+  <div class="nd-color-palette">
+    <nd-color-palette (chosenColor)="onSelectColor($event)"></nd-color-palette>
+  </div>
+</ng-template>

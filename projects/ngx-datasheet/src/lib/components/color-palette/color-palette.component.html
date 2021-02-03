@@ -1,0 +1,13 @@
+<table>
+  <tbody>
+    <tr *ngFor="let cg of colors">
+      <td *ngFor="let c of cg">
+        <div
+          class="color-item"
+          [ngStyle]="{ backgroundColor: c }"
+          (click)="chooseColor(c)"
+        ></div>
+      </td>
+    </tr>
+  </tbody>
+</table>

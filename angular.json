@@ -5,6 +5,11 @@
   "projects": {
     "ngx-datasheet": {
       "projectType": "library",
+      "schematics": {
+        "@schematics/angular:component": {
+          "style": "less"
+        }
+      },
       "root": "projects/ngx-datasheet",
       "sourceRoot": "projects/ngx-datasheet/src",
       "prefix": "nd",

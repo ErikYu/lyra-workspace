@@ -1,0 +1,21 @@
+<div
+  class="nd-dropdown-control"
+  [class.is-open]="isOpen"
+  cdkOverlayOrigin
+  #trigger="cdkOverlayOrigin"
+>
+  <ng-content></ng-content>
+</div>
+
+<ng-template
+  cdkConnectedOverlay
+  [cdkConnectedOverlayOrigin]="trigger"
+  [cdkConnectedOverlayOpen]="isOpen"
+  [cdkConnectedOverlayHasBackdrop]="true"
+  [cdkConnectedOverlayBackdropClass]="'hidden-backdrop'"
+  (backdropClick)="backdropClick()"
+>
+  <div class="nd-dropdown-content">
+    <ng-template [ngTemplateOutlet]="dropdown"></ng-template>
+  </div>
+</ng-template>

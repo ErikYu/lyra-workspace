@@ -1,0 +1,15 @@
+<nd-dropdown [dropdown]="dropdownTmpl" [(isOpen)]="isOpen">
+  <i [ngClass]="['nd-toolbar-icon', 'valign-' + currentDir + '-icon']"></i>
+</nd-dropdown>
+
+<ng-template #dropdownTmpl>
+  <div class="nd-toolbar-dropdown-option" (click)="applyTextValign('bottom')">
+    <i class="nd-toolbar-icon valign-bottom-icon"></i>
+  </div>
+  <div class="nd-toolbar-dropdown-option" (click)="applyTextValign('center')">
+    <i class="nd-toolbar-icon valign-center-icon"></i>
+  </div>
+  <div class="nd-toolbar-dropdown-option" (click)="applyTextValign('top')">
+    <i class="nd-toolbar-icon valign-top-icon"></i>
+  </div>
+</ng-template>

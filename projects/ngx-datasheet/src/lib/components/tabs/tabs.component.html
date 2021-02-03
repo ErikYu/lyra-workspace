@@ -1,0 +1,9 @@
+<div
+  *ngFor="let sheet of tabs; index as i"
+  class="nd-tab"
+  [class.selected]="sheet.selected"
+  (click)="selectSheet(i)"
+>
+  <span *ngIf="!nameEditing">{{ sheet.name }}</span>
+</div>
+<div class="nd-tab" (click)="addSheet()">+</div>
