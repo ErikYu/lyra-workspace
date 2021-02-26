@@ -43,6 +43,22 @@
       background: #f1f3f4;
     }
   }
+  &-dropdown-bar {
+    cursor: pointer;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    &:hover {
+      background: #f1f3f4;
+    }
+    &::before {
+      content: " ";
+      width: 30px;
+      height: 30px;
+      display: inline-block;
+    }
+  }
 }
 
 .@{prefix}-editor {

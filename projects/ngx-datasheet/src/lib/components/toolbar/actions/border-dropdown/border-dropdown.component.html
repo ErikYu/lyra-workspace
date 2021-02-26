@@ -1,19 +1,96 @@
-<nd-dropdown [dropdown]="bordersTmpl">
+<nd-dropdown [dropdown]="bordersTmpl" [(isOpen)]="open">
   <i class="nd-toolbar-icon border-all-icon"></i>
 </nd-dropdown>
 <ng-template #bordersTmpl>
-  <div>
-    <i class="nd-toolbar-icon border-all-icon"></i>
-    <i class="nd-toolbar-icon border-inner-icon"></i>
-    <i class="nd-toolbar-icon border-horizontal-icon"></i>
-    <i class="nd-toolbar-icon border-vertical-icon"></i>
-    <i class="nd-toolbar-icon border-outer-icon"></i>
+  <div class="border-dropdown">
+    <div class="left-section">
+      <div>
+        <div class="nd-toolbar-dropdown-option" (click)="applyBorder('all')">
+          <i class="nd-toolbar-icon border-all-icon"></i>
+        </div>
+        <div class="nd-toolbar-dropdown-option" (click)="applyBorder('inner')">
+          <i class="nd-toolbar-icon border-inner-icon"></i>
+        </div>
+        <div
+          class="nd-toolbar-dropdown-option"
+          (click)="applyBorder('horizontal')"
+        >
+          <i class="nd-toolbar-icon border-horizontal-icon"></i>
+        </div>
+        <div
+          class="nd-toolbar-dropdown-option"
+          (click)="applyBorder('vertical')"
+        >
+          <i class="nd-toolbar-icon border-vertical-icon"></i>
+        </div>
+        <div class="nd-toolbar-dropdown-option" (click)="applyBorder('outer')">
+          <i class="nd-toolbar-icon border-outer-icon"></i>
+        </div>
+      </div>
+      <div>
+        <div class="nd-toolbar-dropdown-option" (click)="applyBorder('left')">
+          <i class="nd-toolbar-icon border-left-icon"></i>
+        </div>
+        <div class="nd-toolbar-dropdown-option" (click)="applyBorder('top')">
+          <i class="nd-toolbar-icon border-top-icon"></i>
+        </div>
+        <div class="nd-toolbar-dropdown-option" (click)="applyBorder('right')">
+          <i class="nd-toolbar-icon border-right-icon"></i>
+        </div>
+        <div class="nd-toolbar-dropdown-option" (click)="applyBorder('bottom')">
+          <i class="nd-toolbar-icon border-bottom-icon"></i>
+        </div>
+        <div class="nd-toolbar-dropdown-option" (click)="applyBorder('clear')">
+          <i class="nd-toolbar-icon border-clear-icon"></i>
+        </div>
+      </div>
+    </div>
+    <div class="right-section">
+      <nd-dropdown [dropdown]="colorPalette" [(isOpen)]="borderColorOpen">
+        <div
+          class="nd-toolbar-dropdown-option"
+          style="display: flex; flex-direction: column"
+        >
+          <i class="nd-toolbar-icon pencil-icon"></i>
+          <div
+            style="width: 20px; height: 2px; margin-top: 2px"
+            [ngStyle]="{ backgroundColor: defaultBorderColor }"
+          ></div>
+        </div>
+      </nd-dropdown>
+      <nd-dropdown [dropdown]="borderTypeTmpl" [(isOpen)]="borderTypeOpen">
+        <div class="nd-toolbar-dropdown-option">
+          <i class="nd-toolbar-icon dividing-line-icon"></i>
+        </div>
+      </nd-dropdown>
+    </div>
   </div>
-  <div>
-    <i class="nd-toolbar-icon border-left-icon"></i>
-    <i class="nd-toolbar-icon border-top-icon"></i>
-    <i class="nd-toolbar-icon border-right-icon"></i>
-    <i class="nd-toolbar-icon border-bottom-icon"></i>
-    <i class="nd-toolbar-icon border-clear-icon"></i>
+</ng-template>
+
+<ng-template #colorPalette>
+  <nd-color-palette (chosenColor)="onSelectColor($event)"></nd-color-palette>
+</ng-template>
+
+<ng-template #borderTypeTmpl>
+  <div
+    class="nd-toolbar-dropdown-bar"
+    [class.checked]="defaultBorderType === 'thin'"
+    (click)="onSelectType('thin')"
+  >
+    <div style="width: 50px; height: 1px; background: #000"></div>
+  </div>
+  <div
+    class="nd-toolbar-dropdown-bar"
+    [class.checked]="defaultBorderType === 'medium'"
+    (click)="onSelectType('medium')"
+  >
+    <div style="width: 50px; height: 2px; background: #000"></div>
+  </div>
+  <div
+    class="nd-toolbar-dropdown-bar"
+    [class.checked]="defaultBorderType === 'bold'"
+    (click)="onSelectType('bold')"
+  >
+    <div style="width: 50px; height: 3px; background: #000"></div>
   </div>
 </ng-template>

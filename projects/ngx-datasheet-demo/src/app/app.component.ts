@@ -174,6 +174,12 @@ export class AppComponent {
                   richText: [[{ text: 'merge: 1,2' }]],
                   style: {
                     merge: [1, 2],
+                    border: {
+                      left: ['thin', '#000'],
+                      top: ['thin', '#000'],
+                      right: ['thin', '#000'],
+                      bottom: ['thin', '#000'],
+                    }
                   },
                 },
               },

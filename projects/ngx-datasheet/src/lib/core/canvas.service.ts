@@ -158,16 +158,16 @@ export class CanvasService {
       this.beginPath();
       this.setBorder(leftBorder);
       this.line(
-        [left - GRID_LINE_WIDTH / 2, top],
-        [left - GRID_LINE_WIDTH / 2, top + height],
+        [left - GRID_LINE_WIDTH / 2, top - GRID_LINE_WIDTH / 2],
+        [left - GRID_LINE_WIDTH / 2, top + height + GRID_LINE_WIDTH],
       );
     }
     if (rightBorder) {
       this.beginPath();
       this.setBorder(rightBorder);
       this.line(
-        [left + width + GRID_LINE_WIDTH / 2, top],
-        [left + width + GRID_LINE_WIDTH / 2, top + height],
+        [left + width + GRID_LINE_WIDTH / 2, top - GRID_LINE_WIDTH / 2],
+        [left + width + GRID_LINE_WIDTH / 2, top + height + GRID_LINE_WIDTH],
       );
     }
     if (topBorder) {

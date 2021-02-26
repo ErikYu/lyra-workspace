@@ -241,7 +241,6 @@ export class EditorComponent implements OnInit, AfterViewInit {
         );
       }
     } else {
-      console.log(left, top);
       // overflow and clip
       if (cellData.richText) {
         // pre calc the whole height of text zone

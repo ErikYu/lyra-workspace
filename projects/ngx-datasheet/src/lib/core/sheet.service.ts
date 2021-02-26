@@ -3,9 +3,21 @@ import { ConfigService } from './config.service';
 import { Inject } from '@angular/core';
 import { MergesService, MergesServiceFactory } from './merges.service';
 import { CellRange } from './cell-range.factory';
-import { CellStyle, TextAlignDir, TextValignDir } from '../models';
+import { BorderType, CellStyle, TextAlignDir, TextValignDir } from '../models';
 
 export type SheetServiceFactory = (d: NDSheet) => SheetService;
+
+export type BorderSelection =
+  | 'all'
+  | 'inner'
+  | 'horizontal'
+  | 'vertical'
+  | 'outer'
+  | 'left'
+  | 'top'
+  | 'right'
+  | 'bottom'
+  | 'clear';
 
 export class SheetService {
   selected!: boolean;
@@ -141,6 +153,148 @@ export class SheetService {
   applyTextValignTo(cellRange: CellRange, dir: TextValignDir): void {
     cellRange.forEachCell(this, ({ ri, ci, cellData }) => {
       this.setCellStyle(ri, ci, { valign: dir });
+    });
+  }
+
+  applyBorderTo(
+    cellRange: CellRange,
+    bs: BorderSelection,
+    borderType: BorderType,
+    borderColor: string,
+  ): void {
+    const leftDrawer = (ri: number, ci: number) => {
+      this.setBorder(ri, ci, 'left', borderType, borderColor);
+    };
+    const rightDrawer = (ri: number, ci: number) => {
+      this.setBorder(ri, ci, 'right', borderType, borderColor);
+    };
+    const topDrawer = (ri: number, ci: number) => {
+      this.setBorder(ri, ci, 'top', borderType, borderColor);
+    };
+    const bottomDrawer = (ri: number, ci: number) => {
+      this.setBorder(ri, ci, 'bottom', borderType, borderColor);
+    };
+
+    cellRange.forEachCell(this, ({ ri, ci, shouldSkipRender }) => {
+      if (!shouldSkipRender) {
+        switch (bs) {
+          case 'left':
+            if (ci === cellRange.sci) {
+              leftDrawer(ri, ci);
+            }
+            break;
+          case 'right':
+            if (ci === cellRange.eci) {
+              rightDrawer(ri, ci);
+            }
+            break;
+          case 'top':
+            if (ri === cellRange.sri) {
+              topDrawer(ri, ci);
+            }
+            break;
+          case 'bottom':
+            if (ri === cellRange.eri) {
+              bottomDrawer(ri, ci);
+            }
+            break;
+          case 'outer':
+            if (ci === cellRange.sci) {
+              leftDrawer(ri, ci);
+            }
+            if (ci === cellRange.eci) {
+              rightDrawer(ri, ci);
+            }
+            if (ri === cellRange.sri) {
+              topDrawer(ri, ci);
+            }
+            if (ri === cellRange.eri) {
+              bottomDrawer(ri, ci);
+            }
+            break;
+          case 'inner':
+            if (
+              (ci === cellRange.sci && ri === cellRange.sri) ||
+              (ci === cellRange.eci && ri === cellRange.sri) ||
+              (ci === cellRange.sci && ri === cellRange.eri) ||
+              (ci === cellRange.eci && ri === cellRange.eri)
+            ) {
+            } else if (ci === cellRange.sci || ci === cellRange.eci) {
+              topDrawer(ri, ci);
+              bottomDrawer(ri, ci);
+            } else if (ri === cellRange.sri || ri === cellRange.eri) {
+              leftDrawer(ri, ci);
+              rightDrawer(ri, ci);
+            } else {
+              leftDrawer(ri, ci);
+              rightDrawer(ri, ci);
+              topDrawer(ri, ci);
+              bottomDrawer(ri, ci);
+            }
+            break;
+          case 'horizontal':
+            if (
+              (ci === cellRange.sci && ri === cellRange.sri) ||
+              (ci === cellRange.eci && ri === cellRange.sri) ||
+              (ci === cellRange.sci && ri === cellRange.eri) ||
+              (ci === cellRange.eci && ri === cellRange.eri)
+            ) {
+            } else if (ci === cellRange.sci || ci === cellRange.eci) {
+              topDrawer(ri, ci);
+              bottomDrawer(ri, ci);
+            } else if (ri === cellRange.sri || ri === cellRange.eri) {
+            } else {
+              topDrawer(ri, ci);
+              bottomDrawer(ri, ci);
+            }
+            break;
+          case 'vertical':
+            if (
+              (ci === cellRange.sci && ri === cellRange.sri) ||
+              (ci === cellRange.eci && ri === cellRange.sri) ||
+              (ci === cellRange.sci && ri === cellRange.eri) ||
+              (ci === cellRange.eci && ri === cellRange.eri)
+            ) {
+            } else if (ci === cellRange.sci || ci === cellRange.eci) {
+            } else if (ri === cellRange.sri || ri === cellRange.eri) {
+              leftDrawer(ri, ci);
+              rightDrawer(ri, ci);
+            } else {
+              leftDrawer(ri, ci);
+              rightDrawer(ri, ci);
+            }
+            break;
+          case 'clear':
+            this.setCellStyle(ri, ci, {
+              border: {},
+            });
+            break;
+          case 'all':
+          default:
+            this.setCellStyle(ri, ci, {
+              border: {
+                left: [borderType, borderColor],
+                top: [borderType, borderColor],
+                right: [borderType, borderColor],
+                bottom: [borderType, borderColor],
+              },
+            });
+            break;
+        }
+      }
+    });
+  }
+
+  private setBorder(
+    ri: number,
+    ci: number,
+    dir: 'left' | 'right' | 'top' | 'bottom',
+    borderType: BorderType,
+    borderColor: string,
+  ): void {
+    const prevBorder = this.getCell(ri, ci)?.style?.border || {};
+    this.setCellStyle(ri, ci, {
+      border: { ...prevBorder, [dir]: [borderType, borderColor] },
     });
   }
 

@@ -6,7 +6,7 @@
     "start": "ng serve ngx-datasheet-demo --port 4527 --open",
     "build": "ng-packagr ngx-datasheet -p projects/ngx-datasheet/ng-package.json",
     "build-lib": "ng build ngx-datasheet --prod",
-    "build-demo": "ng build ngx-datasheet-demo --prod --output-path=demo",
+    "build-demo": "ng build ngx-datasheet-demo --prod --base-href=https://erikyu.github.io/ngx-datasheet-demo/ --output-path=demo",
     "test": "ng test ngx-datasheet",
     "lint": "ng lint",
     "prettier-lib": "prettier --write \"projects/ngx-datasheet/src/lib/**/*.*\"",

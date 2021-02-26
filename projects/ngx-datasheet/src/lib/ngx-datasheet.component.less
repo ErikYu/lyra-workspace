@@ -1,3 +1,21 @@
 :host {
   display: block;
 }
+
+::ng-deep .nd-toolbar-dropdown-bar {
+  &.checked::before {
+    background: url("../icons/校验_check.svg") no-repeat center;
+    content: " ";
+    width: 30px;
+    height: 30px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+::ng-deep {
+  &.pencil-icon {
+    background-image: url("../icons/写作_write.svg");
+  }
+}
