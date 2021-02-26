@@ -3,10 +3,11 @@ export type TextValignDir = 'top' | 'center' | 'bottom';
 
 export type BorderType = 'thin' | 'medium' | 'bold';
 type BorderColor = string;
+export type TextWrapType = 'overflow' | 'wrap' | 'clip';
 
 export interface CellStyle {
   background?: string;
-  textWrap?: 'overflow' | 'wrap' | 'clip';
+  textWrap?: TextWrapType;
   valign?: TextValignDir;
   align?: TextAlignDir;
   merge?: [number, number];

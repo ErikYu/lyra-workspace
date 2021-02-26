@@ -17,6 +17,8 @@ import { OverlayModule } from '@angular/cdk/overlay';
 import { AlignDropdownComponent } from './components/toolbar/actions/align-dropdown/align-dropdown.component';
 import { ValignDropdownComponent } from './components/toolbar/actions/valign-dropdown/valign-dropdown.component';
 import { BorderDropdownComponent } from './components/toolbar/actions/border-dropdown/border-dropdown.component';
+import { TextWrapDropdownComponent } from './components/toolbar/actions/text-wrap-dropdown/text-wrap-dropdown.component';
+import { DividerComponent } from './components/divider/divider.component';
 
 @NgModule({
   declarations: [
@@ -36,6 +38,8 @@ import { BorderDropdownComponent } from './components/toolbar/actions/border-dro
     AlignDropdownComponent,
     ValignDropdownComponent,
     BorderDropdownComponent,
+    TextWrapDropdownComponent,
+    DividerComponent,
   ],
   imports: [CommonModule, OverlayModule],
   exports: [NgxDatasheetComponent],

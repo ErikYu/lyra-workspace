@@ -134,11 +134,21 @@
   }
 }
 
-//.@{prefix}-dropdown {
-//  &.merge {
-//    background: url("./icons/merge-cells.svg");
-//  }
-//}
+.@{prefix}-divider {
+  display: inline-block;
+  &.vertical {
+    width: 1px;
+    height: 100%;
+    background-color: #f1f3f4;
+    margin: 0 4px;
+  }
+  &.horizontal {
+    height: 1px;
+    width: 100%;
+    background-color: #f1f3f4;
+    margin: 0 4px;
+  }
+}
 .hidden-backdrop {
   opacity: 0;
 }

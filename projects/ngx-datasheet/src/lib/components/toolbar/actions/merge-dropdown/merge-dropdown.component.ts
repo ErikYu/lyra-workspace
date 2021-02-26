@@ -27,16 +27,18 @@ export class MergeDropdownComponent implements OnInit {
 
   @HostListener('click')
   onClick(): void {
-    if (!this.hasMergeInSelector) {
-      this.dataService.selectedSheet.applyMergeTo(
-        this.selectorsService.selectors[0].range,
-      );
-    } else {
-      this.dataService.selectedSheet.removeMergesInside(
-        this.selectorsService.selectors[0].range,
-      );
+    if (this.selectorsService.selectors.length > 0) {
+      if (!this.hasMergeInSelector) {
+        this.dataService.selectedSheet.applyMergeTo(
+          this.selectorsService.selectors[0].range,
+        );
+      } else {
+        this.dataService.selectedSheet.removeMergesInside(
+          this.selectorsService.selectors[0].range,
+        );
+      }
+      this.dataService.rerender();
     }
-    this.dataService.rerender();
   }
 
   ngOnInit(): void {

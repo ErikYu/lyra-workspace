@@ -3,7 +3,13 @@ import { ConfigService } from './config.service';
 import { Inject } from '@angular/core';
 import { MergesService, MergesServiceFactory } from './merges.service';
 import { CellRange } from './cell-range.factory';
-import { BorderType, CellStyle, TextAlignDir, TextValignDir } from '../models';
+import {
+  BorderType,
+  CellStyle,
+  TextAlignDir,
+  TextValignDir,
+  TextWrapType,
+} from '../models';
 
 export type SheetServiceFactory = (d: NDSheet) => SheetService;
 
@@ -254,6 +260,12 @@ export class SheetService {
             break;
         }
       }
+    });
+  }
+
+  applyTextWrapTo(cellRange: CellRange, textWrapType: TextWrapType): void {
+    cellRange.forEachCell(this, ({ ri, ci }) => {
+      this.setCellStyle(ri, ci, { textWrap: textWrapType });
     });
   }
 
