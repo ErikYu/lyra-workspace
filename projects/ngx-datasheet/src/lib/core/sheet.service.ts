@@ -213,54 +213,26 @@ export class SheetService {
             }
             break;
           case 'inner':
-            if (
-              (ci === cellRange.sci && ri === cellRange.sri) ||
-              (ci === cellRange.eci && ri === cellRange.sri) ||
-              (ci === cellRange.sci && ri === cellRange.eri) ||
-              (ci === cellRange.eci && ri === cellRange.eri)
-            ) {
-            } else if (ci === cellRange.sci || ci === cellRange.eci) {
-              topDrawer(ri, ci);
-              bottomDrawer(ri, ci);
-            } else if (ri === cellRange.sri || ri === cellRange.eri) {
-              leftDrawer(ri, ci);
-              rightDrawer(ri, ci);
-            } else {
-              leftDrawer(ri, ci);
-              rightDrawer(ri, ci);
-              topDrawer(ri, ci);
-              bottomDrawer(ri, ci);
+            if (!cellRange.isSingleCell) {
+              if (ci < cellRange.eci && ri < cellRange.eri) {
+                rightDrawer(ri, ci);
+                bottomDrawer(ri, ci);
+              } else if (ci === cellRange.eci && ri < cellRange.eri) {
+                bottomDrawer(ri, ci);
+              } else if (ci < cellRange.eci && ri === cellRange.eri) {
+                rightDrawer(ri, ci);
+              }
             }
             break;
           case 'horizontal':
-            if (
-              (ci === cellRange.sci && ri === cellRange.sri) ||
-              (ci === cellRange.eci && ri === cellRange.sri) ||
-              (ci === cellRange.sci && ri === cellRange.eri) ||
-              (ci === cellRange.eci && ri === cellRange.eri)
-            ) {
-            } else if (ci === cellRange.sci || ci === cellRange.eci) {
-              topDrawer(ri, ci);
-              bottomDrawer(ri, ci);
-            } else if (ri === cellRange.sri || ri === cellRange.eri) {
-            } else {
-              topDrawer(ri, ci);
-              bottomDrawer(ri, ci);
+            if (!cellRange.isSingleCell) {
+              if (ci <= cellRange.eci && ri < cellRange.eri) {
+                bottomDrawer(ri, ci);
+              }
             }
             break;
           case 'vertical':
-            if (
-              (ci === cellRange.sci && ri === cellRange.sri) ||
-              (ci === cellRange.eci && ri === cellRange.sri) ||
-              (ci === cellRange.sci && ri === cellRange.eri) ||
-              (ci === cellRange.eci && ri === cellRange.eri)
-            ) {
-            } else if (ci === cellRange.sci || ci === cellRange.eci) {
-            } else if (ri === cellRange.sri || ri === cellRange.eri) {
-              leftDrawer(ri, ci);
-              rightDrawer(ri, ci);
-            } else {
-              leftDrawer(ri, ci);
+            if (ci < cellRange.eci && ri <= cellRange.eri) {
               rightDrawer(ri, ci);
             }
             break;

@@ -30,6 +30,10 @@ export class CellRange implements Rect {
     private configService: ConfigService,
   ) {}
 
+  get isSingleCell(): boolean {
+    return this.sri === this.eri && this.sci === this.eci;
+  }
+
   // x - left side coordinate of this column
   // cw - column width
   // ci - column index
