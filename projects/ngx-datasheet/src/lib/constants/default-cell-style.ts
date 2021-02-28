@@ -12,6 +12,7 @@ export const DEFAULT_CELL_STYLE: Required<CellStyle> = {
   align: 'left',
   merge: [0, 0],
   border: {},
+  format: 'auto',
 };
 
 export const CELL_PADDING = 1;

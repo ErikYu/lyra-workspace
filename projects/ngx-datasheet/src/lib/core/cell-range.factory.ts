@@ -61,7 +61,7 @@ export class CellRange implements Rect {
     }
   }
 
-  rowIndexAt(selectedSheet: SheetService, top: number): number {
+  rowIndexAt(selectedSheet: SheetService, top: number): { rowIndex: number; top: number; bottom: number } {
     if (top <= 0) {
       throw Error('top can not be lower then ZERO');
     }
@@ -69,14 +69,17 @@ export class CellRange implements Rect {
     for (let ri = this.sri; ri <= this.eri; ri++) {
       const rowHeight = selectedSheet.getRowHeight(ri);
       if (y <= top && top < y + rowHeight) {
-        return ri;
+        return { rowIndex: ri, top: y, bottom: y + rowHeight };
       }
       y += rowHeight;
     }
     throw Error('should not go here');
   }
 
-  colIndexAt(selectedSheet: SheetService, left: number): number {
+  colIndexAt(
+    selectedSheet: SheetService,
+    left: number,
+  ): { colIndex: number; left: number; right: number } {
     if (left <= 0) {
       throw Error('left can not be lower then ZERO');
     }
@@ -84,7 +87,7 @@ export class CellRange implements Rect {
     for (let ci = this.sci; ci <= this.eci; ci++) {
       const colWidth = selectedSheet.getColWidth(ci);
       if (x <= left && left < x + colWidth) {
-        return ci;
+        return { colIndex: ci, left: x, right: x + colWidth };
       }
       x += colWidth;
     }

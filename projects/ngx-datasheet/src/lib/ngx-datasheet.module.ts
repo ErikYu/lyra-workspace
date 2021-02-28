@@ -19,6 +19,10 @@ import { ValignDropdownComponent } from './components/toolbar/actions/valign-dro
 import { BorderDropdownComponent } from './components/toolbar/actions/border-dropdown/border-dropdown.component';
 import { TextWrapDropdownComponent } from './components/toolbar/actions/text-wrap-dropdown/text-wrap-dropdown.component';
 import { DividerComponent } from './components/divider/divider.component';
+import { FormatDropdownComponent } from './components/toolbar/actions/format-dropdown/format-dropdown.component';
+import { DropdownBarComponent } from './components/dropdown/dropdown-bar/dropdown-bar.component';
+import { ResizerColComponent } from './components/resizer-col/resizer-col.component';
+import { ResizerRowComponent } from './components/resizer-row/resizer-row.component';
 
 @NgModule({
   declarations: [
@@ -40,6 +44,10 @@ import { DividerComponent } from './components/divider/divider.component';
     BorderDropdownComponent,
     TextWrapDropdownComponent,
     DividerComponent,
+    FormatDropdownComponent,
+    DropdownBarComponent,
+    ResizerColComponent,
+    ResizerRowComponent,
   ],
   imports: [CommonModule, OverlayModule],
   exports: [NgxDatasheetComponent],

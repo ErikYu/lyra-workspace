@@ -16,6 +16,7 @@ import { ViewRangeService } from '../../core/view-range.service';
 import { SelectorsService } from '../../core/selectors.service';
 import { ConfigService } from '../../core/config.service';
 import { DataService } from '../../core/data.service';
+import { ResizerColComponent } from '../resizer-col/resizer-col.component';
 
 @Component({
   selector: 'nd-masker',
@@ -25,8 +26,10 @@ import { DataService } from '../../core/data.service';
 export class MaskerComponent implements OnInit, AfterViewInit {
   @HostBinding('class.nd-editor-mask') enabled = true;
   @ViewChild('contentZone') contentZone!: ElementRef<HTMLElement>;
+  @ViewChild('rowIndexZone') rowIndexZone!: ElementRef<HTMLElement>;
+  @ViewChild(ResizerColComponent) colResizer!: ResizerColComponent;
   private wheel$ = new Subject<WheelEvent>();
-  private isMoving = false;
+  private isSelecting = false;
 
   constructor(
     private hostEl: ElementRef<HTMLDivElement>,
@@ -48,7 +51,7 @@ export class MaskerComponent implements OnInit, AfterViewInit {
   onMousedown(evt: MouseEvent): void {
     // get iht cell
     if (evt.which === 1) {
-      this.isMoving = true;
+      this.isSelecting = true;
       const { hitRowIndex, hitColIndex } = this.getHitCell(evt);
       // draw box
       if (hitRowIndex !== undefined && hitColIndex !== undefined) {
@@ -82,17 +85,32 @@ export class MaskerComponent implements OnInit, AfterViewInit {
 
   @HostListener('mousemove', ['$event'])
   onMousemove(evt: MouseEvent): void {
-    if (this.isMoving) {
+    if (this.isSelecting) {
       const { hitRowIndex, hitColIndex } = this.getHitCell(evt);
       if (hitRowIndex !== undefined && hitColIndex !== undefined) {
         this.selectorRangeService.lastResizeTo(hitRowIndex, hitColIndex);
       }
+    } else {
+      // if (evt.target === document.querySelector('.nd-editor-mask')) {
+      //   if (evt.offsetY < this.configService.configuration.row.indexHeight) {
+      //     const { hitRowIndex, hitColIndex } = this.getHitCell(evt);
+      //     const {right, colIndex} = this.viewRangeService.cellRange.colIndexAt(
+      //       this.dataService.selectedSheet,
+      //       evt.offsetX - this.configService.configuration.col.indexWidth,
+      //     );
+      //     // dosplay col resizer
+      //     console.log(right);
+      //     this.colResizer.show(right + this.configService.configuration.col.indexWidth - 4);
+      //   }
+      // } else {
+      //   this.colResizer.hide();
+      // }
     }
   }
 
   @HostListener('document:mouseup')
   onMouseup(): void {
-    this.isMoving = false;
+    this.isSelecting = false;
   }
 
   ngOnInit(): void {
@@ -134,16 +152,16 @@ export class MaskerComponent implements OnInit, AfterViewInit {
       col.indexWidth,
     );
     if (offsetY > 0) {
-      hitRowIndex = viewRange.rowIndexAt(
+      ({rowIndex: hitRowIndex} = viewRange.rowIndexAt(
         this.dataService.selectedSheet,
         offsetY,
-      );
+      ));
     }
     if (offsetX > 0) {
-      hitColIndex = viewRange.colIndexAt(
+      ({colIndex: hitColIndex} = viewRange.colIndexAt(
         this.dataService.selectedSheet,
         offsetX,
-      );
+      ));
     }
     return {
       hitRowIndex,

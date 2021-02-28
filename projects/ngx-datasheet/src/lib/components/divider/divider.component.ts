@@ -8,11 +8,12 @@ import { Component, HostBinding, Input, OnInit } from '@angular/core';
 export class DividerComponent implements OnInit {
   @Input() direction: 'vertical' | 'horizontal' = 'vertical';
   @HostBinding('class.nd-divider') enabled = true;
-  @HostBinding('class.vertical') enabledVertical =
-    this.direction === 'vertical';
-  @HostBinding('class.horizontal') enabledHorizontal =
-    this.direction === 'horizontal';
+  @HostBinding('class.vertical') enabledVertical!: boolean;
+  @HostBinding('class.horizontal') enabledHorizontal!: boolean;
   constructor() {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.enabledVertical = this.direction === 'vertical';
+    this.enabledHorizontal = this.direction === 'horizontal';
+  }
 }

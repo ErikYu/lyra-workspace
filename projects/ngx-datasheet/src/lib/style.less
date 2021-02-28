@@ -4,9 +4,12 @@
 @tabHeight: 30px;
 @vScrollWidth: 17px;
 @primaryColor: rebeccapurple;
+@firstTextSize: 14px;
+@secondTextSize: 12px;
 
 .ngx-datasheet {
-  font-family: Helvetica, serif;
+  font-family: "Helvetica Neue", Helvetica, serif;
+  font-size: @firstTextSize;
 }
 
 .nd-toolbar {
@@ -14,8 +17,8 @@
   height: 30px;
   &-item {
     cursor: pointer;
-    width: 30px;
     height: 30px;
+    min-width: 30px;
     border-radius: 2px;
     background: #fff;
     display: flex;
@@ -48,7 +51,7 @@
     height: 30px;
     display: flex;
     align-items: center;
-    justify-content: center;
+    font-family: "Helvetica Neue", Helvetica, serif;
     &:hover {
       background: #f1f3f4;
     }
@@ -57,6 +60,19 @@
       width: 30px;
       height: 30px;
       display: inline-block;
+    }
+    &-content {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-grow: 1;
+      font-size: @firstTextSize;
+    }
+    &-desc {
+      margin-left: 16px;
+      color: #80868b;
+      display: inline-block;
+      font-size: @secondTextSize;
     }
   }
 }
@@ -151,4 +167,14 @@
 }
 .hidden-backdrop {
   opacity: 0;
+}
+
+.@{prefix}-resizer {
+  position: absolute;
+  &-col {
+    top: 0;
+  }
+  &-row {
+    left: 0;
+  }
 }
