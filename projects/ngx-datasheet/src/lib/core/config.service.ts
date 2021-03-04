@@ -21,6 +21,14 @@ export class ConfigService {
     return this.configuration.row.height;
   }
 
+  get rih(): number {
+    return this.configuration.row.indexHeight;
+  }
+
+  get ciw(): number {
+    return this.configuration.col.indexWidth;
+  }
+
   private config!: DatasheetConfigExtended;
 
   setConfig(val: DatasheetConfig, container: HTMLElement): void {

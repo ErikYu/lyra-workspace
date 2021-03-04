@@ -3,7 +3,7 @@
 @prefix: nd;
 @tabHeight: 30px;
 @vScrollWidth: 17px;
-@primaryColor: rebeccapurple;
+@primaryColor: #1890ff;
 @firstTextSize: 14px;
 @secondTextSize: 12px;
 
@@ -94,9 +94,9 @@
       overflow: hidden;
       & > .nd-selector {
         position: absolute;
-        border: 2px solid #1a73e8;
+        border: 2px solid @primaryColor;
         box-sizing: border-box;
-        background-color: rgba(14, 101, 235, 0.1);
+        background-color: fade(@primaryColor, 10%);
       }
     }
   }
@@ -171,10 +171,25 @@
 
 .@{prefix}-resizer {
   position: absolute;
+  &-header {
+    background-color: fade(@primaryColor, 50%);
+  }
   &-col {
     top: 0;
+    cursor: col-resize;
+    height: 100%;
+    &-line {
+      width: 0;
+      border-left: 1px dashed @primaryColor;
+    }
   }
   &-row {
     left: 0;
+    cursor: row-resize;
+    width: 100%;
+    &-line {
+      height: 0;
+      border-top: 1px dashed @primaryColor;
+    }
   }
 }

@@ -13,6 +13,8 @@ import { SelectorsService } from './core/selectors.service';
 import { CellRange, CellRangeFactory } from './core/cell-range.factory';
 import { Selector, SelectorFactory } from './core/selector.factory';
 import { MergesService, MergesServiceFactory } from './core/merges.service';
+import { ResizerService } from './service/resizer.service';
+import { MouseEventService } from './service/mouse-event.service';
 
 @Component({
   selector: 'nd-ngx-datasheet',
@@ -64,6 +66,8 @@ import { MergesService, MergesServiceFactory } from './core/merges.service';
     ViewRangeService,
     LineWrapService,
     SelectorsService,
+    ResizerService,
+    MouseEventService,
   ],
   host: { class: 'ngx-datasheet' },
 })

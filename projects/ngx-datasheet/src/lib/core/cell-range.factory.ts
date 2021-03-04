@@ -61,7 +61,10 @@ export class CellRange implements Rect {
     }
   }
 
-  rowIndexAt(selectedSheet: SheetService, top: number): { rowIndex: number; top: number; bottom: number } {
+  rowIndexAt(
+    selectedSheet: SheetService,
+    top: number,
+  ): { rowIndex: number; top: number; bottom: number } {
     if (top <= 0) {
       throw Error('top can not be lower then ZERO');
     }

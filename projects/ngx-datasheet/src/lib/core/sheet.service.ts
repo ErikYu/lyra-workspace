@@ -269,6 +269,23 @@ export class SheetService {
     });
   }
 
+  resizeColWidth(colIndex: number, delta: number): void {
+    const oldWidth =
+      this.sheet.data.cols[colIndex]?.width || this.configService.defaultCW;
+    this.sheet.data.cols[colIndex] = { width: oldWidth + delta };
+  }
+
+  resizeRowHeight(rowIndex: number, delta: number): void {
+    const oldHeight =
+      this.sheet.data.rows[rowIndex]?.height || this.configService.defaultRH;
+    const row = this.getRow(rowIndex);
+    if (!row) {
+      this.sheet.data.rows[rowIndex] = { height: oldHeight + delta, cells: {} };
+    } else {
+      row.height = oldHeight + delta;
+    }
+  }
+
   private setBorder(
     ri: number,
     ci: number,

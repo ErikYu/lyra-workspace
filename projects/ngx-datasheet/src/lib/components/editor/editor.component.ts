@@ -23,6 +23,9 @@ import {
   DEFAULT_CELL_BG,
 } from '../../constants/default-cell-style';
 import { LineWrapService } from '../../core/line-wrap.service';
+import { MouseEventService } from '../../service/mouse-event.service';
+import { ResizerColComponent } from '../resizer-col/resizer-col.component';
+import { ResizerRowComponent } from '../resizer-row/resizer-row.component';
 
 @Component({
   selector: 'nd-editor',
@@ -42,7 +45,10 @@ export class EditorComponent implements OnInit, AfterViewInit {
   hScrollbarEl!: ElementRef<HTMLElement>;
 
   @ViewChild('masker', { read: ElementRef }) maskerEl!: ElementRef<HTMLElement>;
-
+  @ViewChild(ResizerColComponent, { read: ElementRef })
+  colResizer!: ElementRef<HTMLElement>;
+  @ViewChild(ResizerRowComponent, { read: ElementRef })
+  rowResizer!: ElementRef<HTMLElement>;
   constructor(
     public configService: ConfigService,
     public dataService: DataService,
@@ -52,6 +58,7 @@ export class EditorComponent implements OnInit, AfterViewInit {
     private editorService: EditorService,
     private viewRangeService: ViewRangeService,
     private lineWrapService: LineWrapService,
+    private mouseEventService: MouseEventService,
   ) {}
 
   ngOnInit(): void {
@@ -62,6 +69,11 @@ export class EditorComponent implements OnInit, AfterViewInit {
     this.canvasService.init(
       this.canvasEl.nativeElement,
       this.maskerEl.nativeElement,
+    );
+    this.mouseEventService.initDomElements(
+      this.maskerEl.nativeElement,
+      this.colResizer.nativeElement,
+      this.rowResizer.nativeElement,
     );
     this.dataService.shouldRerender$.asObservable().subscribe(() => {
       this.canvasService.clear().beginPath();

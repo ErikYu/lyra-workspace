@@ -1,4 +1,8 @@
-import { Component, ElementRef, OnInit } from '@angular/core';
+import { Component, ElementRef, HostListener, OnInit } from '@angular/core';
+import { ResizerService } from '../../service/resizer.service';
+import { ResizerThickness } from '../../constants';
+import { ConfigService } from '../../core/config.service';
+import { MouseEventService } from '../../service/mouse-event.service';
 
 @Component({
   selector: 'nd-resizer-col',
@@ -9,16 +13,32 @@ import { Component, ElementRef, OnInit } from '@angular/core';
   },
 })
 export class ResizerColComponent implements OnInit {
-  constructor(private el: ElementRef<HTMLElement>) {}
+  readonly headerStaticStyle = {
+    width: `${ResizerThickness}px`,
+    height: `${this.configService.configuration?.row?.indexHeight || 25}px`,
+  };
 
-  ngOnInit(): void {}
+  readonly lineStyle = {
+    height: `calc(100% - ${
+      this.configService.configuration?.row?.indexHeight || 25
+    }px)`,
+    transform: `translateX(${Math.floor(ResizerThickness / 2)}px)`,
+  };
+  constructor(
+    private el: ElementRef<HTMLElement>,
+    private resizerService: ResizerService,
+    private configService: ConfigService,
+    public mouseEventService: MouseEventService,
+  ) {}
 
-  show(left: number): void {
-    this.el.nativeElement.style.left = `${left}px`;
-    this.el.nativeElement.style.display = 'block';
-  }
-
-  hide(): void {
-    this.el.nativeElement.style.display = 'none';
+  ngOnInit(): void {
+    this.resizerService.colResizer$.subscribe((left) => {
+      if (left === null) {
+        this.el.nativeElement.style.display = 'none';
+      } else {
+        this.el.nativeElement.style.display = 'block';
+        this.el.nativeElement.style.left = `${left}px`;
+      }
+    });
   }
 }
