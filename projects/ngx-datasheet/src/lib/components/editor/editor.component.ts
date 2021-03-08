@@ -85,14 +85,15 @@ export class EditorComponent implements OnInit, AfterViewInit {
         textAlign: 'center',
         font: `500 14px Helvetica`,
       });
-      this.renderAnchor(rih, ciw);
-      this.renderFixedHeader(rih, ciw);
       this.renderGrid(rih, ciw);
       this.renderContent(rih, ciw);
+      this.renderFixedHeader(rih, ciw);
+      this.renderAnchor(rih, ciw);
     });
   }
 
   private renderAnchor(rih: number, ciw: number): void {
+    this.canvasService.beginPath();
     this.canvasService.line([ciw, 0], [ciw, rih], [0, rih]);
   }
 
@@ -102,6 +103,7 @@ export class EditorComponent implements OnInit, AfterViewInit {
    * @private
    */
   private renderFixedHeader(rih: number, ciw: number): void {
+    this.canvasService.beginPath();
     this.canvasService.save();
 
     const { width, height } = this.viewRangeService.getViewRange();
@@ -192,11 +194,31 @@ export class EditorComponent implements OnInit, AfterViewInit {
         }
       },
     );
+
+    // render merged cells
+    const mergesNeedRender = this.dataService.selectedSheet.merges.overlappedMergesBy(
+      this.viewRangeService.cellRange,
+    );
+    mergesNeedRender.forEach((merRange) => {
+      this.canvasService.save();
+      const { left, top, width, height } = this.viewRangeService.locateRect(
+        merRange,
+      );
+      const cellData = this.dataService.selectedSheet.getCell(
+        merRange.sri,
+        merRange.sci,
+      );
+      this.renderCellRect(cellData, left, top, width, height);
+      if (!!cellData?.richText?.length) {
+        this.renderCellRichText(cellData, left, top, width, height);
+      }
+      this.canvasService.restore();
+    });
     this.canvasService.restore();
   }
 
   renderCellRect(
-    cellData: NDCellData,
+    cellData: NDCellData | undefined,
     left: number,
     top: number,
     width: number,
@@ -209,9 +231,9 @@ export class EditorComponent implements OnInit, AfterViewInit {
       height: height - GRID_LINE_WIDTH,
       // if wrap, after calling LineWrapService.lineWrapBuilder
       // should also use `clip`
-      willClip: cellData.style?.textWrap !== 'overflow',
-      background: cellData.style?.background || DEFAULT_CELL_BG,
-      border: Object.entries(cellData.style?.border || {}).reduce<Borders>(
+      willClip: cellData?.style?.textWrap !== 'overflow',
+      background: cellData?.style?.background || DEFAULT_CELL_BG,
+      border: Object.entries(cellData?.style?.border || {}).reduce<Borders>(
         (prev, [side, value]) => {
           const [type, color] = value!;
           return { ...prev, [side]: { type, color } };

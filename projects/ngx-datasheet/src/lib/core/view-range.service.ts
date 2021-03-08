@@ -2,6 +2,7 @@ import { Inject, Injectable } from '@angular/core';
 import { ConfigService } from './config.service';
 import { CellRange, CellRangeFactory } from './cell-range.factory';
 import { DataService } from './data.service';
+import { LocatedRect, Rect } from '../models';
 
 @Injectable()
 export class ViewRangeService {
@@ -13,7 +14,7 @@ export class ViewRangeService {
   constructor(
     private configService: ConfigService,
     private dataService: DataService,
-    @Inject(CellRange) cellRangeFactory: CellRangeFactory,
+    @Inject(CellRange) private cellRangeFactory: CellRangeFactory,
   ) {
     this.cellRange = cellRangeFactory(0, 0, 0, 0);
   }
@@ -45,6 +46,51 @@ export class ViewRangeService {
       eri: this.cellRange.eri,
       sci: this.cellRange.sci,
       eci: this.cellRange.eci,
+    };
+  }
+
+  // tslint:disable-next-line:typedef
+  sizeRect(rect: Rect) {
+    const tmp = this.cellRangeFactory(rect.sri, rect.eri, rect.sci, rect.eci);
+    let height = 0;
+    tmp.forEachRow(this.dataService.selectedSheet.data, (y, rh) => {
+      height += rh;
+    });
+    let width = 0;
+    tmp.forEachCol(this.dataService.selectedSheet.data, (x, cw) => {
+      width += cw;
+    });
+    return { width, height };
+  }
+
+  locateRect(rect: Rect): LocatedRect {
+    const size = this.sizeRect(rect);
+    let top = 0;
+    if (rect.sri > this.cellRange.sri) {
+      for (let ri = this.cellRange.sri; ri < rect.sri; ri++) {
+        top += this.dataService.selectedSheet.getRowHeight(ri);
+      }
+    } else if (rect.sri < this.cellRange.sri) {
+      for (let ri = rect.sri; ri < this.cellRange.sri; ri++) {
+        top -= this.dataService.selectedSheet.getRowHeight(ri);
+      }
+    }
+
+    let left = 0;
+    if (rect.sci > this.cellRange.sci) {
+      for (let ci = this.cellRange.sci; ci < rect.sci; ci++) {
+        left += this.dataService.selectedSheet.getColWidth(ci);
+      }
+    } else if (rect.sci < this.cellRange.sci) {
+      for (let ci = rect.sci; ci < this.cellRange.sci; ci++) {
+        left -= this.dataService.selectedSheet.getColWidth(ci);
+      }
+    }
+    return {
+      ...rect,
+      ...size,
+      left,
+      top,
     };
   }
 
