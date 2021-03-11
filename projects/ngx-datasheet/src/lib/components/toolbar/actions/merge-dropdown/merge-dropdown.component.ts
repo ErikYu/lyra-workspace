@@ -1,6 +1,7 @@
 import { Component, HostListener, OnInit } from '@angular/core';
 import { DataService } from '../../../../core/data.service';
 import { SelectorsService } from '../../../../core/selectors.service';
+import { HistoryService } from '../../../../service/history.service';
 
 @Component({
   selector: 'nd-merge-dropdown',
@@ -14,6 +15,7 @@ export class MergeDropdownComponent implements OnInit {
   constructor(
     private dataService: DataService,
     private selectorsService: SelectorsService,
+    private historyService: HistoryService,
   ) {}
 
   get hasMergeInSelector(): boolean {
@@ -28,15 +30,17 @@ export class MergeDropdownComponent implements OnInit {
   @HostListener('click')
   onClick(): void {
     if (this.selectorsService.selectors.length > 0) {
-      if (!this.hasMergeInSelector) {
-        this.dataService.selectedSheet.applyMergeTo(
-          this.selectorsService.selectors[0].range,
-        );
-      } else {
-        this.dataService.selectedSheet.removeMergesInside(
-          this.selectorsService.selectors[0].range,
-        );
-      }
+      this.historyService.stacked(() => {
+        if (!this.hasMergeInSelector) {
+          this.dataService.selectedSheet.applyMergeTo(
+            this.selectorsService.selectors[0].range,
+          );
+        } else {
+          this.dataService.selectedSheet.removeMergesInside(
+            this.selectorsService.selectors[0].range,
+          );
+        }
+      });
       this.dataService.rerender();
     }
   }

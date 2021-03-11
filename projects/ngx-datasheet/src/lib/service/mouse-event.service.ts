@@ -86,7 +86,13 @@ export class MouseEventService {
           if (!inMask) {
             this.resizerService.hideColResizer().hideRowResizer();
           } else {
-            if (mouseMoveEvent.offsetY < this.configService.rih) {
+            const isInRowHeader =
+              mouseMoveEvent.offsetY <= this.configService.rih;
+            const isInColIndex =
+              mouseMoveEvent.offsetX <= this.configService.ciw;
+            if (isInColIndex && isInRowHeader) {
+              // ignore me
+            } else if (isInRowHeader) {
               const {
                 right,
                 colIndex,
@@ -98,7 +104,7 @@ export class MouseEventService {
                 right + this.configService.ciw - ResizerThickness,
                 colIndex,
               );
-            } else if (mouseMoveEvent.offsetX < this.configService.ciw) {
+            } else if (isInColIndex) {
               const {
                 bottom,
                 rowIndex,

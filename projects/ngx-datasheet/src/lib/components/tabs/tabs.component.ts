@@ -2,6 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { DataService } from '../../core/data.service';
 import { ViewRangeService } from '../../core/view-range.service';
 import { SheetService } from '../../core/sheet.service';
+import { HistoryService } from '../../service/history.service';
 
 @Component({
   selector: 'nd-tabs',
@@ -16,6 +17,7 @@ export class TabsComponent implements OnInit {
   constructor(
     public dataService: DataService,
     private viewRangeService: ViewRangeService,
+    private historyService: HistoryService,
   ) {}
 
   ngOnInit(): void {}
@@ -27,7 +29,9 @@ export class TabsComponent implements OnInit {
   }
 
   addSheet(): void {
-    this.dataService.addSheet();
+    this.historyService.stacked(() => {
+      this.dataService.addSheet();
+    });
     this.viewRangeService.init();
     this.dataService.rerender();
   }

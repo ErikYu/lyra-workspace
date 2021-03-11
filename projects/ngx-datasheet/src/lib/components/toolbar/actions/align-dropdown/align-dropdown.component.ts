@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { SelectorsService } from '../../../../core/selectors.service';
 import { DataService } from '../../../../core/data.service';
 import { TextAlignDir } from '../../../../models';
+import { HistoryService } from '../../../../service/history.service';
 
 @Component({
   selector: 'nd-align-dropdown',
@@ -13,6 +14,7 @@ export class AlignDropdownComponent implements OnInit {
   constructor(
     private selectorsService: SelectorsService,
     private dataService: DataService,
+    private historyService: HistoryService,
   ) {}
 
   ngOnInit(): void {}
@@ -28,9 +30,11 @@ export class AlignDropdownComponent implements OnInit {
 
   applyTextAlign(dir: TextAlignDir): void {
     this.isOpen = false;
-    for (const st of this.selectorsService.selectors) {
-      this.dataService.selectedSheet.applyTextAlignTo(st.range, dir);
-    }
+    this.historyService.stacked(() => {
+      for (const st of this.selectorsService.selectors) {
+        this.dataService.selectedSheet.applyTextAlignTo(st.range, dir);
+      }
+    });
     this.dataService.rerender();
   }
 }

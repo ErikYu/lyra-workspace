@@ -3,6 +3,7 @@ import { BorderType } from '../../../../models';
 import { DataService } from '../../../../core/data.service';
 import { SelectorsService } from '../../../../core/selectors.service';
 import { BorderSelection } from '../../../../core/sheet.service';
+import { HistoryService } from '../../../../service/history.service';
 
 @Component({
   selector: 'nd-border-dropdown',
@@ -18,18 +19,21 @@ export class BorderDropdownComponent implements OnInit {
   constructor(
     private dataService: DataService,
     private selectorsService: SelectorsService,
+    private historyService: HistoryService,
   ) {}
 
   ngOnInit(): void {}
 
   applyBorder(type: BorderSelection): void {
-    this.selectorsService.selectors.forEach((st) => {
-      this.dataService.selectedSheet.applyBorderTo(
-        st.range,
-        type,
-        this.defaultBorderType,
-        this.defaultBorderColor,
-      );
+    this.historyService.stacked(() => {
+      this.selectorsService.selectors.forEach((st) => {
+        this.dataService.selectedSheet.applyBorderTo(
+          st.range,
+          type,
+          this.defaultBorderType,
+          this.defaultBorderColor,
+        );
+      });
     });
     this.open = false;
     this.dataService.rerender();

@@ -1,6 +1,7 @@
 import { Component, HostListener, OnInit } from '@angular/core';
 import { SelectorsService } from '../../../../core/selectors.service';
 import { DataService } from '../../../../core/data.service';
+import { HistoryService } from '../../../../service/history.service';
 
 @Component({
   selector: 'nd-bg-color-dropdown',
@@ -12,6 +13,7 @@ export class BgColorDropdownComponent implements OnInit {
   constructor(
     private selectorsService: SelectorsService,
     private dataService: DataService,
+    private historyService: HistoryService,
   ) {}
 
   ngOnInit(): void {}
@@ -23,9 +25,14 @@ export class BgColorDropdownComponent implements OnInit {
 
   onSelectColor(color: string): void {
     this.isOpen = false;
-    for (const st of this.selectorsService.selectors) {
-      this.dataService.selectedSheet.applyBgColorTo(st.range, color);
+    if (this.selectorsService.selectors.length === 0) {
+      return;
     }
+    this.historyService.stacked(() => {
+      for (const st of this.selectorsService.selectors) {
+        this.dataService.selectedSheet.applyBgColorTo(st.range, color);
+      }
+    });
     this.dataService.rerender();
   }
 }

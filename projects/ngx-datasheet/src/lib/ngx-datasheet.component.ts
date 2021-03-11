@@ -15,6 +15,7 @@ import { Selector, SelectorFactory } from './core/selector.factory';
 import { MergesService, MergesServiceFactory } from './core/merges.service';
 import { ResizerService } from './service/resizer.service';
 import { MouseEventService } from './service/mouse-event.service';
+import { HistoryService } from './service/history.service';
 
 @Component({
   selector: 'nd-ngx-datasheet',
@@ -68,6 +69,7 @@ import { MouseEventService } from './service/mouse-event.service';
     SelectorsService,
     ResizerService,
     MouseEventService,
+    HistoryService,
   ],
   host: { class: 'ngx-datasheet' },
 })
@@ -108,13 +110,15 @@ export class NgxDatasheetComponent implements OnInit {
     private dataService: DataService,
     private el: ElementRef<HTMLElement>,
     private viewRangeService: ViewRangeService,
+    private historyService: HistoryService,
   ) {}
 
   ngOnInit(): void {
     this.el.nativeElement.style.width = `${this.ndConfig.width}px`;
     this.el.nativeElement.style.height = `${this.ndConfig.height}px`;
     this.configService.setConfig(this.ndConfig, this.el.nativeElement);
-    this.dataService.initData(this.ndData);
+    this.dataService.loadData(this.ndData);
+    this.historyService.init(this.ndData);
     this.viewRangeService.init();
   }
 }

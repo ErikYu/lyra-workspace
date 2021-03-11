@@ -25,7 +25,7 @@ export type BorderSelection =
   | 'bottom'
   | 'clear';
 
-export class SheetService {
+export class SheetService implements NDSheet {
   selected!: boolean;
   merges!: MergesService;
 
@@ -42,6 +42,7 @@ export class SheetService {
     private configService: ConfigService,
     @Inject(MergesService) private mergesServiceFactory: MergesServiceFactory,
   ) {
+    this.selected = !!sheet.selected;
     this.merges = mergesServiceFactory(sheet.data.merges);
   }
 

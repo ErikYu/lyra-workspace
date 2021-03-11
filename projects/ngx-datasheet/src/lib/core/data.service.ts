@@ -7,10 +7,20 @@ import { ScrollingService } from './scrolling.service';
 
 @Injectable()
 export class DataService {
-  private data!: NDData;
   shouldRerender$: BehaviorSubject<any> = new BehaviorSubject<any>(null);
   sheets: SheetService[] = [];
   selectedSheet!: SheetService;
+  selectedIndex!: number;
+
+  get snapshot(): NDData {
+    return {
+      sheets: this.sheets.map(({ data, selected, name }) => ({
+        data,
+        name,
+        selected,
+      })),
+    };
+  }
 
   constructor(
     private configService: ConfigService,
@@ -22,11 +32,10 @@ export class DataService {
     this.shouldRerender$.next(true);
   }
 
-  initData(val: NDData): void {
-    this.data = val;
-    this.sheets = this.data.sheets.map((s) => this.sheetServiceFactory(s));
-    this.selectedSheet = this.sheets[0];
-    this.sheets[0].selected = true;
+  loadData(val: NDData): void {
+    this.sheets = val.sheets.map((s) => this.sheetServiceFactory(s));
+    this.selectedSheet = this.sheets.find((s) => s.selected)!;
+    this.selectedIndex = this.sheets.findIndex((s) => s.selected)!;
   }
 
   selectSheet(index: number): void {
@@ -37,6 +46,7 @@ export class DataService {
       if (i === index) {
         this.sheets[i].selected = true;
         this.selectedSheet = this.sheets[i];
+        this.selectedIndex = i;
       } else {
         this.sheets[i].selected = false;
       }
@@ -47,7 +57,7 @@ export class DataService {
   addSheet(): void {
     this.sheets.forEach((s) => (s.selected = false));
     const newSheet = this.sheetServiceFactory({
-      name: 'Unnamed Sheet',
+      name: `Unnamed Sheet (${this.sheets.length})`,
       data: {
         merges: [],
         rows: {},
@@ -59,5 +69,6 @@ export class DataService {
     newSheet.selected = true;
     this.sheets.push(newSheet);
     this.selectedSheet = newSheet;
+    this.selectedIndex = this.sheets.length - 1;
   }
 }

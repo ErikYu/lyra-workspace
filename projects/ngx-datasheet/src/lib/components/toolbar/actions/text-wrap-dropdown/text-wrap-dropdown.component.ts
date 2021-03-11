@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { TextWrapType } from '../../../../models';
 import { DataService } from '../../../../core/data.service';
 import { SelectorsService } from '../../../../core/selectors.service';
+import { HistoryService } from '../../../../service/history.service';
 
 @Component({
   selector: 'nd-text-wrap-dropdown',
@@ -13,6 +14,7 @@ export class TextWrapDropdownComponent implements OnInit {
   constructor(
     private dataService: DataService,
     private selectorsService: SelectorsService,
+    private historyService: HistoryService,
   ) {}
 
   ngOnInit(): void {}
@@ -27,8 +29,10 @@ export class TextWrapDropdownComponent implements OnInit {
   }
 
   selectTextWrap(type: TextWrapType): void {
-    this.selectorsService.selectors.forEach((st) => {
-      this.dataService.selectedSheet.applyTextWrapTo(st.range, type);
+    this.historyService.stacked(() => {
+      this.selectorsService.selectors.forEach((st) => {
+        this.dataService.selectedSheet.applyTextWrapTo(st.range, type);
+      });
     });
     this.dataService.rerender();
   }

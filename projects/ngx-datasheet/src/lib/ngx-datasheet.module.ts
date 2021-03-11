@@ -23,6 +23,8 @@ import { FormatDropdownComponent } from './components/toolbar/actions/format-dro
 import { DropdownBarComponent } from './components/dropdown/dropdown-bar/dropdown-bar.component';
 import { ResizerColComponent } from './components/resizer-col/resizer-col.component';
 import { ResizerRowComponent } from './components/resizer-row/resizer-row.component';
+import { RedoActionComponent } from './components/toolbar/actions/redo-action/redo-action.component';
+import { UndoActionComponent } from './components/toolbar/actions/undo-action/undo-action.component';
 
 @NgModule({
   declarations: [
@@ -48,6 +50,8 @@ import { ResizerRowComponent } from './components/resizer-row/resizer-row.compon
     DropdownBarComponent,
     ResizerColComponent,
     ResizerRowComponent,
+    RedoActionComponent,
+    UndoActionComponent,
   ],
   imports: [CommonModule, OverlayModule],
   exports: [NgxDatasheetComponent],
