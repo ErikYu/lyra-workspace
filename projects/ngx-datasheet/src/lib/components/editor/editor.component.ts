@@ -26,6 +26,7 @@ import { LineWrapService } from '../../core/line-wrap.service';
 import { MouseEventService } from '../../service/mouse-event.service';
 import { ResizerColComponent } from '../resizer-col/resizer-col.component';
 import { ResizerRowComponent } from '../resizer-row/resizer-row.component';
+import { KeyboardEventService } from '../../service/keyboard-event.service';
 
 @Component({
   selector: 'nd-editor',
@@ -59,6 +60,7 @@ export class EditorComponent implements OnInit, AfterViewInit {
     private viewRangeService: ViewRangeService,
     private lineWrapService: LineWrapService,
     private mouseEventService: MouseEventService,
+    private keyboardEventService: KeyboardEventService,
   ) {}
 
   ngOnInit(): void {
@@ -75,6 +77,7 @@ export class EditorComponent implements OnInit, AfterViewInit {
       this.colResizer.nativeElement,
       this.rowResizer.nativeElement,
     );
+    this.keyboardEventService.init();
     this.dataService.shouldRerender$.asObservable().subscribe(() => {
       this.canvasService.clear().beginPath();
       const rih = this.configService.configuration.row.indexHeight;

@@ -16,6 +16,7 @@ import { MergesService, MergesServiceFactory } from './core/merges.service';
 import { ResizerService } from './service/resizer.service';
 import { MouseEventService } from './service/mouse-event.service';
 import { HistoryService } from './service/history.service';
+import { KeyboardEventService } from './service/keyboard-event.service';
 
 @Component({
   selector: 'nd-ngx-datasheet',
@@ -70,6 +71,7 @@ import { HistoryService } from './service/history.service';
     ResizerService,
     MouseEventService,
     HistoryService,
+    KeyboardEventService,
   ],
   host: { class: 'ngx-datasheet' },
 })
