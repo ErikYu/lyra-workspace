@@ -7,6 +7,7 @@ import { DataService } from '../core/data.service';
 import { SelectorsService } from '../core/selectors.service';
 import { ResizerService } from './resizer.service';
 import { ResizerThickness } from '../constants';
+import { HistoryService } from './history.service';
 
 @Injectable()
 export class MouseEventService {
@@ -24,6 +25,7 @@ export class MouseEventService {
     private dataService: DataService,
     private selectorRangeService: SelectorsService,
     private resizerService: ResizerService,
+    private historyService: HistoryService,
   ) {}
 
   initDomElements(
@@ -133,12 +135,16 @@ export class MouseEventService {
     fromEvent(document, 'mouseup').subscribe(() => {
       if (this.isColResizing) {
         this.isColResizing = false;
-        this.resizerService.pinColResizer().hideColResizer();
+        this.historyService.stacked(() => {
+          this.resizerService.pinColResizer().hideColResizer();
+        });
         this.dataService.rerender();
       }
       if (this.isRowResizing) {
         this.isRowResizing = false;
-        this.resizerService.pinRowResizer().hideRowResizer();
+        this.historyService.stacked(() => {
+          this.resizerService.pinRowResizer().hideRowResizer();
+        });
         this.dataService.rerender();
       }
       this.isSelecting = false;
