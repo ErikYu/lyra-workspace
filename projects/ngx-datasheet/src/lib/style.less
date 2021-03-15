@@ -9,12 +9,13 @@
 
 .ngx-datasheet {
   font-family: "Helvetica Neue", Helvetica, serif;
-  font-size: @firstTextSize;
+  font-size: @secondTextSize;
 }
 
 .nd-toolbar {
   display: flex;
   height: 30px;
+  font-size: @firstTextSize;
   &-item {
     cursor: pointer;
     height: 30px;
@@ -191,5 +192,23 @@
       height: 0;
       border-top: 1px dashed @primaryColor;
     }
+  }
+}
+
+.@{prefix}-rich-text-input {
+  display: none;
+  position: absolute;
+  z-index: 9999999;
+  left: 0;
+  top: 0;
+  &-area {
+    font-family: Arial;
+    border: 2px solid @primaryColor;
+    box-sizing: content-box;
+    min-height: 100%;
+    min-width: 100%;
+    background: #ffffff;
+    outline: none;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
   }
 }

@@ -17,11 +17,9 @@ import {
   DEFAULT_FONT_SIZE,
   GRID_LINE_WIDTH,
   GRID_STYLE,
-} from '../../constants';
-import {
   CELL_PADDING,
   DEFAULT_CELL_BG,
-} from '../../constants/default-cell-style';
+} from '../../constants';
 import { LineWrapService } from '../../core/line-wrap.service';
 import { MouseEventService } from '../../service/mouse-event.service';
 import { ResizerColComponent } from '../resizer-col/resizer-col.component';

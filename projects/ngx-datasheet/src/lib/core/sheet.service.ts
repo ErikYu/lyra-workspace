@@ -10,6 +10,7 @@ import {
   TextValignDir,
   TextWrapType,
 } from '../models';
+import { RichTextLine } from 'ngx-datasheet';
 
 export type SheetServiceFactory = (d: NDSheet) => SheetService;
 
@@ -270,6 +271,10 @@ export class SheetService implements NDSheet {
     });
   }
 
+  applyRichTextToCell(ri: number, ci: number, richText: RichTextLine[]): void {
+    this.setCellRichText(ri, ci, richText);
+  }
+
   resizeColWidth(colIndex: number, delta: number): void {
     const oldWidth =
       this.sheet.data.cols[colIndex]?.width || this.configService.defaultCW;
@@ -325,6 +330,34 @@ export class SheetService implements NDSheet {
           ...cell.style,
           ...styles,
         };
+      }
+    }
+  }
+
+  private setCellRichText(
+    ri: number,
+    ci: number,
+    richText: Array<RichTextLine>,
+  ): void {
+    const row = this.getRow(ri);
+    if (!row) {
+      this.data.rows[ri] = {
+        cells: {
+          [ci]: {
+            richText,
+            plainText: '',
+          },
+        },
+      };
+    } else {
+      const cell = this.getCell(ri, ci);
+      if (!cell) {
+        row.cells[ci] = {
+          plainText: '',
+          richText,
+        };
+      } else {
+        cell.richText = richText;
       }
     }
   }

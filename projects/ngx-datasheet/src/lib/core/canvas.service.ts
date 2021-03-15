@@ -79,9 +79,10 @@ export class CanvasService {
       ...DEFAULT_TEXT_STYLE,
       ...style,
     };
+    // prettier-ignore
     Object.assign(this.context, {
       textAlign: 'start',
-      font: `500 ${s.fontSize}px ${s.fontName}`,
+      font: `${s.italic ? 'italic' : ''} ${s.bold ? 700 : 500} ${s.fontSize}px ${s.fontName}`,
       fillStyle: s.color,
       strokeStyle: s.color,
       textBaseline: 'bottom',

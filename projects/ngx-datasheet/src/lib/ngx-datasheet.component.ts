@@ -17,6 +17,8 @@ import { ResizerService } from './service/resizer.service';
 import { MouseEventService } from './service/mouse-event.service';
 import { HistoryService } from './service/history.service';
 import { KeyboardEventService } from './service/keyboard-event.service';
+import { TextInputService } from './service/text-input.service';
+import { HtmlToRichTextService } from './service/html-to-rich-text.service';
 
 @Component({
   selector: 'nd-ngx-datasheet',
@@ -72,6 +74,8 @@ import { KeyboardEventService } from './service/keyboard-event.service';
     MouseEventService,
     HistoryService,
     KeyboardEventService,
+    TextInputService,
+    HtmlToRichTextService,
   ],
   host: { class: 'ngx-datasheet' },
 })
@@ -116,6 +120,7 @@ export class NgxDatasheetComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    document.execCommand('styleWithCSS', false, true as any);
     this.el.nativeElement.style.width = `${this.ndConfig.width}px`;
     this.el.nativeElement.style.height = `${this.ndConfig.height}px`;
     this.configService.setConfig(this.ndConfig, this.el.nativeElement);

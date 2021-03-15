@@ -1,4 +1,10 @@
-import { Component, HostBinding, Input, OnInit } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  HostBinding,
+  Input,
+  OnInit,
+} from '@angular/core';
 
 @Component({
   selector: 'nd-dropdown-bar',
@@ -13,7 +19,9 @@ export class DropdownBarComponent implements OnInit {
   @Input() desc = '';
   @Input() @HostBinding('class.checked') checked = false;
 
-  constructor() {}
+  constructor(private el: ElementRef) {
+    el.nativeElement.onmousedown = (evt: any) => evt.preventDefault();
+  }
 
   ngOnInit(): void {}
 }

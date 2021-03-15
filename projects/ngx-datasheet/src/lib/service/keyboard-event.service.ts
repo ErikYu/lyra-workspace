@@ -11,20 +11,22 @@ export class KeyboardEventService {
       .pipe(
         filter((evt) => evt.ctrlKey || evt.metaKey),
         tap((evt) => {
-          evt.preventDefault();
           switch (evt.keyCode) {
             case 90:
               if (evt.shiftKey) {
                 // redo: ctrl/cmd - shift - z
                 this.historyService.redo();
+                evt.preventDefault();
               } else {
                 // undo: ctrl/cmd - z
                 this.historyService.undo();
+                evt.preventDefault();
               }
               break;
             case 89:
               // redo: ctrl/cmd - y
               this.historyService.redo();
+              evt.preventDefault();
               break;
           }
         }),

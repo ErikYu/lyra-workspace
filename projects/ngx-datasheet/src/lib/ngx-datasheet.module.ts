@@ -25,6 +25,13 @@ import { ResizerColComponent } from './components/resizer-col/resizer-col.compon
 import { ResizerRowComponent } from './components/resizer-row/resizer-row.component';
 import { RedoActionComponent } from './components/toolbar/actions/redo-action/redo-action.component';
 import { UndoActionComponent } from './components/toolbar/actions/undo-action/undo-action.component';
+import { RichTextInputComponent } from './components/rich-text-input/rich-text-input.component';
+import { BoldActionComponent } from './components/toolbar/actions/bold-action/bold-action.component';
+import { ItalicActionComponent } from './components/toolbar/actions/italic-action/italic-action.component';
+import { StrikeActionComponent } from './components/toolbar/actions/strike-action/strike-action.component';
+import { UnderlineActionComponent } from './components/toolbar/actions/underline-action/underline-action.component';
+import { FontSizeDropdownComponent } from './components/toolbar/actions/font-size-dropdown/font-size-dropdown.component';
+import { FontFamilyDropdownComponent } from './components/toolbar/actions/font-family-dropdown/font-family-dropdown.component';
 
 @NgModule({
   declarations: [
@@ -52,6 +59,13 @@ import { UndoActionComponent } from './components/toolbar/actions/undo-action/un
     ResizerRowComponent,
     RedoActionComponent,
     UndoActionComponent,
+    RichTextInputComponent,
+    BoldActionComponent,
+    ItalicActionComponent,
+    StrikeActionComponent,
+    UnderlineActionComponent,
+    FontSizeDropdownComponent,
+    FontFamilyDropdownComponent,
   ],
   imports: [CommonModule, OverlayModule],
   exports: [NgxDatasheetComponent],

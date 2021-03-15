@@ -1,0 +1,12 @@
+<nd-dropdown [dropdown]="sizeTmpl" [(isOpen)]="open">{{
+  currentSelectionFontSize
+}}</nd-dropdown>
+<ng-template #sizeTmpl>
+  <nd-dropdown-bar
+    *ngFor="let op of ALL_FONT_SIZE"
+    [checked]="op.pt === currentSelectionFontSize"
+    (click)="applyFontSize($event, op)"
+  >
+    {{ op.pt }}
+  </nd-dropdown-bar>
+</ng-template>

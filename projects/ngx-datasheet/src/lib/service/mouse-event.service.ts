@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { fromEvent, Observable } from 'rxjs';
-import { filter, switchMap, switchMapTo, takeUntil, tap } from 'rxjs/operators';
+import { fromEvent } from 'rxjs';
+import { filter, tap } from 'rxjs/operators';
 import { ConfigService } from '../core/config.service';
 import { ViewRangeService } from '../core/view-range.service';
 import { DataService } from '../core/data.service';
@@ -8,6 +8,7 @@ import { SelectorsService } from '../core/selectors.service';
 import { ResizerService } from './resizer.service';
 import { ResizerThickness } from '../constants';
 import { HistoryService } from './history.service';
+import { TextInputService } from './text-input.service';
 
 @Injectable()
 export class MouseEventService {
@@ -26,6 +27,7 @@ export class MouseEventService {
     private selectorRangeService: SelectorsService,
     private resizerService: ResizerService,
     private historyService: HistoryService,
+    private textInputService: TextInputService,
   ) {}
 
   initDomElements(
@@ -40,34 +42,48 @@ export class MouseEventService {
     fromEvent<MouseEvent>(this.masker, 'mousedown')
       .pipe(filter((evt) => evt.which === 1))
       .subscribe((mouseDownEvent) => {
-        this.isSelecting = true;
-        const { hitRowIndex, hitColIndex } = this.getHitCell(mouseDownEvent);
-        // draw box
-        if (hitRowIndex !== undefined && hitColIndex !== undefined) {
-          const hitMerge = this.dataService.selectedSheet.getHitMerge(
-            hitRowIndex,
-            hitColIndex,
-          );
-          this.selectorRangeService.removeAll();
-          if (hitMerge) {
-            this.selectorRangeService.addRange(
-              hitMerge.sri,
-              hitMerge.eri,
-              hitMerge.sci,
-              hitMerge.eci,
+        if (mouseDownEvent.detail === 1) {
+          this.isSelecting = true;
+          const { hitRowIndex, hitColIndex } = this.getHitCell(mouseDownEvent);
+          // draw box
+          if (hitRowIndex !== undefined && hitColIndex !== undefined) {
+            const hitMerge = this.dataService.selectedSheet.getHitMerge(
+              hitRowIndex,
+              hitColIndex,
             );
+            this.selectorRangeService.removeAll();
+            if (hitMerge) {
+              this.selectorRangeService.addRange(
+                hitMerge.sri,
+                hitMerge.eri,
+                hitMerge.sci,
+                hitMerge.eci,
+              );
+            } else {
+              this.selectorRangeService.addOne(hitRowIndex, hitColIndex);
+            }
+          } else if (hitRowIndex !== undefined && hitColIndex === undefined) {
+            this.selectorRangeService.removeAll();
+            this.selectorRangeService.addWholeRow(hitRowIndex);
+          } else if (hitRowIndex === undefined && hitColIndex !== undefined) {
+            this.selectorRangeService.removeAll();
+            this.selectorRangeService.addWholeColumn(hitColIndex);
           } else {
-            this.selectorRangeService.addOne(hitRowIndex, hitColIndex);
+            this.selectorRangeService.removeAll();
+            this.selectorRangeService.addAll();
           }
-        } else if (hitRowIndex !== undefined && hitColIndex === undefined) {
-          this.selectorRangeService.removeAll();
-          this.selectorRangeService.addWholeRow(hitRowIndex);
-        } else if (hitRowIndex === undefined && hitColIndex !== undefined) {
-          this.selectorRangeService.removeAll();
-          this.selectorRangeService.addWholeColumn(hitColIndex);
-        } else {
-          this.selectorRangeService.removeAll();
-          this.selectorRangeService.addAll();
+          this.textInputService.hide();
+        } else if (mouseDownEvent.detail === 2) {
+          if (this.selectorRangeService.selectors.length === 0) {
+            console.error('Nothing to be edited');
+            return;
+          }
+          const lastSelector = this.selectorRangeService.selectors[
+            this.selectorRangeService.selectors.length - 1
+          ];
+          const { sri, sci, eri, eci } = lastSelector.range;
+          const cell = this.dataService.selectedSheet.getCell(sri, sci);
+          this.textInputService.show(sri, sci, eri, eci, cell?.richText);
         }
       });
 
