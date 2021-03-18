@@ -32,6 +32,7 @@ import { StrikeActionComponent } from './components/toolbar/actions/strike-actio
 import { UnderlineActionComponent } from './components/toolbar/actions/underline-action/underline-action.component';
 import { FontSizeDropdownComponent } from './components/toolbar/actions/font-size-dropdown/font-size-dropdown.component';
 import { FontFamilyDropdownComponent } from './components/toolbar/actions/font-family-dropdown/font-family-dropdown.component';
+import { FontColorDropdownComponent } from './components/toolbar/actions/font-color-dropdown/font-color-dropdown.component';
 
 @NgModule({
   declarations: [
@@ -66,6 +67,7 @@ import { FontFamilyDropdownComponent } from './components/toolbar/actions/font-f
     UnderlineActionComponent,
     FontSizeDropdownComponent,
     FontFamilyDropdownComponent,
+    FontColorDropdownComponent,
   ],
   imports: [CommonModule, OverlayModule],
   exports: [NgxDatasheetComponent],

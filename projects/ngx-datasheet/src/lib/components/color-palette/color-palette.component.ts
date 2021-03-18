@@ -1,4 +1,10 @@
-import { Component, OnInit, Output, EventEmitter } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  Output,
+  EventEmitter,
+  ElementRef,
+} from '@angular/core';
 
 @Component({
   selector: 'nd-color-palette',
@@ -95,7 +101,9 @@ export class ColorPaletteComponent implements OnInit {
     ],
   ];
 
-  constructor() {}
+  constructor(private el: ElementRef) {
+    el.nativeElement.onmousedown = (evt: any) => evt.preventDefault();
+  }
 
   ngOnInit(): void {}
 

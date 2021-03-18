@@ -1,0 +1,14 @@
+<nd-dropdown [dropdown]="colorPalette" [(isOpen)]="isOpen">
+  <div style="width: 18px">
+    <div style="text-align: center">A</div>
+    <div
+      style="height: 3px; width: 100%"
+      [ngStyle]="{ backgroundColor: currentSelectionFontColor }"
+    ></div>
+  </div>
+</nd-dropdown>
+<ng-template #colorPalette>
+  <div class="nd-color-palette">
+    <nd-color-palette (chosenColor)="applyTextColor($event)"></nd-color-palette>
+  </div>
+</ng-template>
