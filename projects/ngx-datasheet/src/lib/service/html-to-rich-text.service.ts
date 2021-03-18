@@ -65,6 +65,7 @@ export class HtmlToRichTextService {
 
   // tslint:disable-next-line:typedef
   private buildStyle(css: CSSStyleDeclaration | undefined) {
+    console.log(css?.textDecorationLine);
     if (!css) {
       return undefined;
     }

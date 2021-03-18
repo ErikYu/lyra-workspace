@@ -7,6 +7,7 @@ import {
   BorderType,
   CellStyle,
   TextAlignDir,
+  TextStyle,
   TextValignDir,
   TextWrapType,
 } from '../models';
@@ -271,6 +272,36 @@ export class SheetService implements NDSheet {
     });
   }
 
+  applyTextColorTo(cellRange: CellRange, color: string): void {
+    cellRange.forEachCell(this, ({ ri, ci }) => {
+      this.setCellRichTextStyle(ri, ci, { color });
+    });
+  }
+
+  applyTextBoldTo(cellRange: CellRange, bold: boolean): void {
+    cellRange.forEachCell(this, ({ ri, ci }) => {
+      this.setCellRichTextStyle(ri, ci, { bold });
+    });
+  }
+
+  applyTextItalicTo(cellRange: CellRange, italic: boolean): void {
+    cellRange.forEachCell(this, ({ ri, ci }) => {
+      this.setCellRichTextStyle(ri, ci, { italic });
+    });
+  }
+
+  applyTextStrikeTo(cellRange: CellRange, strike: boolean): void {
+    cellRange.forEachCell(this, ({ ri, ci }) => {
+      this.setCellRichTextStyle(ri, ci, { strike });
+    });
+  }
+
+  applyTextUnderlineTo(cellRange: CellRange, underline: boolean): void {
+    cellRange.forEachCell(this, ({ ri, ci }) => {
+      this.setCellRichTextStyle(ri, ci, { underline });
+    });
+  }
+
   applyRichTextToCell(ri: number, ci: number, richText: RichTextLine[]): void {
     this.setCellRichText(ri, ci, richText);
   }
@@ -360,5 +391,18 @@ export class SheetService implements NDSheet {
         cell.richText = richText;
       }
     }
+  }
+
+  private setCellRichTextStyle(ri: number, ci: number, style: TextStyle): void {
+    const oldRichText: RichTextLine[] = this.getCell(ri, ci)?.richText || [
+      [{ text: '' }],
+    ];
+    this.setCellRichText(
+      ri,
+      ci,
+      oldRichText.map((line) =>
+        line.map((span) => ({ ...span, style: { ...span.style, ...style } })),
+      ),
+    );
   }
 }

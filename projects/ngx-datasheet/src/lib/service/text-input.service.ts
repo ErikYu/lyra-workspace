@@ -18,6 +18,10 @@ export class TextInputService {
     return this._locatedRect$.asObservable();
   }
 
+  get isEditing(): boolean {
+    return this._locatedRect$.value !== null;
+  }
+
   constructor(
     private dataService: DataService,
     private vs: ViewRangeService,
