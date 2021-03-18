@@ -45,7 +45,7 @@ export class AppComponent {
                   richText: [
                     [
                       { text: 'a', style: { color: '#ccc' } },
-                      { text: 'bcdefg', style: { fontSize: 30 } },
+                      { text: 'bcdefg', style: { fontSize: 30, strike: true } },
                       {
                         text: 'ahijklmn',
                         style: { fontSize: 18, color: 'red' },
@@ -151,7 +151,7 @@ export class AppComponent {
                   richText: [
                     [
                       { text: 'i am a hero wh' },
-                      { text: 'ose name is Superman', style: { color: 'red' } },
+                      { text: 'ose name is Superman', style: { color: 'red', strike: true } },
                     ],
                   ],
                 },
@@ -160,7 +160,7 @@ export class AppComponent {
                   style: { textWrap: 'wrap' },
                   richText: [
                     [
-                      { text: 'i am a hero wh' },
+                      { text: 'i am a hero wh', style: {strike: true, underline: true} },
                       { text: 'ose name is Superman', style: { color: 'red' } },
                     ],
                   ],

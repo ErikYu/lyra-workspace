@@ -1,11 +1,10 @@
 import { Injectable } from '@angular/core';
 import { DataService } from '../core/data.service';
 import { ViewRangeService } from '../core/view-range.service';
-import {BehaviorSubject, from, Observable, Subject} from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { LocatedRect, TextStyle } from '../models';
 import { RichTextLine } from '../ngx-datasheet.model';
 import { HtmlToRichTextService } from './html-to-rich-text.service';
-import {map, pairwise, tap} from 'rxjs/operators';
 
 interface RichTextInputRect extends LocatedRect {
   html: string;
@@ -68,24 +67,56 @@ export class TextInputService {
   }
 
   private richStyleToCssStyle(style: TextStyle | undefined): string {
-    return Object.entries(style || {}).reduce<string>((prev, [attr, value]) => {
+    const cssObject: {
+      'font-weight'?: string;
+      color?: string;
+      'font-family'?: string;
+      'font-size'?: string;
+      'font-style'?: string;
+      'text-decoration-line'?: string[];
+    } = {};
+    for (const [attr, value] of Object.entries(style || {})) {
       switch (attr as keyof TextStyle) {
         case 'bold':
           if (value) {
-            return `${prev} font-weight: bold;`;
+            cssObject['font-weight'] = 'bold';
           }
-          return prev;
+          break;
         case 'color':
-          return `${prev} color: ${value};`;
+          cssObject.color = value;
+          break;
         case 'fontName':
-          return `${prev} font-family: ${value};`;
+          cssObject['font-family'] = value;
+          break;
         case 'fontSize':
-          return `${prev} font-size: ${value}px;`;
+          cssObject['font-size'] = `${value}px`;
+          break;
         case 'italic':
-          return value ? `${prev} font-style: italic;` : prev;
-        default:
-          return prev;
+          cssObject['font-style'] = 'italic';
+          break;
+        case 'strike':
+          if (cssObject.hasOwnProperty('text-decoration-line')) {
+            cssObject['text-decoration-line']!.push('line-through');
+          } else {
+            cssObject['text-decoration-line'] = ['line-through'];
+          }
+          break;
+        case 'underline':
+          if (cssObject.hasOwnProperty('text-decoration-line')) {
+            cssObject['text-decoration-line']!.push('underline');
+          } else {
+            cssObject['text-decoration-line'] = ['underline'];
+          }
+          break;
       }
-    }, '');
+    }
+    return Object.entries(cssObject)
+      .map(([attr, value]) => {
+        if (Array.isArray(value)) {
+          return `${attr}: ${value.join(' ')}`;
+        }
+        return `${attr}: ${value}`;
+      })
+      .join(';');
   }
 }

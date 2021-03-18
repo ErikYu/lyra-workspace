@@ -28,6 +28,7 @@ export class HtmlToRichTextService {
       fontSize: DEFAULT_FONT_SIZE,
       fontName: DEFAULT_FONT_FAMILY,
       color: '#000000',
+      underline: false,
     };
     this.result = [[]];
   }
@@ -74,8 +75,11 @@ export class HtmlToRichTextService {
     if (css.fontStyle === 'italic') {
       res.italic = true;
     }
-    if (css.textDecorationLine === 'line-through') {
+    if (css.textDecorationLine.includes('line-through')) {
       res.strike = true;
+    }
+    if (css.textDecorationLine.includes('underline')) {
+      res.underline = true;
     }
     if (pxStr2Num(css.fontSize) !== DEFAULT_FONT_SIZE) {
       res.fontSize = pxStr2Num(css.fontSize);

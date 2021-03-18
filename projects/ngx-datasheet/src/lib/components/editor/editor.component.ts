@@ -8,7 +8,7 @@ import {
 import { ConfigService } from '../../core/config.service';
 import { DataService } from '../../core/data.service';
 import { Borders, CanvasService, Cord } from '../../core/canvas.service';
-import { NDCellData } from '../../ngx-datasheet.model';
+import { NDCellData, RichTextSpan } from '../../ngx-datasheet.model';
 import { colLabelFromIndex } from '../../utils';
 import { ScrollingService } from '../../core/scrolling.service';
 import { EditorService } from './editor.service';
@@ -337,7 +337,7 @@ export class EditorComponent implements OnInit, AfterViewInit {
               for (const [spanIndex, span] of Object.entries(line)) {
                 this.canvasService.textStyle(span.style);
                 const spanWidth = spanWidths[+spanIndex];
-                this.canvasService.fillText(span.text, offsetLeft, offsetTop);
+                this.fillTextBySpan(span, offsetLeft, offsetTop, spanWidth);
                 offsetLeft += spanWidth;
               }
               break;
@@ -349,7 +349,7 @@ export class EditorComponent implements OnInit, AfterViewInit {
                   span.text,
                 );
                 offsetLeft -= spanWidth;
-                this.canvasService.fillText(span.text, offsetLeft, offsetTop);
+                this.fillTextBySpan(span, offsetLeft, offsetTop, spanWidth);
               }
               break;
             case 'left':
@@ -360,12 +360,34 @@ export class EditorComponent implements OnInit, AfterViewInit {
                 const spanWidth = this.canvasService.measureTextWidth(
                   span.text,
                 );
-                this.canvasService.fillText(span.text, offsetLeft, offsetTop);
+                this.fillTextBySpan(span, offsetLeft, offsetTop, spanWidth);
                 offsetLeft += spanWidth;
               }
           }
         }
       }
     }
+  }
+
+  private fillTextBySpan(
+    span: RichTextSpan,
+    left: number,
+    top: number,
+    spanWidth: number,
+  ): void {
+    this.canvasService.fillText(span.text, left, top);
+    this.canvasService.setStyle({ lineWidth: 1 });
+    this.canvasService.beginPath();
+    if (span.style?.underline) {
+      this.canvasService.preLine([left, top], [left + spanWidth, top]);
+    }
+    if (span.style?.strike) {
+      const spanHeight = span.style.fontSize || DEFAULT_FONT_SIZE;
+      this.canvasService.preLine(
+        [left, top - spanHeight / 2],
+        [left + spanWidth, top - spanHeight / 2],
+      );
+    }
+    this.canvasService.stroke();
   }
 }

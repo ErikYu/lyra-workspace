@@ -5,4 +5,5 @@ export interface TextStyle {
   fontSize?: number; // unit: px
   fontName?: string;
   color?: string;
+  underline?: boolean;
 }
