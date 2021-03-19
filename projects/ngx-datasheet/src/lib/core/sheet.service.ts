@@ -302,6 +302,18 @@ export class SheetService implements NDSheet {
     });
   }
 
+  applyTextSizeTo(cellRange: CellRange, fontSize: number): void {
+    cellRange.forEachCell(this, ({ ri, ci }) => {
+      this.setCellRichTextStyle(ri, ci, { fontSize });
+    });
+  }
+
+  applyTextFontFamilyTo(cellRange: CellRange, fontName: string): void {
+    cellRange.forEachCell(this, ({ ri, ci }) => {
+      this.setCellRichTextStyle(ri, ci, { fontName });
+    });
+  }
+
   applyRichTextToCell(ri: number, ci: number, richText: RichTextLine[]): void {
     this.setCellRichText(ri, ci, richText);
   }

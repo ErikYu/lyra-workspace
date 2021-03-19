@@ -4,6 +4,7 @@ import { TextInputService } from '../../../../service/text-input.service';
 import { HistoryService } from '../../../../service/history.service';
 import { DataService } from '../../../../core/data.service';
 import { SelectorsService } from '../../../../core/selectors.service';
+import { FocusedStyleService } from '../../../../service/focused-style.service';
 
 @Component({
   selector: 'nd-font-color-dropdown',
@@ -13,15 +14,7 @@ import { SelectorsService } from '../../../../core/selectors.service';
 export class FontColorDropdownComponent implements OnInit {
   isOpen = false;
   get currentSelectionFontColor(): string {
-    const selection = getSelection();
-    if (!selection) {
-      return DEFAULT_FONT_COLOR;
-    }
-    const fc = selection.anchorNode?.parentElement?.style?.color;
-    if (!fc) {
-      return DEFAULT_FONT_COLOR;
-    }
-    return fc;
+    return this.focusedStyleService.hitStyle().color || DEFAULT_FONT_COLOR;
   }
   constructor(
     private el: ElementRef,
@@ -29,6 +22,7 @@ export class FontColorDropdownComponent implements OnInit {
     private historyService: HistoryService,
     private dataService: DataService,
     private selectorsService: SelectorsService,
+    private focusedStyleService: FocusedStyleService,
   ) {
     el.nativeElement.onmousedown = (evt: any) => evt.preventDefault();
   }

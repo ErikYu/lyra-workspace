@@ -5,7 +5,7 @@
   <nd-dropdown-bar
     *ngFor="let op of ALL_FONT_SIZE"
     [checked]="op.pt === currentSelectionFontSize"
-    (click)="applyFontSize($event, op)"
+    (click)="applyFontSize(op)"
   >
     {{ op.pt }}
   </nd-dropdown-bar>

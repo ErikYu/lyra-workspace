@@ -4,7 +4,11 @@ import {
   DEFAULT_FONT_SIZE,
   getPtByPx,
 } from '../../../../constants';
-import { pxStr2Num } from '../../../../utils';
+import { TextInputService } from '../../../../service/text-input.service';
+import { HistoryService } from '../../../../service/history.service';
+import { DataService } from '../../../../core/data.service';
+import { SelectorsService } from '../../../../core/selectors.service';
+import { FocusedStyleService } from '../../../../service/focused-style.service';
 
 @Component({
   selector: 'nd-font-size-dropdown',
@@ -13,31 +17,44 @@ import { pxStr2Num } from '../../../../utils';
 })
 export class FontSizeDropdownComponent implements OnInit {
   ALL_FONT_SIZE = ALL_FONT_SIZE;
-  constructor(private el: ElementRef) {}
   open = false;
+
   get currentSelectionFontSize(): number {
-    const selection = getSelection();
-    if (!selection) {
-      return getPtByPx(DEFAULT_FONT_SIZE);
-    }
-    const fs = selection.anchorNode?.parentElement?.style?.fontSize;
-    if (!fs) {
-      return getPtByPx(DEFAULT_FONT_SIZE);
-    }
-    return getPtByPx(pxStr2Num(fs));
+    const pxSize = this.focusedStyleService.hitStyle().fontSize;
+    return getPtByPx(pxSize || DEFAULT_FONT_SIZE);
   }
 
-  applyFontSize(evt: MouseEvent, option: { pt: number; px: number }): void {
-    evt.preventDefault();
-    document.execCommand('fontSize', false, '1');
-    const spans = document
-      .querySelector('.nd-rich-text-input-area')!
-      .querySelectorAll('span');
-    spans.forEach((span) => {
-      if (span.style.fontSize === 'x-small') {
-        span.style.fontSize = `${option.px}px`;
-      }
-    });
+  constructor(
+    private el: ElementRef,
+    private textInputService: TextInputService,
+    private historyService: HistoryService,
+    private dataService: DataService,
+    private selectorsService: SelectorsService,
+    private focusedStyleService: FocusedStyleService,
+  ) {}
+
+  applyFontSize(option: { pt: number; px: number }): void {
+    if (this.textInputService.isEditing) {
+      document.execCommand('fontSize', false, '1');
+      const spans = document
+        .querySelector('.nd-rich-text-input-area')!
+        .querySelectorAll('span');
+      spans.forEach((span) => {
+        if (span.style.fontSize === 'x-small') {
+          span.style.fontSize = `${option.px}px`;
+        }
+      });
+    } else {
+      this.historyService.stacked(() => {
+        for (const selector of this.selectorsService.selectors) {
+          this.dataService.selectedSheet.applyTextSizeTo(
+            selector.range,
+            option.px,
+          );
+        }
+      });
+      this.dataService.rerender();
+    }
     this.open = false;
   }
 

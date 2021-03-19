@@ -3,7 +3,11 @@ import { TextStyle } from '../models';
 import { TextInputService } from './text-input.service';
 import { DataService } from '../core/data.service';
 import { SelectorsService } from '../core/selectors.service';
-import { DEFAULT_FONT_SIZE } from '../constants';
+import {
+  DEFAULT_FONT_COLOR,
+  DEFAULT_FONT_FAMILY,
+  DEFAULT_FONT_SIZE,
+} from '../constants';
 import { pxStr2Num } from '../utils';
 
 @Injectable()
@@ -13,6 +17,7 @@ export class FocusedStyleService {
     private dataService: DataService,
     private selectorsService: SelectorsService,
   ) {}
+
   hitStyle(): TextStyle {
     if (this.textInputService.isEditing) {
       const selection = getSelection();
@@ -37,6 +42,15 @@ export class FocusedStyleService {
       }
       if (style.fontSize !== `${DEFAULT_FONT_SIZE}px`) {
         res.fontSize = pxStr2Num(style.fontSize!);
+      }
+      if (style.color !== DEFAULT_FONT_COLOR) {
+        res.color = style.color;
+      }
+      if (
+        style.fontFamily !== DEFAULT_FONT_FAMILY &&
+        !style.fontFamily?.includes(',')
+      ) {
+        res.fontName = style.fontFamily;
       }
       return res;
     } else {
