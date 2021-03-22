@@ -8,6 +8,7 @@ import {
 import { SelectorsService } from '../../../../core/selectors.service';
 import { DataService } from '../../../../core/data.service';
 import { isNil, isNumber } from '../../../../utils';
+import {HistoryService} from '../../../../service/history.service';
 
 @Component({
   selector: 'nd-decimal-action',
@@ -21,6 +22,7 @@ export class DecimalActionComponent implements OnInit {
     private el: ElementRef,
     private selectorsService: SelectorsService,
     private dataService: DataService,
+    private historyService: HistoryService,
   ) {
     el.nativeElement.onmousedown = (evt: MouseEvent) => evt.preventDefault();
   }
@@ -47,12 +49,14 @@ export class DecimalActionComponent implements OnInit {
     if (newPrecision < 0) {
       return;
     }
-    for (const selector of this.selectorsService.selectors) {
-      this.dataService.selectedSheet.applyPrecisionTo(
-        selector.range,
-        newPrecision,
-      );
-    }
+    this.historyService.stacked(() => {
+      for (const selector of this.selectorsService.selectors) {
+        this.dataService.selectedSheet.applyPrecisionTo(
+          selector.range,
+          newPrecision,
+        );
+      }
+    });
     this.dataService.rerender();
   }
 
