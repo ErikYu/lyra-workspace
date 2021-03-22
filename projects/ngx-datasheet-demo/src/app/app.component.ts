@@ -184,6 +184,15 @@ export class AppComponent {
                 },
               },
             },
+            5: {
+              cells: {
+                0: {
+                  style: {precision: 0},
+                  richText: [[{text: '1.2'}]],
+                  plainText: '',
+                }
+              }
+            },
             14: {
               cells: {
                 0: {

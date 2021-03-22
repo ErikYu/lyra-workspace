@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { RichTextLine } from '../ngx-datasheet.model';
 import { CanvasService } from './canvas.service';
+import { plainTextFromLines } from '../utils';
 
 @Injectable()
 export class LineWrapService {
@@ -76,5 +77,13 @@ export class LineWrapService {
       res.push(tempLine);
     }
     return res;
+  }
+
+  convOnPrecision(lines: RichTextLine[], precision: number): RichTextLine[] {
+    if (lines.length === 1 && lines[0].length === 1) {
+      const { text, style } = lines[0][0];
+      return [[{ text: `${(+text).toFixed(precision)}`, style }]];
+    }
+    return lines;
   }
 }

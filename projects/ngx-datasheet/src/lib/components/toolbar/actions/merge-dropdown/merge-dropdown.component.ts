@@ -45,8 +45,5 @@ export class MergeDropdownComponent implements OnInit {
     }
   }
 
-  ngOnInit(): void {
-    console.log(this.selectorsService.selectors);
-    console.log(this.dataService.selectedSheet.merges);
-  }
+  ngOnInit(): void {}
 }

@@ -4,7 +4,12 @@ export type TextValignDir = 'top' | 'center' | 'bottom';
 export type BorderType = 'thin' | 'medium' | 'bold';
 type BorderColor = string;
 export type TextWrapType = 'overflow' | 'wrap' | 'clip';
-export type CellFormat = 'auto' | 'text' | 'number' | 'percent' | 'scientific';
+export type CellFormat =
+  | undefined
+  | 'text'
+  | 'number'
+  | 'percent'
+  | 'scientific';
 
 export interface CellStyle {
   background?: string;
@@ -19,4 +24,5 @@ export interface CellStyle {
     bottom?: [BorderType, BorderColor];
   };
   format?: CellFormat;
+  precision?: number | null;
 }

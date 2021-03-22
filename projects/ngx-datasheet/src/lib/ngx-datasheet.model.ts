@@ -11,6 +11,7 @@ export interface NDCellData {
   plainText: string;
   style?: CellStyle;
   richText?: Array<RichTextLine>;
+  _preFormat?: 'text' | 'number';
 }
 
 type RowIndex = number;

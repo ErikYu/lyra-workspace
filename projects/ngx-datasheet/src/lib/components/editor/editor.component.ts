@@ -8,8 +8,12 @@ import {
 import { ConfigService } from '../../core/config.service';
 import { DataService } from '../../core/data.service';
 import { Borders, CanvasService, Cord } from '../../core/canvas.service';
-import { NDCellData, RichTextSpan } from '../../ngx-datasheet.model';
-import { colLabelFromIndex } from '../../utils';
+import {
+  NDCellData,
+  RichTextLine,
+  RichTextSpan,
+} from '../../ngx-datasheet.model';
+import { colLabelFromIndex, isNil, isNumber } from '../../utils';
 import { ScrollingService } from '../../core/scrolling.service';
 import { EditorService } from './editor.service';
 import { ViewRangeService } from '../../core/view-range.service';
@@ -184,6 +188,17 @@ export class EditorComponent implements OnInit, AfterViewInit {
     this.viewRangeService.cellRange.forEachCell(
       this.dataService.selectedSheet,
       ({ left, top, cellData, width, height, ri, ci, shouldSkipRender }) => {
+        if (cellData && !cellData.style?.format) {
+          const plainText = this.dataService.selectedSheet.getCellPlainText(
+            ri,
+            ci,
+          );
+          if (isNumber(plainText)) {
+            cellData._preFormat = 'number';
+          } else {
+            cellData._preFormat = 'text';
+          }
+        }
         if (!!cellData?.richText?.length && !shouldSkipRender) {
           // render rich text
           this.canvasService.save();
@@ -251,120 +266,103 @@ export class EditorComponent implements OnInit, AfterViewInit {
     width: number,
     height: number,
   ): void {
+    if (!cellData.richText) {
+      return;
+    }
+    let textConverted = cellData.richText;
+    if (!isNil(cellData.style?.precision)) {
+      textConverted = this.lineWrapService.convOnPrecision(
+        textConverted,
+        cellData.style!.precision!,
+      );
+    }
+
     if (cellData.style?.textWrap === 'wrap') {
-      if (cellData.richText) {
-        // convert
-        const convertedRichTextArr = this.lineWrapService.lineWrapBuilder(
-          cellData.richText,
-          width,
-        );
-        this.renderCellRichText(
-          {
-            plainText: '',
-            style: {
-              ...cellData.style,
-              // use `clip` or `overflow` here do not change anything
-              // just skip this branch when calling recursively
-              textWrap: 'clip',
-            },
-            richText: convertedRichTextArr,
-          },
-          left,
-          top,
-          width,
-          height,
-        );
+      textConverted = this.lineWrapService.lineWrapBuilder(
+        textConverted,
+        width,
+      );
+    }
+
+    // pre calc the whole height of text zone
+    // if we need to put text valign: bottom
+    const [allLinesHeight, lineHeights] = textConverted.reduce(
+      (prev, line) => {
+        const lineHeight = line.reduce<number>((preMax, { style }) => {
+          return (style?.fontSize || DEFAULT_FONT_SIZE) > preMax
+            ? style?.fontSize || DEFAULT_FONT_SIZE
+            : preMax;
+        }, 0);
+        return [prev[0] + lineHeight, [...prev[1], lineHeight]];
+      },
+      [0, []] as [number, number[]],
+    );
+
+    let offsetTop: number;
+    if (height > allLinesHeight) {
+      // should only work for cellHeight > textZoneHeight
+      switch (cellData.style?.valign) {
+        case 'center':
+          offsetTop = top + (height - allLinesHeight) / 2;
+          break;
+        case 'top':
+          offsetTop = top + GRID_LINE_WIDTH / 2 + CELL_PADDING;
+          break;
+        case 'bottom':
+        default:
+          offsetTop =
+            top + height - allLinesHeight - GRID_LINE_WIDTH / 2 - CELL_PADDING;
       }
     } else {
-      // overflow and clip
-      if (cellData.richText) {
-        // pre calc the whole height of text zone
-        // if we need to put text valign: bottom
-        const [allLinesHeight, lineHeights] = cellData.richText.reduce(
-          (prev, line) => {
-            const lineHeight = line.reduce<number>((preMax, { style }) => {
-              return (style?.fontSize || DEFAULT_FONT_SIZE) > preMax
-                ? style?.fontSize || DEFAULT_FONT_SIZE
-                : preMax;
-            }, 0);
-            return [prev[0] + lineHeight, [...prev[1], lineHeight]];
-          },
-          [0, []] as [number, number[]],
-        );
+      // when cellHeight < textZoneHeight
+      // always render from top
+      offsetTop = top;
+    }
+    for (const [index, line] of Object.entries(textConverted)) {
+      const lineHeight = lineHeights[+index];
+      offsetTop += lineHeight;
 
-        let offsetTop: number;
-        if (height > allLinesHeight) {
-          // should only work for cellHeight > textZoneHeight
-          switch (cellData.style?.valign) {
-            case 'center':
-              offsetTop = top + (height - allLinesHeight) / 2;
-              break;
-            case 'top':
-              offsetTop = top + GRID_LINE_WIDTH / 2 + CELL_PADDING;
-              break;
-            case 'bottom':
-            default:
-              offsetTop =
-                top +
-                height -
-                allLinesHeight -
-                GRID_LINE_WIDTH / 2 -
-                CELL_PADDING;
+      let offsetLeft: number;
+      const align =
+        cellData._preFormat === 'number'
+          ? cellData.style?.align || 'right'
+          : cellData.style?.align || 'left';
+      switch (align) {
+        case 'center':
+          const [lineWidth, spanWidths] = line.reduce(
+            (prev, span) => {
+              this.canvasService.textStyle(span.style);
+              const spanWidth = this.canvasService.measureTextWidth(span.text);
+              return [prev[0] + spanWidth, [...prev[1], spanWidth]];
+            },
+            [0, []] as [number, number[]],
+          );
+          offsetLeft = left + (width - lineWidth) / 2;
+          for (const [spanIndex, span] of Object.entries(line)) {
+            this.canvasService.textStyle(span.style);
+            const spanWidth = spanWidths[+spanIndex];
+            this.fillTextBySpan(span, offsetLeft, offsetTop, spanWidth);
+            offsetLeft += spanWidth;
           }
-        } else {
-          // when cellHeight < textZoneHeight
-          // always render from top
-          offsetTop = top;
-        }
-        for (const [index, line] of Object.entries(cellData.richText)) {
-          const lineHeight = lineHeights[+index];
-          offsetTop += lineHeight;
-
-          let offsetLeft: number;
-          switch (cellData.style?.align) {
-            case 'center':
-              const [lineWidth, spanWidths] = line.reduce(
-                (prev, span) => {
-                  this.canvasService.textStyle(span.style);
-                  const spanWidth = this.canvasService.measureTextWidth(
-                    span.text,
-                  );
-                  return [prev[0] + spanWidth, [...prev[1], spanWidth]];
-                },
-                [0, []] as [number, number[]],
-              );
-              offsetLeft = left + (width - lineWidth) / 2;
-              for (const [spanIndex, span] of Object.entries(line)) {
-                this.canvasService.textStyle(span.style);
-                const spanWidth = spanWidths[+spanIndex];
-                this.fillTextBySpan(span, offsetLeft, offsetTop, spanWidth);
-                offsetLeft += spanWidth;
-              }
-              break;
-            case 'right':
-              offsetLeft = left + width - GRID_LINE_WIDTH / 2 - CELL_PADDING;
-              for (const span of line.reverse()) {
-                this.canvasService.textStyle(span.style);
-                const spanWidth = this.canvasService.measureTextWidth(
-                  span.text,
-                );
-                offsetLeft -= spanWidth;
-                this.fillTextBySpan(span, offsetLeft, offsetTop, spanWidth);
-              }
-              break;
-            case 'left':
-            default:
-              offsetLeft = left + GRID_LINE_WIDTH / 2 + CELL_PADDING;
-              for (const span of line) {
-                this.canvasService.textStyle(span.style);
-                const spanWidth = this.canvasService.measureTextWidth(
-                  span.text,
-                );
-                this.fillTextBySpan(span, offsetLeft, offsetTop, spanWidth);
-                offsetLeft += spanWidth;
-              }
+          break;
+        case 'right':
+          offsetLeft = left + width - GRID_LINE_WIDTH / 2 - CELL_PADDING;
+          for (const span of line.reverse()) {
+            this.canvasService.textStyle(span.style);
+            const spanWidth = this.canvasService.measureTextWidth(span.text);
+            offsetLeft -= spanWidth;
+            this.fillTextBySpan(span, offsetLeft, offsetTop, spanWidth);
           }
-        }
+          break;
+        case 'left':
+        default:
+          offsetLeft = left + GRID_LINE_WIDTH / 2 + CELL_PADDING;
+          for (const span of line) {
+            this.canvasService.textStyle(span.style);
+            const spanWidth = this.canvasService.measureTextWidth(span.text);
+            this.fillTextBySpan(span, offsetLeft, offsetTop, spanWidth);
+            offsetLeft += spanWidth;
+          }
       }
     }
   }

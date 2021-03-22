@@ -119,6 +119,20 @@ export class SheetService implements NDSheet {
     return this.data.rows[ri]?.cells[ci];
   }
 
+  getCellPlainText(ri: number, ci: number): string | undefined {
+    const cell = this.getCell(ri, ci);
+    if (cell && Array.isArray(cell.richText) && cell.richText.length > 0) {
+      let res = '';
+      for (const line of cell.richText) {
+        for (const span of line) {
+          res += span.text;
+        }
+      }
+      return res;
+    }
+    return undefined;
+  }
+
   // tslint:disable-next-line:typedef
   getRow(ri: number) {
     return this.sheet.data.rows[ri];
@@ -269,6 +283,12 @@ export class SheetService implements NDSheet {
   applyTextWrapTo(cellRange: CellRange, textWrapType: TextWrapType): void {
     cellRange.forEachCell(this, ({ ri, ci }) => {
       this.setCellStyle(ri, ci, { textWrap: textWrapType });
+    });
+  }
+
+  applyPrecisionTo(cellRange: CellRange, precision: number): void {
+    cellRange.forEachCell(this, ({ ri, ci }) => {
+      this.setCellStyle(ri, ci, { precision });
     });
   }
 
