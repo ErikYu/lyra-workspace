@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import { RichTextLine } from '../ngx-datasheet.model';
 import { CanvasService } from './canvas.service';
-import { plainTextFromLines } from '../utils';
+import { isNumber, plainTextFromLines } from '../utils';
+import Big from 'big.js';
 
 @Injectable()
 export class LineWrapService {
@@ -82,8 +83,62 @@ export class LineWrapService {
   convOnPrecision(lines: RichTextLine[], precision: number): RichTextLine[] {
     if (lines.length === 1 && lines[0].length === 1) {
       const { text, style } = lines[0][0];
-      return [[{ text: `${(+text).toFixed(precision)}`, style }]];
+      return [[{ text: `${Big(text).toFixed(precision)}`, style }]];
     }
     return lines;
+  }
+
+  convOnPercent(lines: RichTextLine[]): RichTextLine[] {
+    if (this.isNumberedLines(lines)) {
+      const { text, style } = lines[0][0];
+      return [[{ text: `${Big(text).times(100)}%`, style }]];
+    }
+    return lines;
+  }
+
+  convOnScientific(lines: RichTextLine[]): RichTextLine[] {
+    if (this.isNumberedLines(lines)) {
+      const { text, style } = lines[0][0];
+      return [[{ text: `${Big(text).toExponential(2)}`, style }]];
+    }
+    return lines;
+  }
+
+  convOnAccounting(lines: RichTextLine[]): RichTextLine[] {
+    if (this.isNumberedLines(lines)) {
+      const { text, style } = lines[0][0];
+      return [[{ text: `${Big(text).toFixed(2)}`, style }]];
+    }
+    return lines;
+  }
+
+  convOnCurrency(lines: RichTextLine[]): RichTextLine[] {
+    if (this.isNumberedLines(lines)) {
+      const { text, style } = lines[0][0];
+      return [[{ text: `$${Big(text).toFixed(2)}`, style }]];
+    }
+    return lines;
+  }
+
+  convOnCurrencyRounded(lines: RichTextLine[]): RichTextLine[] {
+    if (this.isNumberedLines(lines)) {
+      const { text, style } = lines[0][0];
+      return [[{ text: `$${Big(text).toFixed(0)}`, style }]];
+    }
+    return lines;
+  }
+
+  convOnFinancial(lines: RichTextLine[]): RichTextLine[] {
+    if (this.isNumberedLines(lines)) {
+      const { text, style } = lines[0][0];
+      return [[{ text: `${Big(text).toFixed(2)}`, style }]];
+    }
+    return lines;
+  }
+
+  private isNumberedLines(lines: RichTextLine[]): boolean {
+    return (
+      lines.length === 1 && lines[0].length === 1 && isNumber(lines[0][0].text)
+    );
   }
 }

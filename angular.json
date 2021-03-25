@@ -18,7 +18,10 @@
           "builder": "@angular-devkit/build-angular:ng-packagr",
           "options": {
             "tsConfig": "projects/ngx-datasheet/tsconfig.lib.json",
-            "project": "projects/ngx-datasheet/ng-package.json"
+            "project": "projects/ngx-datasheet/ng-package.json",
+            "allowedCommonJsDependencies": [
+              "big.js"
+            ]
           },
           "configurations": {
             "production": {
@@ -74,6 +77,9 @@
             ],
             "styles": [
               "projects/ngx-datasheet-demo/src/styles.less"
+            ],
+            "allowedCommonJsDependencies": [
+              "big.js"
             ],
             "scripts": []
           },

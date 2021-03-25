@@ -5,6 +5,7 @@ import { MergesService, MergesServiceFactory } from './merges.service';
 import { CellRange } from './cell-range.factory';
 import {
   BorderType,
+  CellFormat,
   CellStyle,
   TextAlignDir,
   TextStyle,
@@ -289,6 +290,21 @@ export class SheetService implements NDSheet {
   applyPrecisionTo(cellRange: CellRange, precision: number): void {
     cellRange.forEachCell(this, ({ ri, ci }) => {
       this.setCellStyle(ri, ci, { precision });
+    });
+  }
+
+  resetPrecisionTo(cellRange: CellRange): void {
+    cellRange.forEachCell(this, ({ ri, ci }) => {
+      const cell = this.getCell(ri, ci);
+      if (cell && cell.style && Reflect.has(cell.style, 'precision')) {
+        Reflect.deleteProperty(cell.style, 'precision');
+      }
+    });
+  }
+
+  applyCellFormatTo(cellRange: CellRange, format: CellFormat): void {
+    cellRange.forEachCell(this, ({ ri, ci }) => {
+      this.setCellStyle(ri, ci, { format });
     });
   }
 

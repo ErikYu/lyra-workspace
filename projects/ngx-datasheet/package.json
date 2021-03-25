@@ -7,6 +7,7 @@
   },
   "dependencies": {
     "@angular/cdk": "^11.1.0",
+    "big.js": "^6.0.3",
     "tslib": "^2.0.0"
   }
 }

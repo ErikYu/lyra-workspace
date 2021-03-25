@@ -8,7 +8,7 @@ import {
 import { SelectorsService } from '../../../../core/selectors.service';
 import { DataService } from '../../../../core/data.service';
 import { isNil, isNumber } from '../../../../utils';
-import {HistoryService} from '../../../../service/history.service';
+import { HistoryService } from '../../../../service/history.service';
 
 @Component({
   selector: 'nd-decimal-action',

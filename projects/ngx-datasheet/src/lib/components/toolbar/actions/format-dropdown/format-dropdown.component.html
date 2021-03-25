@@ -1,9 +1,18 @@
-<nd-dropdown [dropdown]="dropdown"> Formats </nd-dropdown>
+<nd-dropdown [dropdown]="dropdown" [(isOpen)]="isOpen">
+  {{ valLabel.get(curFmt) }}
+</nd-dropdown>
 <ng-template #dropdown>
-  <nd-dropdown-bar [checked]="true">Auto</nd-dropdown-bar>
-  <nd-dropdown-bar>Plain Text</nd-dropdown-bar>
-  <nd-divider direction="horizontal"></nd-divider>
-  <nd-dropdown-bar [desc]="'1,000.12'">Number</nd-dropdown-bar>
-  <nd-dropdown-bar [desc]="'10.12%'">Percentage</nd-dropdown-bar>
-  <nd-dropdown-bar [desc]="'1.01E+03'">Scientific</nd-dropdown-bar>
+  <ng-container *ngFor="let item of items">
+    <nd-dropdown-bar
+      *ngIf="item !== 'DIVIDER'; else dividerTmpl"
+      [desc]="item.desc"
+      [checked]="item.checked()"
+      (click)="applyFormat(item.fmt)"
+    >
+      {{ item.label }}
+    </nd-dropdown-bar>
+  </ng-container>
+  <ng-template #dividerTmpl>
+    <nd-divider direction="horizontal" style="margin: 8px 0"></nd-divider>
+  </ng-template>
 </ng-template>

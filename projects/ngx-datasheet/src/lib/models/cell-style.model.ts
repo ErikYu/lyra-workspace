@@ -9,7 +9,15 @@ export type CellFormat =
   | 'text'
   | 'number'
   | 'percent'
-  | 'scientific';
+  | 'scientific'
+  | 'accounting'
+  | 'currency'
+  | 'currency_rounded'
+  | 'financial'
+  | 'date'
+  | 'time'
+  | 'datetime'
+  | 'duration';
 
 export interface CellStyle {
   background?: string;
