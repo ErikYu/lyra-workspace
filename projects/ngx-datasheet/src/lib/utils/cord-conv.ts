@@ -12,3 +12,8 @@ export function colLabelFromIndex(colIndex: number): string {
   }
   return letter;
 }
+
+export function labelFromCell(ri: number, ci: number): string {
+  const colLabel = colLabelFromIndex(ci);
+  return `${colLabel}${ri + 1}`;
+}

@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { DatasheetConfig, DatasheetConfigExtended } from '../models';
 
 const toolbarHeight = 30;
+const formulaBarHeight = 25;
 
 @Injectable()
 export class ConfigService {
@@ -34,7 +35,10 @@ export class ConfigService {
   setConfig(val: DatasheetConfig, container: HTMLElement): void {
     this.config = {
       ...val,
-      sheetHeight: container.getBoundingClientRect().height - toolbarHeight,
+      sheetHeight:
+        container.getBoundingClientRect().height -
+        toolbarHeight -
+        formulaBarHeight,
       sheetWidth: container.getBoundingClientRect().width,
     };
   }

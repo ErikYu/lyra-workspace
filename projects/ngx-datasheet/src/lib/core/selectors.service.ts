@@ -5,6 +5,7 @@ import { ConfigService } from './config.service';
 import { Selector, SelectorFactory } from './selector.factory';
 import { DataService } from './data.service';
 import { Rect } from '../models';
+import { BehaviorSubject, Observable } from 'rxjs';
 
 interface SelectorRect {
   left: number;
@@ -15,6 +16,12 @@ interface SelectorRect {
 
 @Injectable()
 export class SelectorsService {
+  private selectors$ = new BehaviorSubject<Selector[]>([]);
+
+  get selectorChanged(): Observable<Selector[]> {
+    return this.selectors$.asObservable();
+  }
+
   selectors: Selector[] = [];
 
   get rects(): SelectorRect[] {
@@ -69,10 +76,12 @@ export class SelectorsService {
 
   addRange(sri: number, eri: number, sci: number, eci: number): void {
     this.selectors.push(this.selectorFactory(sri, eri, sci, eci));
+    this.selectors$.next(this.selectors);
   }
 
   addOne(ri: number, ci: number): void {
     this.selectors.push(this.selectorFactory(ri, ri, ci, ci));
+    this.selectors$.next(this.selectors);
   }
 
   addWholeRow(ri: number): void {
@@ -84,6 +93,7 @@ export class SelectorsService {
         this.dataService.selectedSheet.getColCount(),
       ),
     );
+    this.selectors$.next(this.selectors);
   }
 
   addWholeColumn(ci: number): void {
@@ -95,6 +105,7 @@ export class SelectorsService {
         ci,
       ),
     );
+    this.selectors$.next(this.selectors);
   }
 
   addAll(): void {
@@ -106,6 +117,7 @@ export class SelectorsService {
         this.dataService.selectedSheet.getColCount(),
       ),
     );
+    this.selectors$.next(this.selectors);
   }
 
   lastResizeTo(eri: number, eci: number): void {
@@ -131,9 +143,16 @@ export class SelectorsService {
       };
     }, tempRect);
     last.resizeTo(targetRect);
+    this.selectors$.next(this.selectors);
   }
 
   removeAll(): void {
     this.selectors = [];
+    this.selectors$.next(this.selectors);
+  }
+
+  selectCell(ri: number, ci: number): void {
+    this.selectors = [this.selectorFactory(ri, ri, ci, ci)];
+    this.selectors$.next(this.selectors);
   }
 }

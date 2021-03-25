@@ -2,6 +2,8 @@
 
 @prefix: nd;
 @tabHeight: 30px;
+@toolbarHeight: 30px;
+@formulaBarHeight: 25px;
 @vScrollWidth: 17px;
 @primaryColor: #1890ff;
 @firstTextSize: 14px;
@@ -14,14 +16,17 @@
 
 .nd-toolbar {
   display: flex;
-  height: 30px;
+  height: @toolbarHeight;
   font-size: @firstTextSize;
+  border-bottom: 0.5px solid #f1f3f4;
+  box-sizing: border-box;
   &-item {
     cursor: pointer;
-    height: 30px;
+    height: @toolbarHeight;
+    box-sizing: border-box;
     min-width: 30px;
     border-radius: 2px;
-    background: #fff;
+    background: transparent;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -78,6 +83,33 @@
       display: inline-block;
       font-size: @secondTextSize;
     }
+  }
+}
+
+.nd-formula-bar {
+  display: flex;
+  height: @formulaBarHeight;
+  font-size: @firstTextSize;
+  & input {
+    outline: none;
+    border: none;
+  }
+  &-label {
+    width: 60px;
+    display: flex;
+    color: #80868b;
+    align-items: center;
+    padding: 0 5px;
+    box-sizing: border-box;
+  }
+  &-fx {
+    width: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 20px;
+    color: #80868b;
+    font-weight: 300;
   }
 }
 

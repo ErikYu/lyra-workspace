@@ -36,6 +36,7 @@ import { FontColorDropdownComponent } from './components/toolbar/actions/font-co
 import { DecimalActionComponent } from './components/toolbar/actions/decimal-action/decimal-action.component';
 import { PercentActionComponent } from './components/toolbar/actions/percent-action/percent-action.component';
 import { CurrencyActionComponent } from './components/toolbar/actions/currency-action/currency-action.component';
+import { FormulaBarComponent } from './components/formula-bar/formula-bar.component';
 
 @NgModule({
   declarations: [
@@ -74,6 +75,7 @@ import { CurrencyActionComponent } from './components/toolbar/actions/currency-a
     DecimalActionComponent,
     PercentActionComponent,
     CurrencyActionComponent,
+    FormulaBarComponent,
   ],
   imports: [CommonModule, OverlayModule],
   exports: [NgxDatasheetComponent],
