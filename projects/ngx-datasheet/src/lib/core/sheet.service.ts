@@ -13,6 +13,7 @@ import {
   TextWrapType,
 } from '../models';
 import { RichTextLine } from 'ngx-datasheet';
+import { isNumberedLines } from '../utils';
 
 export type SheetServiceFactory = (d: NDSheet) => SheetService;
 
@@ -304,7 +305,28 @@ export class SheetService implements NDSheet {
 
   applyCellFormatTo(cellRange: CellRange, format: CellFormat): void {
     cellRange.forEachCell(this, ({ ri, ci }) => {
+      const cell = this.getCell(ri, ci);
+      const numberFormats: CellFormat[] = [
+        'percent',
+        'currency',
+        'currency_rounded',
+        'financial',
+        'accounting',
+        'scientific',
+      ];
+      if (numberFormats.includes(format) && !isNumberedLines(cell?.richText)) {
+        return;
+      }
       this.setCellStyle(ri, ci, { format });
+    });
+  }
+
+  removeCellFormatFrom(cellRange: CellRange): void {
+    cellRange.forEachCell(this, ({ ri, ci }) => {
+      const cell = this.getCell(ri, ci);
+      if (cell && cell.style && Reflect.has(cell.style, 'format')) {
+        Reflect.deleteProperty(cell.style, 'format');
+      }
     });
   }
 

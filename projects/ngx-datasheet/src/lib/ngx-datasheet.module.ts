@@ -34,6 +34,8 @@ import { FontSizeDropdownComponent } from './components/toolbar/actions/font-siz
 import { FontFamilyDropdownComponent } from './components/toolbar/actions/font-family-dropdown/font-family-dropdown.component';
 import { FontColorDropdownComponent } from './components/toolbar/actions/font-color-dropdown/font-color-dropdown.component';
 import { DecimalActionComponent } from './components/toolbar/actions/decimal-action/decimal-action.component';
+import { PercentActionComponent } from './components/toolbar/actions/percent-action/percent-action.component';
+import { CurrencyActionComponent } from './components/toolbar/actions/currency-action/currency-action.component';
 
 @NgModule({
   declarations: [
@@ -70,6 +72,8 @@ import { DecimalActionComponent } from './components/toolbar/actions/decimal-act
     FontFamilyDropdownComponent,
     FontColorDropdownComponent,
     DecimalActionComponent,
+    PercentActionComponent,
+    CurrencyActionComponent,
   ],
   imports: [CommonModule, OverlayModule],
   exports: [NgxDatasheetComponent],

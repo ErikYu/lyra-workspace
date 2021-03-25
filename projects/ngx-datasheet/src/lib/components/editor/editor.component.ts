@@ -29,7 +29,7 @@ import { MouseEventService } from '../../service/mouse-event.service';
 import { ResizerColComponent } from '../resizer-col/resizer-col.component';
 import { ResizerRowComponent } from '../resizer-row/resizer-row.component';
 import { KeyboardEventService } from '../../service/keyboard-event.service';
-import { TextAlignDir } from '../../models';
+import { CellFormat, TextAlignDir } from '../../models';
 
 @Component({
   selector: 'nd-editor',
@@ -365,12 +365,35 @@ export class EditorComponent implements OnInit, AfterViewInit {
 
       // NOTICE: if format is accounting, the align should always be right
       let align: TextAlignDir;
+      // if (cellData.style?.format === 'accounting') {
+      //   align = 'right';
+      // } else if ((cellData.style?.format || cellData._preFormat) === 'text') {
+      //   align = cellData.style?.align || 'left';
+      // } else {
+      //   align = cellData.style?.align || 'right';
+      // }
+
+      const m: Record<NonNullable<CellFormat>, TextAlignDir> = {
+        text: 'left',
+        number: 'right',
+        percent: 'right',
+        scientific: 'right',
+        accounting: 'right',
+        currency: 'right',
+        currency_rounded: 'right',
+        financial: 'right',
+        date: 'right',
+        time: 'right',
+        datetime: 'right',
+      };
       if (cellData.style?.format === 'accounting') {
         align = 'right';
-      } else if ((cellData.style?.format || cellData._preFormat) === 'text') {
-        align = cellData.style?.align || 'left';
+      } else if (!!cellData.style?.align) {
+        align = cellData.style?.align;
+      } else if (!!cellData.style?.format) {
+        align = m[cellData.style.format];
       } else {
-        align = cellData.style?.align || 'right';
+        align = m[cellData._preFormat!];
       }
       switch (align) {
         case 'center':
