@@ -16,7 +16,6 @@ export class HtmlToRichTextService {
     );
     this.reset();
     this.htmlToRichText(allNodes);
-    console.log(this.result);
     return this.result;
   }
 

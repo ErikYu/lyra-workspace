@@ -20,6 +20,7 @@ import { KeyboardEventService } from './service/keyboard-event.service';
 import { TextInputService } from './service/text-input.service';
 import { HtmlToRichTextService } from './service/html-to-rich-text.service';
 import { FocusedStyleService } from './service/focused-style.service';
+import { RichTextToHtmlService } from './service/rich-text-to-html.service';
 
 @Component({
   selector: 'nd-ngx-datasheet',
@@ -77,6 +78,7 @@ import { FocusedStyleService } from './service/focused-style.service';
     KeyboardEventService,
     TextInputService,
     HtmlToRichTextService,
+    RichTextToHtmlService,
     FocusedStyleService,
   ],
   host: { class: 'ngx-datasheet' },

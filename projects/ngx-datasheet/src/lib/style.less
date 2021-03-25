@@ -90,7 +90,7 @@
   display: flex;
   height: @formulaBarHeight;
   font-size: @firstTextSize;
-  & input {
+  & textarea {
     outline: none;
     border: none;
   }
@@ -110,6 +110,25 @@
     font-size: 20px;
     color: #80868b;
     font-weight: 300;
+    font-style: italic;
+  }
+  &-input {
+    flex-grow: 1;
+    outline: none;
+    line-height: @formulaBarHeight;
+    overflow-y: auto;
+    overflow-x: hidden;
+    width: 100%;
+
+    // reset all rich style
+    &,
+    & * {
+      color: #000000 !important;
+      font-size: 12px !important;
+      font-weight: normal !important;
+      text-decoration-line: none !important;
+      font-style: normal !important;
+    }
   }
 }
 
@@ -231,11 +250,17 @@
 }
 
 .@{prefix}-rich-text-input {
-  display: none;
+  display: block;
   position: absolute;
   z-index: 9999999;
   left: 0;
   top: 0;
+  &.silencer {
+    opacity: 0;
+    width: 0 !important;
+    height: 0 !important;
+    overflow: hidden;
+  }
   &-area {
     font-family: Arial;
     border: 2px solid @primaryColor;

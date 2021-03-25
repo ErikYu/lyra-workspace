@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { fromEvent } from 'rxjs';
-import { filter, tap } from 'rxjs/operators';
+import { filter } from 'rxjs/operators';
 import { ConfigService } from '../core/config.service';
 import { ViewRangeService } from '../core/view-range.service';
 import { DataService } from '../core/data.service';
@@ -74,16 +74,8 @@ export class MouseEventService {
           }
           this.textInputService.hide();
         } else if (mouseDownEvent.detail === 2) {
-          if (this.selectorRangeService.selectors.length === 0) {
-            console.error('Nothing to be edited');
-            return;
-          }
-          const lastSelector = this.selectorRangeService.selectors[
-            this.selectorRangeService.selectors.length - 1
-          ];
-          const { sri, sci, eri, eci } = lastSelector.range;
-          const cell = this.dataService.selectedSheet.getCell(sri, sci);
-          this.textInputService.show(sri, sci, eri, eci, cell?.richText);
+          this.textInputService.show(false);
+          this.textInputService.focus();
         }
       });
 

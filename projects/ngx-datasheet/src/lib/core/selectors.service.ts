@@ -6,6 +6,7 @@ import { Selector, SelectorFactory } from './selector.factory';
 import { DataService } from './data.service';
 import { Rect } from '../models';
 import { BehaviorSubject, Observable } from 'rxjs';
+import { labelFromCell } from '../utils';
 
 interface SelectorRect {
   left: number;
@@ -66,6 +67,22 @@ export class SelectorsService {
     });
   }
 
+  get last(): Selector {
+    return this.selectors[this.selectors.length - 1];
+  }
+
+  // get plainText(): string {
+  //   const [hitRi, hitCi] = this.last.startCord;
+  //   const hitCellText =
+  //     this.dataService.selectedSheet.getCellPlainText(hitRi, hitCi) || '';
+  //   const { sri, sci, eri, eci } = last.range;
+  //   if (last.range.isSingleCell) {
+  //     this.label = labelFromCell(sri, sci);
+  //   } else {
+  //     this.label = `${labelFromCell(sri, sci)}:${labelFromCell(eri, eci)}`;
+  //   }
+  // }
+
   constructor(
     @Inject(Selector) private selectorFactory: SelectorFactory,
     private scrollingService: ScrollingService,
@@ -121,9 +138,8 @@ export class SelectorsService {
   }
 
   lastResizeTo(eri: number, eci: number): void {
-    const last = this.selectors[this.selectors.length - 1];
     // create a temp rect
-    const [lastStartRi, lastStartCi] = last.startCord;
+    const [lastStartRi, lastStartCi] = this.last.startCord;
     const tempRect: Rect = {
       sri: Math.min(eri, lastStartRi),
       sci: Math.min(eci, lastStartCi),
@@ -142,7 +158,7 @@ export class SelectorsService {
         eci: Math.max(prev.eci, item.eci),
       };
     }, tempRect);
-    last.resizeTo(targetRect);
+    this.last.resizeTo(targetRect);
     this.selectors$.next(this.selectors);
   }
 

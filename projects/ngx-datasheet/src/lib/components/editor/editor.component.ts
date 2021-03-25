@@ -8,11 +8,7 @@ import {
 import { ConfigService } from '../../core/config.service';
 import { DataService } from '../../core/data.service';
 import { Borders, CanvasService, Cord } from '../../core/canvas.service';
-import {
-  NDCellData,
-  RichTextLine,
-  RichTextSpan,
-} from '../../ngx-datasheet.model';
+import { NDCellData, RichTextSpan } from '../../ngx-datasheet.model';
 import { colLabelFromIndex, isNil, isNumber } from '../../utils';
 import { ScrollingService } from '../../core/scrolling.service';
 import { EditorService } from './editor.service';

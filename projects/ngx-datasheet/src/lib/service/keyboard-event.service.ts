@@ -40,7 +40,6 @@ export class KeyboardEventService {
       .subscribe();
 
     this.tabEnterPipeLine();
-    this.autoEdit();
   }
 
   private tabEnterPipeLine(): void {
@@ -78,9 +77,5 @@ export class KeyboardEventService {
         }),
       )
       .subscribe();
-  }
-
-  private autoEdit(): void {
-    fromEvent(document, 'compositionend').subscribe((res) => console.log(res));
   }
 }
