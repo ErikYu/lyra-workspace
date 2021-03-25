@@ -302,6 +302,15 @@ export class EditorComponent implements OnInit, AfterViewInit {
         case 'accounting':
           textConverted = this.lineWrapService.convOnAccounting(textConverted);
           break;
+        case 'date':
+          textConverted = this.lineWrapService.convOnDate(textConverted);
+          break;
+        case 'time':
+          textConverted = this.lineWrapService.convOnTime(textConverted);
+          break;
+        case 'datetime':
+          textConverted = this.lineWrapService.convOnDateTime(textConverted);
+          break;
       }
     }
 

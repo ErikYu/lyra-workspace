@@ -3,6 +3,7 @@ import { RichTextLine } from '../ngx-datasheet.model';
 import { CanvasService } from './canvas.service';
 import { isNumber, plainTextFromLines } from '../utils';
 import Big from 'big.js';
+import * as dayjs from 'dayjs';
 
 @Injectable()
 export class LineWrapService {
@@ -134,6 +135,24 @@ export class LineWrapService {
       return [[{ text: `${Big(text).toFixed(2)}`, style }]];
     }
     return lines;
+  }
+
+  convOnDate(lines: RichTextLine[]): RichTextLine[] {
+    const plainText = plainTextFromLines(lines);
+    const d = dayjs(plainText).format('M/D/YYYY');
+    return [[{ text: d, style: lines[0][0]?.style }]];
+  }
+
+  convOnTime(lines: RichTextLine[]): RichTextLine[] {
+    const plainText = plainTextFromLines(lines);
+    const d = dayjs(plainText).format('h:mm:ss A');
+    return [[{ text: d, style: lines[0][0]?.style }]];
+  }
+
+  convOnDateTime(lines: RichTextLine[]): RichTextLine[] {
+    const plainText = plainTextFromLines(lines);
+    const d = dayjs(plainText).format('M/D/YYYY H:mm:ss');
+    return [[{ text: d, style: lines[0][0]?.style }]];
   }
 
   private isNumberedLines(lines: RichTextLine[]): boolean {

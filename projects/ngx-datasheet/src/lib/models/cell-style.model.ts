@@ -16,8 +16,7 @@ export type CellFormat =
   | 'financial'
   | 'date'
   | 'time'
-  | 'datetime'
-  | 'duration';
+  | 'datetime';
 
 export interface CellStyle {
   background?: string;

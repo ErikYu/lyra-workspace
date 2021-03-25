@@ -87,6 +87,25 @@ export class FormatDropdownComponent implements OnInit {
       desc: '$1,000',
       checked: () => this.curFmt === 'currency_rounded',
     },
+    'DIVIDER',
+    {
+      fmt: 'date',
+      label: 'Date',
+      desc: '7/1/2021',
+      checked: () => this.curFmt === 'date',
+    },
+    {
+      fmt: 'time',
+      label: 'Time',
+      desc: '3:59:00 PM',
+      checked: () => this.curFmt === 'time',
+    },
+    {
+      fmt: 'datetime',
+      label: 'Datetime',
+      desc: '7/1/2021 15:59:00',
+      checked: () => this.curFmt === 'datetime',
+    },
   ];
 
   valLabel = new Map(
