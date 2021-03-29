@@ -1,12 +1,20 @@
 <div #contentZone class="nd-selector-container">
-  <div
-    class="nd-selector"
-    *ngFor="let r of selectorRangeService.rects"
-    [ngStyle]="{
-      top: r.top + 'px',
-      left: r.left + 'px',
-      width: r.width + 'px',
-      height: r.height + 'px'
-    }"
-  ></div>
+  <ng-container *ngFor="let r of selectorRangeService.rects">
+    <div
+      class="nd-selector"
+      [ngStyle]="{
+        top: r.top + 'px',
+        left: r.left + 'px',
+        width: r.width + 'px',
+        height: r.height + 'px'
+      }"
+    ></div>
+    <div
+      class="nd-selector-autofill"
+      [ngStyle]="{
+        top: r.top + r.height - 4 + 'px',
+        left: r.left + r.width - 4 + 'px'
+      }"
+    ></div>
+  </ng-container>
 </div>
