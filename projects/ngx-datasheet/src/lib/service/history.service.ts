@@ -57,7 +57,7 @@ export class HistoryService {
     let colIndex = ci;
     if (isNil(ri) || isNil(ci)) {
       if (this.selectorsService.selectors.length > 0) {
-        [rowIndex, colIndex] = this.selectorsService.selectors[0].startCord;
+        [colIndex, rowIndex] = this.selectorsService.selectors[0].startCord;
       }
     }
     // if cursor is at last, just push

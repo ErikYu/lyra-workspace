@@ -23,7 +23,7 @@ export class ValignDropdownComponent implements OnInit {
     if (this.selectorsService.selectors.length === 0) {
       return 'bottom';
     }
-    const [ri, ci] = this.selectorsService.selectors[0].startCord;
+    const [ci, ri] = this.selectorsService.selectors[0].startCord;
     const cell = this.dataService.selectedSheet.getCell(ri, ci);
     return cell?.style?.valign || 'bottom';
   }

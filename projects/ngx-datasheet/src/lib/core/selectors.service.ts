@@ -137,28 +137,46 @@ export class SelectorsService {
     this.selectors$.next(this.selectors);
   }
 
-  lastResizeTo(eri: number, eci: number): void {
-    // create a temp rect
-    const [lastStartRi, lastStartCi] = this.last.startCord;
-    const tempRect: Rect = {
-      sri: Math.min(eri, lastStartRi),
-      sci: Math.min(eci, lastStartCi),
-      eri: Math.max(eri, lastStartRi),
-      eci: Math.max(eci, lastStartCi),
-    };
-    // calc tempRect covered merge
-    const coveredMerges = this.dataService.selectedSheet.merges.overlappedMergesBy(
-      tempRect,
-    );
-    const targetRect = coveredMerges.reduce<Rect>((prev, item) => {
-      return {
-        sri: Math.min(prev.sri, item.sri),
-        sci: Math.min(prev.sci, item.sci),
-        eri: Math.max(prev.eri, item.eri),
-        eci: Math.max(prev.eci, item.eci),
+  lastResizeTo(eri: number | undefined, eci: number | undefined): void {
+    const [lastStartCi, lastStartRi] = this.last.startCord;
+    if (eri !== undefined && eci !== undefined) {
+      // create a temp rect to find covered merges
+      const tempRect: Rect = {
+        sri: Math.min(eri, lastStartRi),
+        sci: Math.min(eci, lastStartCi),
+        eri: Math.max(eri, lastStartRi),
+        eci: Math.max(eci, lastStartCi),
       };
-    }, tempRect);
-    this.last.resizeTo(targetRect);
+      // calc tempRect covered merge
+      const coveredMerges = this.dataService.selectedSheet.merges.overlappedMergesBy(
+        tempRect,
+      );
+      const targetRect = coveredMerges.reduce<Rect>((prev, item) => {
+        return {
+          sri: Math.min(prev.sri, item.sri),
+          sci: Math.min(prev.sci, item.sci),
+          eri: Math.max(prev.eri, item.eri),
+          eci: Math.max(prev.eci, item.eci),
+        };
+      }, tempRect);
+      this.last.resizeTo(targetRect);
+    } else if (eri !== undefined && eci === undefined) {
+      const maxColIndex = this.dataService.selectedSheet.getColCount();
+      this.last.resizeTo({
+        sri: Math.min(eri, lastStartRi),
+        sci: Math.min(maxColIndex, lastStartCi),
+        eri: Math.max(eri, lastStartRi),
+        eci: Math.max(maxColIndex, lastStartCi),
+      });
+    } else if (eri === undefined && eci !== undefined) {
+      const maxRowIndex = this.dataService.selectedSheet.getRowCount();
+      this.last.resizeTo({
+        sri: Math.min(maxRowIndex, lastStartRi),
+        sci: Math.min(eci, lastStartCi),
+        eri: Math.max(maxRowIndex, lastStartRi),
+        eci: Math.max(eci, lastStartCi),
+      });
+    }
     this.selectors$.next(this.selectors);
   }
 

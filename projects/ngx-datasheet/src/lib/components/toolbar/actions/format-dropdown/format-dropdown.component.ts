@@ -15,7 +15,7 @@ export class FormatDropdownComponent implements OnInit {
     if (this.selectorsService.selectors.length === 0) {
       return undefined;
     }
-    const [ri, ci] = this.selectorsService.selectors[0].startCord;
+    const [ci, ri] = this.selectorsService.selectors[0].startCord;
     const cell = this.dataService.selectedSheet.getCell(ri, ci);
     return cell?.style?.format;
   }

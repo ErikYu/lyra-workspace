@@ -7,7 +7,7 @@ import {
 } from '@angular/core';
 import { ConfigService } from '../../core/config.service';
 import { DataService } from '../../core/data.service';
-import { Borders, CanvasService, Cord } from '../../core/canvas.service';
+import { Borders, CanvasService } from '../../core/canvas.service';
 import { NDCellData, RichTextSpan } from '../../ngx-datasheet.model';
 import { colLabelFromIndex, isNil, isNumber } from '../../utils';
 import { ScrollingService } from '../../core/scrolling.service';
@@ -25,7 +25,7 @@ import { MouseEventService } from '../../service/mouse-event.service';
 import { ResizerColComponent } from '../resizer-col/resizer-col.component';
 import { ResizerRowComponent } from '../resizer-row/resizer-row.component';
 import { KeyboardEventService } from '../../service/keyboard-event.service';
-import { CellFormat, TextAlignDir } from '../../models';
+import { CellFormat, Cord, TextAlignDir } from '../../models';
 
 @Component({
   selector: 'nd-editor',

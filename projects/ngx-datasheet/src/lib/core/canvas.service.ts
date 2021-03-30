@@ -1,14 +1,13 @@
 import { Injectable } from '@angular/core';
 import { DprService } from './dpr.service';
 import { ConfigService } from './config.service';
-import { BorderType, TextStyle } from '../models';
-import { DEFAULT_TEXT_STYLE, GRID_LINE_WIDTH } from '../constants';
+import { BorderType, Cord, TextStyle } from '../models';
 import {
+  DEFAULT_TEXT_STYLE,
+  GRID_LINE_WIDTH,
   CELL_PADDING,
   DEFAULT_BORDER_WIDTH,
-} from '../constants/default-cell-style';
-
-export type Cord = [number, number];
+} from '../constants';
 
 interface Border {
   type: BorderType;

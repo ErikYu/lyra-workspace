@@ -1,7 +1,6 @@
 import { CellRange, CellRangeFactory } from './cell-range.factory';
 import { Inject } from '@angular/core';
-import { Cord } from './canvas.service';
-import { Rect } from '../models';
+import { Rect, Cord } from '../models';
 
 export type SelectorFactory = (
   sri: number,
@@ -14,7 +13,7 @@ export class Selector {
   range!: CellRange;
 
   get startCord(): Cord {
-    return [this.ri, this.ci];
+    return [this.ci, this.ri];
   }
 
   // init coordinate

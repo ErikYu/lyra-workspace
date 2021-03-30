@@ -17,6 +17,8 @@ export class MouseEventService {
   private rowResizer!: HTMLElement;
 
   isSelecting = false;
+  selectStartAt: [number | undefined, number | undefined] | null = null; // [ci, ri]
+
   isColResizing = false;
   isRowResizing = false;
 
@@ -45,6 +47,7 @@ export class MouseEventService {
         if (mouseDownEvent.detail === 1) {
           this.isSelecting = true;
           const { hitRowIndex, hitColIndex } = this.getHitCell(mouseDownEvent);
+          this.selectStartAt = [hitColIndex, hitRowIndex];
           // draw box
           if (hitRowIndex !== undefined && hitColIndex !== undefined) {
             const hitMerge = this.dataService.selectedSheet.getHitMerge(
@@ -82,9 +85,27 @@ export class MouseEventService {
     fromEvent<MouseEvent>(this.masker, 'mousemove').subscribe(
       (mouseMoveEvent) => {
         if (this.isSelecting) {
+          // should only trigger when move out current cell
           const { hitRowIndex, hitColIndex } = this.getHitCell(mouseMoveEvent);
-          if (hitRowIndex !== undefined && hitColIndex !== undefined) {
-            this.selectorRangeService.lastResizeTo(hitRowIndex, hitColIndex);
+          const [startCI, startRI] = this.selectStartAt!;
+          if (startCI === hitColIndex && startRI === hitRowIndex) {
+            return;
+          }
+          if (startRI !== undefined && startCI !== undefined) {
+            // cell range select
+            if (hitRowIndex !== undefined && hitColIndex !== undefined) {
+              this.selectorRangeService.lastResizeTo(hitRowIndex, hitColIndex);
+            }
+          } else if (startRI !== undefined && startCI === undefined) {
+            // row range select
+            if (hitRowIndex !== undefined) {
+              this.selectorRangeService.lastResizeTo(hitRowIndex, undefined);
+            }
+          } else if (startRI === undefined && startCI !== undefined) {
+            // col range select
+            if (hitColIndex !== undefined) {
+              this.selectorRangeService.lastResizeTo(undefined, hitColIndex);
+            }
           }
         } else if (this.isColResizing) {
           this.resizerService.moveColResizer(mouseMoveEvent.movementX);
@@ -156,6 +177,7 @@ export class MouseEventService {
         this.dataService.rerender();
       }
       this.isSelecting = false;
+      this.selectStartAt = null;
     });
   }
 

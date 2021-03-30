@@ -47,7 +47,7 @@ export class FormulaBarComponent implements OnInit {
         return last;
       }),
       map((lastSelector) => {
-        const [hitRi, hitCi] = lastSelector.startCord;
+        const [hitCi, hitRi] = lastSelector.startCord;
         const richText = this.dataService.selectedSheet.getCell(hitRi, hitCi)
           ?.richText;
         return this.richTextToHtmlService.conv(richText);

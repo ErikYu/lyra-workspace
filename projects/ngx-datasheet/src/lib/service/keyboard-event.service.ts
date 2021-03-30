@@ -51,8 +51,8 @@ export class KeyboardEventService {
       .pipe(
         switchMap(() => {
           const { startCord } = this.selectorsService.selectors[0];
-          startRI = lastRI = startCord[0];
-          startCI = lastCI = startCord[1];
+          startCI = lastCI = startCord[0];
+          startRI = lastRI = startCord[1];
           return fromEvent<KeyboardEvent>(document, 'keydown');
         }),
         tap((evt) => {

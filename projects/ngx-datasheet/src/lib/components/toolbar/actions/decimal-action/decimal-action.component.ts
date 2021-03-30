@@ -32,7 +32,7 @@ export class DecimalActionComponent implements OnInit {
     if (this.selectorsService.selectors.length === 0) {
       return;
     }
-    const [ri, ci] = this.selectorsService.selectors[0].startCord;
+    const [ci, ri] = this.selectorsService.selectors[0].startCord;
     const startCell = this.dataService.selectedSheet.getCell(ri, ci);
     const startCellText = this.dataService.selectedSheet.getCellPlainText(
       ri,
