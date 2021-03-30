@@ -1,4 +1,9 @@
-import { NDCellData, NDSheet, NDSheetData } from '../ngx-datasheet.model';
+import {
+  NDCellData,
+  NDSheet,
+  NDSheetData,
+  RichTextLine,
+} from '../ngx-datasheet.model';
 import { ConfigService } from './config.service';
 import { Inject } from '@angular/core';
 import { MergesService, MergesServiceFactory } from './merges.service';
@@ -12,7 +17,6 @@ import {
   TextValignDir,
   TextWrapType,
 } from '../models';
-import { RichTextLine } from 'ngx-datasheet';
 import { isNumberedLines } from '../utils';
 
 export type SheetServiceFactory = (d: NDSheet) => SheetService;
