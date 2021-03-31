@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { fromEvent } from 'rxjs';
-import {filter, tap} from 'rxjs/operators';
+import { filter, tap } from 'rxjs/operators';
 import { ConfigService } from '../core/config.service';
 import { ViewRangeService } from '../core/view-range.service';
 import { DataService } from '../core/data.service';
@@ -9,7 +9,7 @@ import { ResizerService } from './resizer.service';
 import { ResizerThickness } from '../constants';
 import { HistoryService } from './history.service';
 import { TextInputService } from './text-input.service';
-import {ContextmenuService} from './contextmenu.service';
+import { ContextmenuService } from './contextmenu.service';
 
 @Injectable()
 export class MouseEventService {
@@ -84,13 +84,15 @@ export class MouseEventService {
         }
       });
 
-    fromEvent<MouseEvent>(this.masker, 'contextmenu').pipe(
-      tap(evt => {
-        evt.preventDefault();
-        const { hitRowIndex, hitColIndex } = this.getHitCell(evt);
-        this.contextmenuService.show(evt.offsetX, evt.offsetY);
-      }),
-    ).subscribe();
+    fromEvent<MouseEvent>(this.masker, 'contextmenu')
+      .pipe(
+        tap((evt) => {
+          evt.preventDefault();
+          const { hitRowIndex, hitColIndex } = this.getHitCell(evt);
+          this.contextmenuService.show(evt.offsetX, evt.offsetY);
+        }),
+      )
+      .subscribe();
 
     fromEvent<MouseEvent>(this.masker, 'mousemove').subscribe(
       (mouseMoveEvent) => {
@@ -232,22 +234,9 @@ export class MouseEventService {
     offsetY: number;
     offsetX: number;
   } {
-    const target = evt.target as HTMLElement;
-    if (target.classList.contains('nd-editor-mask')) {
-      return {
-        offsetX: evt.offsetX - colIndexWidth,
-        offsetY: evt.offsetY - rowIndexHeight,
-      };
-    } else if (target.classList.contains('nd-selector-container')) {
-      return {
-        offsetX: evt.offsetX,
-        offsetY: evt.offsetY,
-      };
-    } else {
-      return {
-        offsetX: evt.offsetX + target.offsetLeft,
-        offsetY: evt.offsetY + target.offsetTop,
-      };
-    }
+    return {
+      offsetX: evt.offsetX - colIndexWidth,
+      offsetY: evt.offsetY - rowIndexHeight,
+    };
   }
 }

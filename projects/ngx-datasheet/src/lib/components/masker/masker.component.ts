@@ -1,12 +1,10 @@
 import {
-  AfterViewInit,
   Component,
   ElementRef,
   HostBinding,
   HostListener,
   OnInit,
   Renderer2,
-  ViewChild,
 } from '@angular/core';
 import { Subject } from 'rxjs';
 import { map, tap, throttleTime } from 'rxjs/operators';
@@ -20,10 +18,8 @@ import { ConfigService } from '../../core/config.service';
   templateUrl: './masker.component.html',
   styleUrls: ['./masker.component.less'],
 })
-export class MaskerComponent implements OnInit, AfterViewInit {
+export class MaskerComponent implements OnInit {
   @HostBinding('class.nd-editor-mask') enabled = true;
-  @ViewChild('contentZone') contentZone!: ElementRef<HTMLElement>;
-  @ViewChild('rowIndexZone') rowIndexZone!: ElementRef<HTMLElement>;
   private wheel$ = new Subject<WheelEvent>();
 
   constructor(
@@ -56,10 +52,5 @@ export class MaskerComponent implements OnInit, AfterViewInit {
           this.scrollingService.hScrollbarShouldGoto.next(hDelta);
         }
       });
-  }
-
-  ngAfterViewInit(): void {
-    this.contentZone.nativeElement.style.left = '60px';
-    this.contentZone.nativeElement.style.top = '25px';
   }
 }

@@ -8,9 +8,8 @@ describe('ContextmenuComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ ContextmenuComponent ]
-    })
-    .compileComponents();
+      declarations: [ContextmenuComponent],
+    }).compileComponents();
   });
 
   beforeEach(() => {

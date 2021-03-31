@@ -1,7 +1,7 @@
-import {Injectable} from '@angular/core';
-import {BehaviorSubject, Observable} from 'rxjs';
-import {SelectorsService} from '../core/selectors.service';
-import {DataService} from '../core/data.service';
+import { Injectable } from '@angular/core';
+import { BehaviorSubject, Observable } from 'rxjs';
+import { SelectorsService } from '../core/selectors.service';
+import { DataService } from '../core/data.service';
 
 interface LocatedContextmenu {
   left: number;
@@ -23,7 +23,7 @@ export class ContextmenuService {
   ) {}
 
   show(left: number, top: number): void {
-    this._options$.next({left, top});
+    this._options$.next({ left, top });
   }
 
   hide(): void {
