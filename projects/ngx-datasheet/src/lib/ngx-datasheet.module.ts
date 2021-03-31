@@ -37,6 +37,8 @@ import { DecimalActionComponent } from './components/toolbar/actions/decimal-act
 import { PercentActionComponent } from './components/toolbar/actions/percent-action/percent-action.component';
 import { CurrencyActionComponent } from './components/toolbar/actions/currency-action/currency-action.component';
 import { FormulaBarComponent } from './components/formula-bar/formula-bar.component';
+import { ContextmenuComponent } from './components/contextmenu/contextmenu.component';
+import { SelectorContainerComponent } from './components/selector-container/selector-container.component';
 
 @NgModule({
   declarations: [
@@ -76,6 +78,8 @@ import { FormulaBarComponent } from './components/formula-bar/formula-bar.compon
     PercentActionComponent,
     CurrencyActionComponent,
     FormulaBarComponent,
+    ContextmenuComponent,
+    SelectorContainerComponent,
   ],
   imports: [CommonModule, OverlayModule],
   exports: [NgxDatasheetComponent],
