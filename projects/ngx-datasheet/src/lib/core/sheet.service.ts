@@ -397,6 +397,57 @@ export class SheetService implements NDSheet {
     }
   }
 
+  insertRowsAbove(ri: number, insertCount: number): void {
+    const oldRows = this.sheet.data.rows;
+    this.sheet.data.rows = Object.entries(oldRows).reduce<NDSheetData['rows']>(
+      (prev, [i, v]) => {
+        if (+i < ri) {
+          return { ...prev, [+i]: v };
+        } else {
+          return { ...prev, [+i + insertCount]: v };
+        }
+      },
+      {},
+    );
+    this.sheet.data.rowCount += insertCount;
+    // merge data should also be updated
+    this.merges.moveOrExpandByRow(ri, insertCount, (sri, sci) => {
+      // merge attribute should update when expand rows
+      const cell = this.getCell(sri, sci);
+      const merge = cell?.style?.merge;
+      if (merge === undefined) {
+        throw Error('Should not reach here. Cannot find merge');
+      }
+      merge[0] += insertCount;
+    });
+  }
+
+  insertColsLeft(ci: number, insertCount: number): void {
+    Object.values(this.sheet.data.rows).forEach((row) => {
+      const { cells } = row;
+      row.cells = Object.entries(cells).reduce<NDSheetData['rows'][0]['cells']>(
+        (prev, [i, v]) => {
+          if (+i < ci) {
+            return { ...prev, [+i]: v };
+          } else {
+            return { ...prev, [+i + insertCount]: v };
+          }
+        },
+        {},
+      );
+    });
+    this.sheet.data.colCount += insertCount;
+    this.merges.moveOrExpandByCol(ci, insertCount, (sri, sci) => {
+      // merge attribute should update when expand rows
+      const cell = this.getCell(sri, sci);
+      const merge = cell?.style?.merge;
+      if (merge === undefined) {
+        throw Error('Should not reach here. Cannot find merge');
+      }
+      merge[1] += insertCount;
+    });
+  }
+
   private setBorder(
     ri: number,
     ci: number,

@@ -88,7 +88,6 @@ export class MouseEventService {
       .pipe(
         tap((evt) => {
           evt.preventDefault();
-          const { hitRowIndex, hitColIndex } = this.getHitCell(evt);
           this.contextmenuService.show(evt.offsetX, evt.offsetY);
         }),
       )

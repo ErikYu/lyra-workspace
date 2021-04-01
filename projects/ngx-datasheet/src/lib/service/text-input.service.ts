@@ -6,6 +6,7 @@ import { LocatedRect } from '../models';
 import { HtmlToRichTextService } from './html-to-rich-text.service';
 import { RichTextToHtmlService } from './rich-text-to-html.service';
 import { SelectorsService } from '../core/selectors.service';
+import { HistoryService } from './history.service';
 
 interface RichTextInputRect extends LocatedRect {
   html: string;
@@ -40,6 +41,7 @@ export class TextInputService {
     private htmlToRichTextService: HtmlToRichTextService,
     private richTextToHtmlService: RichTextToHtmlService,
     private selectorRangeService: SelectorsService,
+    private historyService: HistoryService,
   ) {}
 
   // when editing in formula bar, sync into rich-text-input
@@ -76,11 +78,13 @@ export class TextInputService {
   hide(): void {
     if (this._locatedRect$.value !== null) {
       const { sri, sci } = this._locatedRect$.value;
+      // this.historyService.stacked(() => {
       this.dataService.selectedSheet.applyRichTextToCell(
         sri,
         sci,
         this.htmlToRichTextService.fetchRichText(),
       );
+      // });
       this._locatedRect$.next(null);
       this.dataService.rerender();
     }

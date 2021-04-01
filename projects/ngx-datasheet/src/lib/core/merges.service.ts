@@ -8,6 +8,13 @@ export type MergesServiceFactory = (merges: Merge[]) => MergesService;
 export class MergesService {
   private ranges: CellRange[] = [];
 
+  get snapshot(): Merge[] {
+    return this.ranges.map(({ sri, sci, eri, eci }) => [
+      [sri, sci],
+      [eri, eci],
+    ]);
+  }
+
   constructor(
     merges: Merge[],
     @Inject(CellRange) private cellRangeFactory: CellRangeFactory,
@@ -23,6 +30,44 @@ export class MergesService {
 
   addMerge(range: CellRange): void {
     this.ranges.push(range);
+  }
+
+  moveOrExpandByRow(
+    ri: number,
+    count: number,
+    leftTopUpdater: (sri: number, sci: number) => void,
+  ): void {
+    this.ranges = this.ranges.map((range) => {
+      const { sri, sci, eri, eci } = range;
+      if (ri <= sri) {
+        // shift merge data
+        return this.cellRangeFactory(sri + count, eri + count, sci, eci);
+      } else if (ri <= eri) {
+        // expand merge data
+        leftTopUpdater(sri, sci);
+        return this.cellRangeFactory(sri, eri + count, sci, eci);
+      }
+      return range;
+    });
+  }
+
+  moveOrExpandByCol(
+    ci: number,
+    count: number,
+    leftTopUpdater: (sri: number, sci: number) => void,
+  ): void {
+    this.ranges = this.ranges.map((range) => {
+      const { sri, sci, eri, eci } = range;
+      if (ci <= sci) {
+        // shift merge data
+        return this.cellRangeFactory(sri, eri, sci + count, eci + count);
+      } else if (ci <= eri) {
+        // expand merge data
+        leftTopUpdater(sri, sci);
+        return this.cellRangeFactory(sri, eri, sci, eci + count);
+      }
+      return range;
+    });
   }
 
   overlappingWith(cellRange: CellRange): boolean {

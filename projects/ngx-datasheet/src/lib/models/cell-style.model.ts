@@ -23,7 +23,7 @@ export interface CellStyle {
   textWrap?: TextWrapType;
   valign?: TextValignDir;
   align?: TextAlignDir;
-  merge?: [number, number];
+  merge?: [number, number]; // row, col
   border?: {
     left?: [BorderType, BorderColor];
     right?: [BorderType, BorderColor];

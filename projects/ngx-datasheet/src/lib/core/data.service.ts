@@ -14,8 +14,8 @@ export class DataService {
 
   get snapshot(): NDData {
     return {
-      sheets: this.sheets.map(({ data, selected, name }) => ({
-        data,
+      sheets: this.sheets.map(({ data, selected, name, merges }) => ({
+        data: { ...data, merges: merges.snapshot },
         name,
         selected,
       })),
