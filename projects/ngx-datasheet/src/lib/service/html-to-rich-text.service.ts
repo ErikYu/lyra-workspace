@@ -64,7 +64,6 @@ export class HtmlToRichTextService {
 
   // tslint:disable-next-line:typedef
   private buildStyle(css: CSSStyleDeclaration | undefined) {
-    console.log(css?.textDecorationLine);
     if (!css) {
       return undefined;
     }
@@ -90,6 +89,6 @@ export class HtmlToRichTextService {
     if (toHEX(css.color) !== '#000000') {
       res.color = toHEX(css.color);
     }
-    return res;
+    return Object.keys(res).length > 0 ? res : undefined;
   }
 }

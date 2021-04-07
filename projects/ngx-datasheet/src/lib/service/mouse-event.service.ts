@@ -44,10 +44,12 @@ export class MouseEventService {
     this.rowResizer = rowResizer;
 
     fromEvent<MouseEvent>(this.masker, 'mousedown')
-      .pipe(filter((evt) => evt.which === 1))
+      .pipe(tap(evt => console.log(evt.which)), filter((evt) => evt.which === 1 || evt.which === 3))
       .subscribe((mouseDownEvent) => {
         if (mouseDownEvent.detail === 1) {
-          this.isSelecting = true;
+          if (mouseDownEvent.which === 1) {
+            this.isSelecting = true;
+          }
           const { hitRowIndex, hitColIndex } = this.getHitCell(mouseDownEvent);
           this.selectStartAt = [hitColIndex, hitRowIndex];
           // draw box

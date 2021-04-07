@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { SelectorsService } from '../core/selectors.service';
 import { DataService } from '../core/data.service';
+import {Overlay} from '@angular/cdk/overlay';
 
 interface LocatedContextmenu {
   left: number;
@@ -20,6 +21,7 @@ export class ContextmenuService {
   constructor(
     private selectorsService: SelectorsService,
     private dataService: DataService,
+    private overlay: Overlay,
   ) {}
 
   show(left: number, top: number): void {

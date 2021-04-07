@@ -18,6 +18,9 @@ export class TextInputService {
   private _htmlForFormulaBar$ = new Subject<string>();
   // private _htmlForRichInput$ = new Subject<string>();
   private _focus$ = new BehaviorSubject<never>(null as never);
+
+  private richTextBeforeEdit!: string;
+
   get locatedRect$(): Observable<RichTextInputRect | null> {
     return this._locatedRect$.asObservable();
   }
@@ -70,6 +73,7 @@ export class TextInputService {
     const lastSelector = this.selectorRangeService.last;
     const { sri, sci, eri, eci } = lastSelector.range;
     const cell = this.dataService.selectedSheet.getCell(sri, sci);
+    this.richTextBeforeEdit = JSON.stringify(cell?.richText || [[]]);
     const locatedRect = this.vs.locateRect({ sci, eci, sri, eri });
     const html = clear ? '' : this.richTextToHtmlService.conv(cell?.richText);
     this._locatedRect$.next({ ...locatedRect, html });
@@ -78,13 +82,17 @@ export class TextInputService {
   hide(): void {
     if (this._locatedRect$.value !== null) {
       const { sri, sci } = this._locatedRect$.value;
-      // this.historyService.stacked(() => {
-      this.dataService.selectedSheet.applyRichTextToCell(
-        sri,
-        sci,
-        this.htmlToRichTextService.fetchRichText(),
-      );
-      // });
+      const newRichText = JSON.stringify(this.htmlToRichTextService.fetchRichText());
+      // TODO: optimize dirty check
+      if (newRichText !== this.richTextBeforeEdit) {
+        this.historyService.stacked(() => {
+          this.dataService.selectedSheet.applyRichTextToCell(
+            sri,
+            sci,
+            this.htmlToRichTextService.fetchRichText(),
+          );
+        });
+      }
       this._locatedRect$.next(null);
       this.dataService.rerender();
     }
