@@ -1,3 +1,34 @@
-<ng-container *ngFor="let menu of menus">
-  <nd-dropdown-bar (click)="menu.action()">{{ menu.label }}</nd-dropdown-bar>
-</ng-container>
+<div class="nd-contextmenu-tree">
+  <ng-container *ngFor="let menu of menus">
+    <nd-dropdown-bar
+      *ngIf="menu.action; else navItem"
+      (mouseenter)="showSubMenus($event)"
+      (click)="menu.action()"
+      [desc]="menu.desc || ' '"
+    >
+      {{ menu.label }}
+    </nd-dropdown-bar>
+    <ng-template #navItem>
+      <nd-dropdown-bar
+        [desc]="'>'"
+        (mouseenter)="showSubMenus($event, menu.children!)"
+      >
+        {{ menu.label }}
+      </nd-dropdown-bar>
+    </ng-template>
+  </ng-container>
+</div>
+<div
+  class="nd-contextmenu-tree"
+  [ngStyle]="{ transform: 'translateY(' + offsetTop + 'px)' }"
+>
+  <ng-container *ngFor="let subMenu of activatedSubMenus">
+    <nd-dropdown-bar
+      *ngIf="subMenu.action"
+      (click)="subMenu.action()"
+      [desc]="subMenu.desc || ' '"
+    >
+      {{ subMenu.label }}
+    </nd-dropdown-bar>
+  </ng-container>
+</div>

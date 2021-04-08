@@ -82,7 +82,9 @@ export class TextInputService {
   hide(): void {
     if (this._locatedRect$.value !== null) {
       const { sri, sci } = this._locatedRect$.value;
-      const newRichText = JSON.stringify(this.htmlToRichTextService.fetchRichText());
+      const newRichText = JSON.stringify(
+        this.htmlToRichTextService.fetchRichText(),
+      );
       // TODO: optimize dirty check
       if (newRichText !== this.richTextBeforeEdit) {
         this.historyService.stacked(() => {

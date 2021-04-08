@@ -23,6 +23,14 @@ export class SelectorsService {
     return this.selectors$.asObservable();
   }
 
+  get isEmpty(): boolean {
+    return this.selectors.length === 0;
+  }
+
+  get isNotEmpty(): boolean {
+    return this.selectors.length !== 0;
+  }
+
   selectors: Selector[] = [];
 
   get rects(): SelectorRect[] {

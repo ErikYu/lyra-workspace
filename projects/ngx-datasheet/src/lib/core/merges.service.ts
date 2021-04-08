@@ -70,6 +70,58 @@ export class MergesService {
     });
   }
 
+  shiftRight(selectorRange: CellRange, count: number): boolean {
+    const res: CellRange[] = [];
+    let shouldMove = true;
+    for (const range of this.ranges) {
+      const { sri, sci, eri, eci } = range;
+      if (
+        selectorRange.eri < sri ||
+        selectorRange.sri > eri ||
+        selectorRange.sci > eci
+      ) {
+        // range do not need to shift
+        res.push(range);
+      } else if (selectorRange.eri < eri || selectorRange.sri > sri) {
+        console.warn('Cannot insert cells like this');
+        shouldMove = false;
+        break;
+      } else {
+        res.push(this.cellRangeFactory(sri, eri, sci + count, eci + count));
+      }
+    }
+    if (shouldMove) {
+      this.ranges = res;
+    }
+    return shouldMove;
+  }
+
+  shiftDown(selectorRange: CellRange, count: number): boolean {
+    const res: CellRange[] = [];
+    let shouldMove = true;
+    for (const range of this.ranges) {
+      const { sri, sci, eri, eci } = range;
+      if (
+        selectorRange.eci < sci ||
+        selectorRange.sci > eci ||
+        selectorRange.sri > eri
+      ) {
+        // range do not need to shift
+        res.push(range);
+      } else if (selectorRange.eci < eci || selectorRange.sci > sci) {
+        console.warn('Cannot insert cells like this');
+        shouldMove = false;
+        break;
+      } else {
+        res.push(this.cellRangeFactory(sri + count, eri + count, sci, eci));
+      }
+    }
+    if (shouldMove) {
+      this.ranges = res;
+    }
+    return shouldMove;
+  }
+
   overlappingWith(cellRange: CellRange): boolean {
     for (const range of this.ranges) {
       if (range.overlappingWithRange(cellRange)) {

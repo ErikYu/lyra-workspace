@@ -17,7 +17,7 @@ import {
   TextValignDir,
   TextWrapType,
 } from '../models';
-import { isNumberedLines } from '../utils';
+import { cloneDeep, isNumberedLines } from '../utils';
 
 export type SheetServiceFactory = (d: NDSheet) => SheetService;
 
@@ -32,6 +32,10 @@ export type BorderSelection =
   | 'right'
   | 'bottom'
   | 'clear';
+
+type TRows = NDSheetData['rows'];
+type TRow = NDSheetData['rows'][0];
+type TCells = NDSheetData['rows'][0]['cells'];
 
 export class SheetService implements NDSheet {
   selected!: boolean;
@@ -139,8 +143,7 @@ export class SheetService implements NDSheet {
     return undefined;
   }
 
-  // tslint:disable-next-line:typedef
-  getRow(ri: number) {
+  getRow(ri: number): TRow | undefined {
     return this.sheet.data.rows[ri];
   }
 
@@ -446,6 +449,99 @@ export class SheetService implements NDSheet {
       }
       merge[1] += insertCount;
     });
+  }
+
+  insertCells(cellRange: CellRange, shiftMode: 'right' | 'down'): void {
+    if (shiftMode === 'right') {
+      // insert col
+      const insertCount = cellRange.eci - cellRange.sci + 1;
+      if (!this.merges.shiftRight(cellRange, insertCount)) {
+        return;
+      }
+      Object.entries(this.sheet.data.rows).forEach(([riStr, row]) => {
+        const { cells } = row;
+        row.cells = Object.entries(cells).reduce<TCells>((prev, [ciStr, v]) => {
+          if (+ciStr < cellRange.sci) {
+            return { ...prev, [+ciStr]: v };
+          } else {
+            if (cellRange.sri <= +riStr && +riStr <= cellRange.eri) {
+              return { ...prev, [+ciStr + insertCount]: v };
+            } else {
+              return { ...prev, [+ciStr]: v };
+            }
+          }
+        }, {});
+      });
+      this.sheet.data.colCount += insertCount;
+    } else {
+      const insertCount = cellRange.eri - cellRange.sri + 1;
+      if (!this.merges.shiftDown(cellRange, insertCount)) {
+        return;
+      }
+
+      const resRows: TRows = {};
+      const clonedRows = cloneDeep(this.sheet.data.rows);
+      const oldRows = Object.entries(clonedRows).reduce<TRows>(
+        (prev, [ri, row]) => {
+          if (+ri < cellRange.sri) {
+            return { ...prev, [+ri]: row };
+          } else {
+            const targetRI = +ri + insertCount;
+            if (!clonedRows.hasOwnProperty(targetRI)) {
+              return {
+                ...prev,
+                [+ri]: row,
+                [targetRI]: { cells: {} },
+              };
+            } else {
+              return {
+                ...prev,
+                [+ri]: row,
+              };
+            }
+          }
+        },
+        {},
+      );
+      for (const [riStr, row] of Object.entries(oldRows)) {
+        const ri = +riStr;
+        if (ri < cellRange.sri) {
+          resRows[ri] = row;
+        } else if (cellRange.sri <= ri && ri <= cellRange.eri) {
+          Object.keys(row.cells).forEach((ciStr) => {
+            if (cellRange.sci <= +ciStr && +ciStr <= cellRange.eci) {
+              delete row.cells[+ciStr];
+            }
+          });
+          resRows[ri] = row;
+        } else {
+          const r = Object.entries(
+            this.getRow(ri - insertCount)?.cells || {},
+          ).reduce<TCells>((prev, [iStr, cell]) => {
+            if (cellRange.sci <= +iStr && +iStr <= cellRange.eci) {
+              return { ...prev, [+iStr]: cell };
+            }
+            return prev;
+          }, {});
+
+          resRows[ri] = {
+            ...row,
+            cells: Object.entries(row.cells).reduce<TCells>(
+              (prevCells, [ciStr, cell]) => {
+                if (cellRange.sci <= +ciStr && +ciStr <= cellRange.eci) {
+                  return prevCells;
+                } else {
+                  return { ...prevCells, [+ciStr]: cell };
+                }
+              },
+              r,
+            ),
+          };
+        }
+      }
+      this.sheet.data.rows = resRows;
+      this.sheet.data.rowCount += insertCount;
+    }
   }
 
   private setBorder(

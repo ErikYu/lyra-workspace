@@ -44,11 +44,38 @@ export class MouseEventService {
     this.rowResizer = rowResizer;
 
     fromEvent<MouseEvent>(this.masker, 'mousedown')
-      .pipe(tap(evt => console.log(evt.which)), filter((evt) => evt.which === 1 || evt.which === 3))
+      .pipe(
+        // tap((evt) => console.log(evt.target)),
+        filter((evt) => evt.which === 1 || evt.which === 3),
+      )
       .subscribe((mouseDownEvent) => {
         if (mouseDownEvent.detail === 1) {
           if (mouseDownEvent.which === 1) {
             this.isSelecting = true;
+          }
+          if (
+            mouseDownEvent.which === 3 &&
+            this.selectorRangeService.isNotEmpty
+          ) {
+            // check if click on one selector, if so, just display contextmenu without selecting cell
+            const mouseLeft = mouseDownEvent.offsetX - this.configService.ciw;
+            const mouseTop = mouseDownEvent.offsetY - this.configService.rih;
+            const {
+              left,
+              top,
+              width,
+              height,
+            } = this.viewRangeService.locateRect(
+              this.selectorRangeService.last.range,
+            );
+            if (
+              left <= mouseLeft &&
+              mouseLeft <= left + width &&
+              top <= mouseTop &&
+              mouseTop <= top + height
+            ) {
+              return;
+            }
           }
           const { hitRowIndex, hitColIndex } = this.getHitCell(mouseDownEvent);
           this.selectStartAt = [hitColIndex, hitRowIndex];
@@ -80,7 +107,7 @@ export class MouseEventService {
             this.selectorRangeService.addAll();
           }
           this.textInputService.hide();
-        } else if (mouseDownEvent.detail === 2) {
+        } else if (mouseDownEvent.detail === 2 && mouseDownEvent.which === 1) {
           this.textInputService.show(false);
           this.textInputService.focus();
         }

@@ -63,6 +63,7 @@ export class ViewRangeService {
     return { width, height };
   }
 
+  // relative to A1's left-top point
   locateRect(rect: Rect): LocatedRect {
     const size = this.sizeRect(rect);
     let top = 0;

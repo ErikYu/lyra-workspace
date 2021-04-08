@@ -61,6 +61,7 @@
     display: flex;
     align-items: center;
     font-family: "Helvetica Neue", Helvetica, serif;
+    padding-right: 5px;
     &:hover {
       background: #f1f3f4;
     }
@@ -284,6 +285,18 @@
 
 .@{prefix}-contextmenu {
   position: absolute;
-  box-shadow: 1px 2px 5px 2px rgba(51, 51, 51, 0.5);
-  background: #fff;
+  &-tree {
+    float: left;
+    background: #ffffff;
+    box-shadow: 1px 2px 5px 2px rgba(51, 51, 51, 0.5);
+  }
+}
+
+.@{prefix}-frozen-backdrop {
+  position: fixed;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  background: transparent;
 }
