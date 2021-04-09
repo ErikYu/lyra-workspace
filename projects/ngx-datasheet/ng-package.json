@@ -3,7 +3,11 @@
   "dest": "../../dist/ngx-datasheet",
   "lib": {
     "entryFile": "src/public-api.ts",
-    "styleIncludePaths": ["src/lib/style.less"]
+    "styleIncludePaths": ["src/lib/style.less"],
+    "umdModuleIds": {
+      "big.js": "Big",
+      "dayjs": "dayjs"
+    }
   },
-  "whitelistedNonPeerDependencies": ["@angular/cdk"]
+  "whitelistedNonPeerDependencies": ["@angular/cdk", "big.js", "dayjs"]
 }

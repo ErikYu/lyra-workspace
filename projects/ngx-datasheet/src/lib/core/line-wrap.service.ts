@@ -3,7 +3,7 @@ import { RichTextLine } from '../ngx-datasheet.model';
 import { CanvasService } from './canvas.service';
 import { isNumber, plainTextFromLines } from '../utils';
 import Big from 'big.js';
-import * as dayjs from 'dayjs';
+import dayjs from 'dayjs';
 
 @Injectable()
 export class LineWrapService {
