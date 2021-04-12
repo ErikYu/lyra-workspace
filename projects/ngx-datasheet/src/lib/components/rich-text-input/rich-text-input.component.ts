@@ -91,6 +91,7 @@ export class RichTextInputComponent implements AfterViewInit {
 
 const inputKeydown = filter((evt: KeyboardEvent) => {
   return (
+    evt.keyCode !== 8 && // Backspace/delete
     evt.keyCode !== 9 && // tab
     evt.keyCode !== 13 && // enter
     evt.keyCode !== 37 && // dir

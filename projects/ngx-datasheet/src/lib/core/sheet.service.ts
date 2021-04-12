@@ -681,6 +681,14 @@ export class SheetService implements NDSheet {
     }
   }
 
+  clearText(cellRange: CellRange): void {
+    cellRange.forEachCell(this, ({ ci, ri }) => {
+      if (this.getCell(ri, ci)) {
+        this.sheet.data.rows[ri].cells[ci].richText = [[]];
+      }
+    });
+  }
+
   private setBorder(
     ri: number,
     ci: number,

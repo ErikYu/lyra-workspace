@@ -4,6 +4,7 @@ import { filter, switchMap, tap } from 'rxjs/operators';
 import { HistoryService } from './history.service';
 import { SelectorsService } from '../core/selectors.service';
 import { TextInputService } from './text-input.service';
+import { DataService } from '../core/data.service';
 
 @Injectable()
 export class KeyboardEventService {
@@ -11,6 +12,7 @@ export class KeyboardEventService {
     private historyService: HistoryService,
     private selectorsService: SelectorsService,
     private textInputService: TextInputService,
+    private dataService: DataService,
   ) {}
   init(): void {
     fromEvent<KeyboardEvent>(document, 'keydown')
@@ -59,6 +61,19 @@ export class KeyboardEventService {
         filter((evt) => !evt.altKey),
         tap((evt) => {
           switch (evt.keyCode) {
+            case 8:
+              // backspace
+              if (this.textInputService.isEditing) {
+                return;
+              }
+              evt.preventDefault();
+              this.historyService.stacked(() => {
+                for (const { range } of this.selectorsService.selectors) {
+                  this.dataService.selectedSheet.clearText(range);
+                }
+              });
+              this.dataService.rerender();
+              break;
             case 9:
               // tab
               evt.preventDefault();
@@ -84,9 +99,11 @@ export class KeyboardEventService {
                 return;
               }
               evt.preventDefault();
-              lastCI -= 1;
-              startCI = lastCI;
-              this.selectorsService.selectCell(lastRI, lastCI);
+              if (lastCI > 0) {
+                lastCI -= 1;
+                startCI = lastCI;
+                this.selectorsService.selectCell(lastRI, lastCI);
+              }
               break;
             case 38:
               // up
@@ -94,9 +111,11 @@ export class KeyboardEventService {
                 return;
               }
               evt.preventDefault();
-              lastRI -= 1;
-              startRI = lastRI;
-              this.selectorsService.selectCell(lastRI, lastCI);
+              if (lastRI > 0) {
+                lastRI -= 1;
+                startRI = lastRI;
+                this.selectorsService.selectCell(lastRI, lastCI);
+              }
               break;
             case 39:
               // right
