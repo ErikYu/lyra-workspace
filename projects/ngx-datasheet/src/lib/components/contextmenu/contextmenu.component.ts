@@ -111,16 +111,19 @@ export class ContextmenuComponent implements OnInit {
           this.dataService.rerender();
         },
       },
-      // {
-      //   label:
-      //     rowCount > 1
-      //       ? `Delete columns ${startColNO} - ${endColNO}`
-      //       : 'Delete columns',
-      //   action: () => {
-      //     this.historyService.stacked(() => {});
-      //     this.dataService.rerender();
-      //   },
-      // },
+      {
+        label:
+          colCount > 1
+            ? `Delete columns ${startColNO} - ${endColNO}`
+            : 'Delete columns',
+        action: () => {
+          this.historyService.stacked(() => {
+            const { sci, eci } = this.selectorsService.last.range;
+            this.dataService.selectedSheet.deleteColumns(sci, eci);
+          });
+          this.dataService.rerender();
+        },
+      },
       // {
       //   label: 'Insert cells',
       //   children: [

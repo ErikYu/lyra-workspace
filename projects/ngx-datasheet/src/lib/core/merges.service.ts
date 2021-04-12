@@ -112,6 +112,46 @@ export class MergesService {
     });
   }
 
+  moveAndShrinkByCol(
+    sci: number,
+    eci: number,
+    mergeAttrSetter: (
+      msri: number,
+      msci: number,
+      [rowSpan, colSpan]: [number, number],
+    ) => void,
+  ): void {
+    const deleteCount = eci - sci + 1;
+    this.ranges = this.ranges.reduce<CellRange[]>((prev, range) => {
+      const { sri: msri, sci: msci, eri: meri, eci: meci } = range;
+      const newColSpan = Math.max(meci - eci, 0) + Math.max(sci - msci, 0) - 1;
+      if (newColSpan < 0) {
+        // just remove this merge directly
+        return prev;
+      }
+      if (eci < msci) {
+        // move only
+        return [
+          ...prev,
+          this.cellRangeFactory(
+            msri,
+            meri,
+            msci - deleteCount,
+            meci - deleteCount,
+          ),
+        ];
+      } else {
+        // move and shrink
+        const newSci = Math.min(sci, msci);
+        mergeAttrSetter(msri, newSci, [meri - msri, newColSpan]);
+        return [
+          ...prev,
+          this.cellRangeFactory(msri, meri, newSci, newSci + newColSpan),
+        ];
+      }
+    }, []);
+  }
+
   shiftRight(selectorRange: CellRange, count: number): boolean {
     const res: CellRange[] = [];
     let shouldMove = true;

@@ -471,6 +471,28 @@ export class SheetService implements NDSheet {
     });
   }
 
+  deleteColumns(sci: number, eci: number): void {
+    const deleteCount = eci - sci + 1;
+    Object.values(this.sheet.data.rows).forEach((row) => {
+      row.cells = Object.entries(row.cells).reduce<TCells>(
+        (prev, [ciStr, cell]) => {
+          if (+ciStr < sci) {
+            return { ...prev, [+ciStr]: cell };
+          } else if (sci <= +ciStr && +ciStr <= eci) {
+            return prev;
+          } else {
+            return { ...prev, [+ciStr - deleteCount]: cell };
+          }
+        },
+        {},
+      );
+    });
+    this.sheet.data.colCount -= deleteCount;
+    this.merges.moveAndShrinkByCol(sci, eci, (msri, msci, merge) => {
+      this.setCellStyle(msri, msci, { merge });
+    });
+  }
+
   insertCells(cellRange: CellRange, shiftMode: 'right' | 'down'): void {
     if (shiftMode === 'right') {
       // insert col
