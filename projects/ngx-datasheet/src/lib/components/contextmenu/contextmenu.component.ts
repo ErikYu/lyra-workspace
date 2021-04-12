@@ -124,25 +124,35 @@ export class ContextmenuComponent implements OnInit {
           this.dataService.rerender();
         },
       },
-      // {
-      //   label: 'Insert cells',
-      //   children: [
-      //     {
-      //       label: 'Shift left',
-      //       action: () => {
-      //         this.historyService.stacked(() => {});
-      //         this.dataService.rerender();
-      //       },
-      //     },
-      //     {
-      //       label: 'Shift up',
-      //       action: () => {
-      //         this.historyService.stacked(() => {});
-      //         this.dataService.rerender();
-      //       },
-      //     },
-      //   ],
-      // },
+      {
+        label: 'Delete cells',
+        children: [
+          {
+            label: 'Shift left',
+            action: () => {
+              this.historyService.stacked(() => {
+                this.dataService.selectedSheet.deleteCells(
+                  this.selectorsService.last.range,
+                  'left',
+                );
+              });
+              this.dataService.rerender();
+            },
+          },
+          {
+            label: 'Shift up',
+            action: () => {
+              this.historyService.stacked(() => {
+                this.dataService.selectedSheet.deleteCells(
+                  this.selectorsService.last.range,
+                  'top',
+                );
+              });
+              this.dataService.rerender();
+            },
+          },
+        ],
+      },
     ];
   }
 

@@ -586,6 +586,101 @@ export class SheetService implements NDSheet {
     }
   }
 
+  deleteCells(cellRange: CellRange, shiftMode: 'left' | 'top'): void {
+    if (shiftMode === 'left') {
+      const deleteCount = cellRange.eci - cellRange.sci + 1;
+      if (!this.merges.shiftLeft(cellRange)) {
+        return;
+      }
+      const resRows: TRows = {};
+      Object.entries(this.sheet.data.rows).forEach(([riStr, row]) => {
+        const { cells } = row;
+        resRows[+riStr] = {
+          ...row,
+          cells: Object.entries(cells).reduce<TCells>((prev, [ciStr, v]) => {
+            if (+ciStr < cellRange.sci) {
+              return { ...prev, [+ciStr]: v };
+            } else {
+              if (cellRange.sri <= +riStr && +riStr <= cellRange.eri) {
+                const targetCI = +ciStr - deleteCount;
+                if (targetCI >= cellRange.sci) {
+                  return { ...prev, [+ciStr - deleteCount]: v };
+                }
+                return prev;
+              } else {
+                return { ...prev, [+ciStr]: v };
+              }
+            }
+          }, {}),
+        };
+      });
+      this.sheet.data.rows = resRows;
+      this.sheet.data.colCount -= deleteCount;
+    } else {
+      const clonedRows = cloneDeep(this.sheet.data.rows);
+      // const insertCount = -(cellRange.eri - cellRange.sri + 1);
+      const deleteCount = cellRange.eri - cellRange.sri + 1;
+      if (!this.merges.shiftTop(cellRange)) {
+        return;
+      }
+      const resRows: TRows = {};
+      const oldRows = Object.entries(clonedRows).reduce<TRows>(
+        (prev, [ri, row]) => {
+          if (+ri < cellRange.sri) {
+            return { ...prev, [+ri]: row };
+          } else {
+            const targetRI = +ri - deleteCount;
+            console.log({ targetRI });
+            if (!clonedRows.hasOwnProperty(targetRI)) {
+              return {
+                ...prev,
+                [+ri]: row,
+                [targetRI]: { cells: {} },
+              };
+            } else {
+              return {
+                ...prev,
+                [+ri]: row,
+              };
+            }
+          }
+        },
+        {},
+      );
+      for (const [riStr, row] of Object.entries(oldRows)) {
+        const ri = +riStr;
+        if (ri < cellRange.sri) {
+          resRows[ri] = row;
+        } else {
+          const r = Object.entries(
+            this.getRow(ri + deleteCount)?.cells || {},
+          ).reduce<TCells>((prev, [iStr, cell]) => {
+            if (cellRange.sci <= +iStr && +iStr <= cellRange.eci) {
+              return { ...prev, [+iStr]: cell };
+            }
+            return prev;
+          }, {});
+
+          resRows[ri] = {
+            ...row,
+            cells: Object.entries(row.cells).reduce<TCells>(
+              (prevCells, [ciStr, cell]) => {
+                if (cellRange.sci <= +ciStr && +ciStr <= cellRange.eci) {
+                  return prevCells;
+                } else {
+                  return { ...prevCells, [+ciStr]: cell };
+                }
+              },
+              r,
+            ),
+          };
+        }
+      }
+      this.sheet.data.rows = resRows;
+      this.sheet.data.rowCount -= deleteCount;
+    }
+  }
+
   private setBorder(
     ri: number,
     ci: number,

@@ -178,24 +178,108 @@ export class MergesService {
     return shouldMove;
   }
 
+  shiftLeft(selectorRange: CellRange): boolean {
+    const deleteCount = selectorRange.eci - selectorRange.sci + 1;
+    const res: CellRange[] = [];
+    let shouldMove = true;
+    for (const range of this.ranges) {
+      const { sri: msri, sci: msci, eri: meri, eci: meci } = range;
+      if (
+        selectorRange.eri < msri ||
+        selectorRange.sri > meri ||
+        selectorRange.sci > meci
+      ) {
+        // range do not need to shift
+        res.push(range);
+      } else if (selectorRange.eri < meri || selectorRange.sri > msri) {
+        console.warn('Cannot delete cells like this');
+        shouldMove = false;
+        break;
+      } else if (
+        selectorRange.sri <= msri &&
+        selectorRange.eri >= meri &&
+        selectorRange.sci <= msci &&
+        selectorRange.eci >= meci
+      ) {
+        // this range will be removed
+        continue;
+      } else {
+        res.push(
+          this.cellRangeFactory(
+            msri,
+            meri,
+            msci - deleteCount,
+            meci - deleteCount,
+          ),
+        );
+      }
+    }
+    if (shouldMove) {
+      this.ranges = res;
+    }
+    return shouldMove;
+  }
+
   shiftDown(selectorRange: CellRange, count: number): boolean {
     const res: CellRange[] = [];
     let shouldMove = true;
     for (const range of this.ranges) {
-      const { sri, sci, eri, eci } = range;
+      const { sri: msri, sci: msci, eri: meri, eci: meci } = range;
       if (
-        selectorRange.eci < sci ||
-        selectorRange.sci > eci ||
-        selectorRange.sri > eri
+        selectorRange.eci < msci ||
+        selectorRange.sci > meci ||
+        selectorRange.sri > meri
       ) {
         // range do not need to shift
         res.push(range);
-      } else if (selectorRange.eci < eci || selectorRange.sci > sci) {
+      } else if (selectorRange.eci < meci || selectorRange.sci > msci) {
         console.warn('Cannot insert cells like this');
         shouldMove = false;
         break;
       } else {
-        res.push(this.cellRangeFactory(sri + count, eri + count, sci, eci));
+        res.push(this.cellRangeFactory(msri + count, meri + count, msci, meci));
+      }
+    }
+    if (shouldMove) {
+      this.ranges = res;
+    }
+    return shouldMove;
+  }
+
+  shiftTop(selectorRange: CellRange): boolean {
+    const deleteCount = selectorRange.eri - selectorRange.sri + 1;
+    const res: CellRange[] = [];
+    let shouldMove = true;
+    for (const range of this.ranges) {
+      const { sri: msri, sci: msci, eri: meri, eci: meci } = range;
+      if (
+        selectorRange.eci < msci ||
+        selectorRange.sci > meci ||
+        selectorRange.sri > meri
+      ) {
+        // range do not need to shift
+        res.push(range);
+      } else if (selectorRange.eci < meci || selectorRange.sci > msci) {
+        console.warn('Cannot delete cells like this');
+        shouldMove = false;
+        break;
+      } else if (
+        selectorRange.sri <= msri &&
+        selectorRange.eri >= meri &&
+        selectorRange.sci <= msci &&
+        selectorRange.eci >= meci
+      ) {
+        // this range will be removed
+        continue;
+      } else {
+        res.push(
+          this.cellRangeFactory(
+            msri - deleteCount,
+            meri - deleteCount,
+            msci,
+            meci,
+          ),
+        );
       }
     }
     if (shouldMove) {
