@@ -15,6 +15,7 @@ export class KeyboardEventService {
   init(): void {
     fromEvent<KeyboardEvent>(document, 'keydown')
       .pipe(
+        // ctrl or cmd
         filter((evt) => evt.ctrlKey || evt.metaKey),
         tap((evt) => {
           switch (evt.keyCode) {
@@ -39,10 +40,10 @@ export class KeyboardEventService {
       )
       .subscribe();
 
-    this.tabEnterPipeLine();
+    this.tabEnterDirPipeLine();
   }
 
-  private tabEnterPipeLine(): void {
+  private tabEnterDirPipeLine(): void {
     let startRI: number;
     let startCI: number;
     let lastRI: number;
@@ -55,11 +56,15 @@ export class KeyboardEventService {
           startRI = lastRI = startCord[1];
           return fromEvent<KeyboardEvent>(document, 'keydown');
         }),
+        filter((evt) => !evt.altKey),
         tap((evt) => {
           switch (evt.keyCode) {
             case 9:
               // tab
               evt.preventDefault();
+              if (this.textInputService.isEditing) {
+                this.textInputService.hide();
+              }
               lastCI += 1;
               this.selectorsService.selectCell(lastRI, lastCI);
               break;
@@ -71,6 +76,46 @@ export class KeyboardEventService {
               }
               lastRI += 1;
               lastCI = startCI;
+              this.selectorsService.selectCell(lastRI, lastCI);
+              break;
+            case 37:
+              // left
+              if (this.textInputService.isEditing) {
+                return;
+              }
+              evt.preventDefault();
+              lastCI -= 1;
+              startCI = lastCI;
+              this.selectorsService.selectCell(lastRI, lastCI);
+              break;
+            case 38:
+              // up
+              if (this.textInputService.isEditing) {
+                return;
+              }
+              evt.preventDefault();
+              lastRI -= 1;
+              startRI = lastRI;
+              this.selectorsService.selectCell(lastRI, lastCI);
+              break;
+            case 39:
+              // right
+              if (this.textInputService.isEditing) {
+                return;
+              }
+              evt.preventDefault();
+              lastCI += 1;
+              startCI = lastCI;
+              this.selectorsService.selectCell(lastRI, lastCI);
+              break;
+            case 40:
+              // down
+              if (this.textInputService.isEditing) {
+                return;
+              }
+              evt.preventDefault();
+              lastRI += 1;
+              startRI = lastRI;
               this.selectorsService.selectCell(lastRI, lastCI);
               break;
           }

@@ -11,7 +11,7 @@ import { ConfigService } from '../../core/config.service';
 import { GRID_LINE_WIDTH } from '../../constants';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { DataService } from '../../core/data.service';
-import { fromEvent, Subscription } from 'rxjs';
+import { fromEvent } from 'rxjs';
 import { delay, filter } from 'rxjs/operators';
 
 @Component({
@@ -26,6 +26,8 @@ export class RichTextInputComponent implements AfterViewInit {
   @ViewChild('editableZone') editableZone!: ElementRef<HTMLDivElement>;
   html: SafeHtml = '';
 
+  private shown = false;
+
   constructor(
     private textInputService: TextInputService,
     private hostEl: ElementRef<HTMLElement>,
@@ -36,11 +38,36 @@ export class RichTextInputComponent implements AfterViewInit {
   ) {}
 
   ngAfterViewInit(): void {
-    let silenceListener: Subscription | undefined;
-    let shownListener: Subscription | undefined;
+    // sync with formula bar
+    fromEvent<InputEvent>(this.editableZone.nativeElement, 'input')
+      .pipe(filter(() => this.shown))
+      .subscribe((evt) =>
+        this.textInputService.transferFromRichInput(
+          this.editableZone.nativeElement.innerHTML,
+        ),
+      );
+
+    // option/alt + enter: add line breaker
+    fromEvent<KeyboardEvent>(this.editableZone.nativeElement, 'keydown')
+      .pipe(filter((evt) => evt.altKey && evt.keyCode === 13 && this.shown))
+      .subscribe(() => {
+        document.execCommand('insertText', false, '\n');
+      });
+
+    // auto edit
+    fromEvent<KeyboardEvent>(this.editableZone.nativeElement, 'keydown')
+      .pipe(
+        filter(() => !this.shown),
+        inputKeydown,
+      )
+      .subscribe((evt) => {
+        this.textInputService.show(true);
+      });
+
     this.textInputService.locatedRect$.subscribe((res) => {
       if (res) {
-        silenceListener?.unsubscribe();
+        // show
+        this.shown = true;
         this.html = this.domSanitizer.bypassSecurityTrustHtml(res.html);
         setStyle(this.hostEl.nativeElement, {
           left: `${res.left + this.configService.ciw - GRID_LINE_WIDTH * 2}px`,
@@ -49,26 +76,11 @@ export class RichTextInputComponent implements AfterViewInit {
           height: `${res.height}px`,
         });
         this.renderer.removeClass(this.hostEl.nativeElement, 'silencer');
-        shownListener = fromEvent<InputEvent>(
-          this.editableZone.nativeElement,
-          'input',
-        ).subscribe((evt) =>
-          this.textInputService.transferFromRichInput(
-            this.editableZone.nativeElement.innerHTML,
-          ),
-        );
       } else {
-        shownListener?.unsubscribe();
+        // hide
+        this.shown = false;
         this.html = '';
         this.renderer.addClass(this.hostEl.nativeElement, 'silencer');
-        silenceListener = fromEvent<KeyboardEvent>(
-          this.editableZone.nativeElement,
-          'keydown',
-        )
-          .pipe(inputKeydown)
-          .subscribe((evt) => {
-            this.textInputService.show(true);
-          });
       }
     });
     this.textInputService.focus$.pipe(delay(50)).subscribe(() => {
