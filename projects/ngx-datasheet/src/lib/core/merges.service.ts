@@ -46,9 +46,51 @@ export class MergesService {
         // expand merge data
         leftTopUpdater(sri, sci);
         return this.cellRangeFactory(sri, eri + count, sci, eci);
+      } else {
+        return range;
       }
-      return range;
     });
+  }
+
+  moveOrShrinkByRow(
+    sri: number,
+    eri: number,
+    mergeAttrSetter: (
+      msri: number,
+      msci: number,
+      [rowSpan, colSpan]: [number, number],
+    ) => void,
+  ): void {
+    const deleteCount = eri - sri + 1;
+    this.ranges = this.ranges.reduce<CellRange[]>((prev, range) => {
+      const { sri: msri, sci: msci, eri: meri, eci: meci } = range;
+      // 0, 1, 2
+      const newRowSpan = Math.max(meri - eri, 0) + Math.max(sri - msri, 0) - 1;
+      if (newRowSpan < 0) {
+        // just remove this merge directly
+        return prev;
+      }
+      if (eri < msri) {
+        // move only
+        return [
+          ...prev,
+          this.cellRangeFactory(
+            msri - deleteCount,
+            meri - deleteCount,
+            msci,
+            meci,
+          ),
+        ];
+      } else {
+        // move and shrink
+        const newSri = Math.min(sri, msri);
+        mergeAttrSetter(newSri, msci, [newRowSpan, meci - msci]);
+        return [
+          ...prev,
+          this.cellRangeFactory(newSri, newSri + newRowSpan, msci, meci),
+        ];
+      }
+    }, []);
   }
 
   moveOrExpandByCol(

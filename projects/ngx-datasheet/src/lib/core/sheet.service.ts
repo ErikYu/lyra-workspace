@@ -402,7 +402,7 @@ export class SheetService implements NDSheet {
 
   insertRowsAbove(ri: number, insertCount: number): void {
     const oldRows = this.sheet.data.rows;
-    this.sheet.data.rows = Object.entries(oldRows).reduce<NDSheetData['rows']>(
+    this.sheet.data.rows = Object.entries(oldRows).reduce<TRows>(
       (prev, [i, v]) => {
         if (+i < ri) {
           return { ...prev, [+i]: v };
@@ -422,6 +422,26 @@ export class SheetService implements NDSheet {
         throw Error('Should not reach here. Cannot find merge');
       }
       merge[0] += insertCount;
+    });
+  }
+
+  deleteRows(sri: number, eri: number): void {
+    const deleteCount = eri - sri + 1;
+    this.sheet.data.rows = Object.entries(this.sheet.data.rows).reduce<TRows>(
+      (prev, [riStr, row]) => {
+        if (+riStr < sri) {
+          return { ...prev, [+riStr]: row };
+        } else if (sri <= +riStr && +riStr <= eri) {
+          return prev;
+        } else {
+          return { ...prev, [+riStr - deleteCount]: row };
+        }
+      },
+      {},
+    );
+    this.sheet.data.rowCount -= deleteCount;
+    this.merges.moveOrShrinkByRow(sri, eri, (msri, msci, merge) => {
+      this.setCellStyle(msri, msci, { merge });
     });
   }
 

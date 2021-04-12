@@ -6,11 +6,12 @@ import {
   Renderer2,
 } from '@angular/core';
 import { ContextmenuService } from '../../service/contextmenu.service';
-import { setStyle } from '../../utils';
+import { colLabelFromIndex, setStyle } from '../../utils';
 import { DataService } from '../../core/data.service';
 import { HistoryService } from '../../service/history.service';
 import { SelectorsService } from '../../core/selectors.service';
 import { fromEvent } from 'rxjs';
+import { CellRange } from '../../core/cell-range.factory';
 
 type MenuItem = {
   label: string;
@@ -27,12 +28,20 @@ type MenuItem = {
 })
 export class ContextmenuComponent implements OnInit {
   @HostBinding('class.nd-contextmenu') h = true;
-  menus: MenuItem[] = [];
+  menus: (MenuItem | 'DIVIDER')[] = [];
 
   activatedSubMenus: MenuItem[] = [];
   offsetTop = 0;
 
-  private setUpMenus(rowCount: number, colCount: number): void {
+  private setUpMenus(
+    rowCount: number,
+    colCount: number,
+    selectorRange: CellRange,
+  ): void {
+    const startRowNO = selectorRange.sri + 1;
+    const endRowNO = selectorRange.eri + 1;
+    const startColNO = colLabelFromIndex(selectorRange.sci);
+    const endColNO = colLabelFromIndex(selectorRange.eci);
     this.menus = [
       {
         label: rowCount > 1 ? `Insert ${rowCount} rows` : 'Insert row',
@@ -88,6 +97,49 @@ export class ContextmenuComponent implements OnInit {
           },
         ],
       },
+      'DIVIDER',
+      {
+        label:
+          rowCount > 1
+            ? `Delete rows ${startRowNO} - ${endRowNO}`
+            : 'Delete row',
+        action: () => {
+          this.historyService.stacked(() => {
+            const { sri, eri } = this.selectorsService.last.range;
+            this.dataService.selectedSheet.deleteRows(sri, eri);
+          });
+          this.dataService.rerender();
+        },
+      },
+      // {
+      //   label:
+      //     rowCount > 1
+      //       ? `Delete columns ${startColNO} - ${endColNO}`
+      //       : 'Delete columns',
+      //   action: () => {
+      //     this.historyService.stacked(() => {});
+      //     this.dataService.rerender();
+      //   },
+      // },
+      // {
+      //   label: 'Insert cells',
+      //   children: [
+      //     {
+      //       label: 'Shift left',
+      //       action: () => {
+      //         this.historyService.stacked(() => {});
+      //         this.dataService.rerender();
+      //       },
+      //     },
+      //     {
+      //       label: 'Shift up',
+      //       action: () => {
+      //         this.historyService.stacked(() => {});
+      //         this.dataService.rerender();
+      //       },
+      //     },
+      //   ],
+      // },
     ];
   }
 
@@ -122,7 +174,11 @@ export class ContextmenuComponent implements OnInit {
         document.addEventListener('click', hideContextMenu);
         const { left, top } = option;
         const { sri, eri, sci, eci } = this.selectorsService.last.range;
-        this.setUpMenus(eri - sri + 1, eci - sci + 1);
+        this.setUpMenus(
+          eri - sri + 1,
+          eci - sci + 1,
+          this.selectorsService.last.range,
+        );
         setStyle(this.el.nativeElement, {
           display: 'block',
           left: `${left}px`,

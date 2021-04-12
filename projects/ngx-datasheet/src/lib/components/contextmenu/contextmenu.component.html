@@ -1,20 +1,25 @@
 <div class="nd-contextmenu-tree">
   <ng-container *ngFor="let menu of menus">
-    <nd-dropdown-bar
-      *ngIf="menu.action; else navItem"
-      (mouseenter)="showSubMenus($event)"
-      (click)="menu.action()"
-      [desc]="menu.desc || ' '"
-    >
-      {{ menu.label }}
-    </nd-dropdown-bar>
-    <ng-template #navItem>
+    <ng-container *ngIf="menu !== 'DIVIDER'; else dividerTmpl">
       <nd-dropdown-bar
-        [desc]="'>'"
-        (mouseenter)="showSubMenus($event, menu.children!)"
+        *ngIf="menu.action; else navItem"
+        (mouseenter)="showSubMenus($event)"
+        (click)="menu.action()"
+        [desc]="menu.desc || ' '"
       >
         {{ menu.label }}
       </nd-dropdown-bar>
+      <ng-template #navItem>
+        <nd-dropdown-bar
+          [desc]="'>'"
+          (mouseenter)="showSubMenus($event, menu.children!)"
+        >
+          {{ menu.label }}
+        </nd-dropdown-bar>
+      </ng-template>
+    </ng-container>
+    <ng-template #dividerTmpl>
+      <nd-divider direction="horizontal" style="margin: 8px 0"></nd-divider>
     </ng-template>
   </ng-container>
 </div>
