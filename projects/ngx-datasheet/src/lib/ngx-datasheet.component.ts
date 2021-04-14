@@ -1,4 +1,11 @@
-import { Component, ElementRef, Input, OnInit } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  Input,
+  OnChanges,
+  OnInit,
+  SimpleChanges,
+} from '@angular/core';
 import { Merge, NDData, NDSheet } from './ngx-datasheet.model';
 import { ConfigService } from './core/config.service';
 import { DataService } from './core/data.service';
@@ -23,6 +30,8 @@ import { FocusedStyleService } from './service/focused-style.service';
 import { RichTextToHtmlService } from './service/rich-text-to-html.service';
 import { ContextmenuService } from './service/contextmenu.service';
 import { RenderProxyService } from './service/render-proxy.service';
+import { fromEvent } from 'rxjs';
+import { debounceTime, startWith, throttleTime } from 'rxjs/operators';
 
 @Component({
   selector: 'nd-ngx-datasheet',
@@ -87,10 +96,10 @@ import { RenderProxyService } from './service/render-proxy.service';
   ],
   host: { class: 'ngx-datasheet' },
 })
-export class NgxDatasheetComponent implements OnInit {
+export class NgxDatasheetComponent implements OnInit, OnChanges {
   @Input() ndConfig: DatasheetConfig = {
-    width: document.documentElement.clientWidth,
-    height: document.documentElement.clientHeight,
+    width: () => document.documentElement.clientWidth,
+    height: () => document.documentElement.clientHeight,
     row: {
       height: 25,
       count: 100,
@@ -127,11 +136,18 @@ export class NgxDatasheetComponent implements OnInit {
     private historyService: HistoryService,
   ) {}
 
+  ngOnChanges(changes: SimpleChanges): void {}
+
   ngOnInit(): void {
     document.execCommand('styleWithCSS', false, true as any);
-    this.el.nativeElement.style.width = `${this.ndConfig.width}px`;
-    this.el.nativeElement.style.height = `${this.ndConfig.height}px`;
     this.configService.setConfig(this.ndConfig, this.el.nativeElement);
+    fromEvent(window, 'resize')
+      .pipe(startWith({}))
+      .subscribe(() => {
+        this.el.nativeElement.style.width = `${this.ndConfig.width()}px`;
+        this.el.nativeElement.style.height = `${this.ndConfig.height()}px`;
+        this.configService.resize(this.el.nativeElement);
+      });
     this.dataService.loadData(this.ndData);
     this.historyService.init(this.ndData);
     this.viewRangeService.init();

@@ -254,13 +254,9 @@ export class MouseEventService {
   } {
     let hitRowIndex!: number;
     let hitColIndex!: number;
-    const { row, col } = this.configService.configuration;
+    const { rih, ciw } = this.configService;
     const { cellRange: viewRange } = this.viewRangeService;
-    const { offsetY, offsetX } = this.offsetRelatedTo(
-      evt,
-      row.indexHeight,
-      col.indexWidth,
-    );
+    const { offsetY, offsetX } = this.offsetRelatedTo(evt, rih, ciw);
     if (offsetY > 0) {
       ({ rowIndex: hitRowIndex } = viewRange.rowIndexAt(
         this.dataService.selectedSheet,

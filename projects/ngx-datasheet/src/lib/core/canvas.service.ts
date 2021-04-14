@@ -49,23 +49,23 @@ export class CanvasService {
   init(el: HTMLCanvasElement, maskerEl: HTMLElement): void {
     this.el = el;
     this.context = this.el.getContext('2d')!;
-    const width =
-      this.configService.configuration.sheetWidth -
-      this.configService.scrollbarThick;
-    const height =
-      this.configService.configuration.sheetHeight -
-      this.configService.scrollbarThick -
-      this.configService.tabBarHeight;
+    this.configService.config$.subscribe(({ sheetWidth, sheetHeight }) => {
+      const width = sheetWidth - this.configService.scrollbarThick;
+      const height =
+        sheetHeight -
+        this.configService.scrollbarThick -
+        this.configService.tabBarHeight;
 
-    maskerEl.style.width = `${width}px`;
-    maskerEl.style.height = `${height}px`;
+      maskerEl.style.width = `${width}px`;
+      maskerEl.style.height = `${height}px`;
 
-    // for dpr > 1 screen
-    this.el.style.width = `${width}px`;
-    this.el.style.height = `${height}px`;
-    this.el.width = this.dpr.rpx(width);
-    this.el.height = this.dpr.rpx(height);
-    this.scale(this.dpr.dpr(), this.dpr.dpr());
+      // for dpr > 1 screen
+      this.el.style.width = `${width}px`;
+      this.el.style.height = `${height}px`;
+      this.el.width = this.dpr.rpx(width);
+      this.el.height = this.dpr.rpx(height);
+      this.scale(this.dpr.dpr(), this.dpr.dpr());
+    });
   }
 
   setStyle(styles: Partial<CanvasRenderingContext2D>): CanvasService {

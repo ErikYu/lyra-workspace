@@ -67,7 +67,9 @@ export class EditorComponent implements OnInit, AfterViewInit {
   ) {}
 
   ngOnInit(): void {
-    this.el.nativeElement.style.height = `${this.configService.configuration.sheetHeight}px`;
+    this.configService.config$.subscribe(({ sheetHeight }) => {
+      this.el.nativeElement.style.height = `${sheetHeight}px`;
+    });
   }
 
   ngAfterViewInit(): void {
@@ -82,8 +84,8 @@ export class EditorComponent implements OnInit, AfterViewInit {
     );
     this.keyboardEventService.init();
     this.renderProxyService.shouldRender$.subscribe(({ type }) => {
-      const rih = this.configService.configuration.row.indexHeight;
-      const ciw = this.configService.configuration.col.indexWidth;
+      const rih = this.configService.rih;
+      const ciw = this.configService.ciw;
       if (type === 'all') {
         this.canvasService.clear().beginPath(); // clear all
         this.canvasService.setStyle({

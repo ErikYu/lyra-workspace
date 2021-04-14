@@ -203,7 +203,7 @@ export class ContextmenuComponent implements OnInit {
   showSubMenus(evt: MouseEvent, submenus?: MenuItem[]): void {
     if (Array.isArray(submenus) && submenus.length > 0) {
       const xLeft =
-        this.configService.configuration.sheetWidth -
+        this.configService.snapshot.sheetWidth -
         (evt.target as HTMLElement).getBoundingClientRect().right;
       this.activatedSubMenus = submenus;
       this.offsetTop = (evt.target as HTMLElement).offsetTop;

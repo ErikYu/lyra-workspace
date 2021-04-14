@@ -80,17 +80,11 @@ export class SheetService implements NDSheet {
   }
 
   getRowHeight(rowIndex: number): number {
-    return (
-      this.data.rows[rowIndex]?.height ||
-      this.configService.configuration.row.height
-    );
+    return this.data.rows[rowIndex]?.height || this.configService.defaultRH;
   }
 
   getColWidth(colIndex: number): number {
-    return (
-      this.data.cols[colIndex]?.width ||
-      this.configService.configuration.col.width
-    );
+    return this.data.cols[colIndex]?.width || this.configService.defaultCW;
   }
 
   getRowCount(): number {

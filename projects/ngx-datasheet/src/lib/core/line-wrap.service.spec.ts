@@ -20,8 +20,8 @@ describe('LineWrapService', () => {
     container.style.height = '1000px';
     configService.setConfig(
       {
-        width: 1000,
-        height: 1000,
+        width: () => 1000,
+        height: () => 1000,
         row: {
           count: 30,
           height: 25,

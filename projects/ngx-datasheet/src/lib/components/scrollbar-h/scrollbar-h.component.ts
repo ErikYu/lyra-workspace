@@ -44,7 +44,7 @@ export class ScrollbarHComponent implements OnInit, AfterViewInit {
     this.render.setStyle(
       this.el.nativeElement,
       'left',
-      `${this.configService.configuration.col.indexWidth}px`,
+      `${this.configService.ciw}px`,
     );
     this.render.setStyle(
       this.el.nativeElement,

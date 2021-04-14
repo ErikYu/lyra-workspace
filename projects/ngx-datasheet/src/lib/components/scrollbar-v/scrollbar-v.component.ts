@@ -42,23 +42,25 @@ export class ScrollbarVComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit(): void {
-    this.render.setStyle(
-      this.el.nativeElement,
-      'top',
-      `${this.configService.configuration.row.indexHeight - 0.5}px`,
-    );
-    this.render.setStyle(
-      this.el.nativeElement,
-      'width',
-      `${this.configService.scrollbarThick}px`,
-    );
-    this.render.setStyle(
-      this.el.nativeElement,
-      'bottom',
-      `${
-        this.configService.scrollbarThick + this.configService.tabBarHeight
-      }px`,
-    );
+    this.configService.config$.subscribe(({ row }) => {
+      this.render.setStyle(
+        this.el.nativeElement,
+        'top',
+        `${row.indexHeight - 0.5}px`,
+      );
+      this.render.setStyle(
+        this.el.nativeElement,
+        'width',
+        `${this.configService.scrollbarThick}px`,
+      );
+      this.render.setStyle(
+        this.el.nativeElement,
+        'bottom',
+        `${
+          this.configService.scrollbarThick + this.configService.tabBarHeight
+        }px`,
+      );
+    });
     this.scrolling.vScrollbarShouldGoto.asObservable().subscribe((vDelta) => {
       const vScrollNEl = this.el.nativeElement;
       const top = vDelta === 0 ? 0 : vScrollNEl.scrollTop + vDelta;

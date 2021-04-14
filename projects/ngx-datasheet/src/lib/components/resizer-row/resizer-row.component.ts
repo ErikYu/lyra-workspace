@@ -15,13 +15,11 @@ import { MouseEventService } from '../../service/mouse-event.service';
 export class ResizerRowComponent implements OnInit {
   readonly staticStyle = {
     height: `${ResizerThickness}px`,
-    width: `${this.configService.configuration?.col?.indexWidth || 60}px`,
+    width: `${this.configService.ciw}px`,
   };
 
   readonly lineStyle = {
-    width: `calc(100% - ${
-      this.configService.configuration?.col?.indexWidth || 60
-    }px)`,
+    width: `calc(100% - ${this.configService.ciw}px)`,
     transform: `translateY(-${Math.ceil(ResizerThickness / 2)}px)`,
   };
   constructor(

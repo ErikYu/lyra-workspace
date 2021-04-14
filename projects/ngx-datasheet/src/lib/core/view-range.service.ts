@@ -20,21 +20,25 @@ export class ViewRangeService {
   }
 
   init(): void {
-    this.width =
-      this.configService.configuration.sheetWidth -
-      this.configService.scrollbarThick -
-      this.configService.configuration.col.indexWidth;
-    this.height =
-      this.configService.configuration.sheetHeight -
-      this.configService.scrollbarThick -
-      this.configService.tabBarHeight -
-      this.configService.configuration.row.indexHeight;
-    this.cellRange.sri = 0;
-    this.cellRange.eri = this.dataService.selectedSheet.getRowIndex(
-      this.height,
+    this.configService.config$.subscribe(
+      ({ sheetWidth, sheetHeight, row, col }) => {
+        this.width =
+          sheetWidth - this.configService.scrollbarThick - col.indexWidth;
+        this.height =
+          sheetHeight -
+          this.configService.scrollbarThick -
+          this.configService.tabBarHeight -
+          row.indexHeight;
+        this.cellRange.sri = 0;
+        this.cellRange.eri = this.dataService.selectedSheet.getRowIndex(
+          this.height,
+        );
+        this.cellRange.sci = 0;
+        this.cellRange.eci = this.dataService.selectedSheet.getColIndex(
+          this.width,
+        );
+      },
     );
-    this.cellRange.sci = 0;
-    this.cellRange.eci = this.dataService.selectedSheet.getColIndex(this.width);
   }
 
   // tslint:disable-next-line:typedef

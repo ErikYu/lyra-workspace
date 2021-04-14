@@ -1,6 +1,6 @@
 export interface DatasheetConfig {
-  width: number;
-  height: number;
+  width: () => number;
+  height: () => number;
   row: {
     count: number;
     height: number;

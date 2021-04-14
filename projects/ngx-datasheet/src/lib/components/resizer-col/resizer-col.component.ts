@@ -15,13 +15,11 @@ import { MouseEventService } from '../../service/mouse-event.service';
 export class ResizerColComponent implements OnInit {
   readonly headerStaticStyle = {
     width: `${ResizerThickness}px`,
-    height: `${this.configService.configuration?.row?.indexHeight || 25}px`,
+    height: `${this.configService.rih}px`,
   };
 
   readonly lineStyle = {
-    height: `calc(100% - ${
-      this.configService.configuration?.row?.indexHeight || 25
-    }px)`,
+    height: `calc(100% - ${this.configService.rih}px)`,
     transform: `translateX(${Math.floor(ResizerThickness / 2)}px)`,
   };
   constructor(

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import { NDData } from '../../../ngx-datasheet/src/lib/ngx-datasheet.model';
 import { DatasheetConfig } from '../../../ngx-datasheet/src/lib/models';
 
@@ -7,12 +7,10 @@ import { DatasheetConfig } from '../../../ngx-datasheet/src/lib/models';
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.less'],
 })
-export class AppComponent {
-  title = 'ngx-datasheet-demo';
-
+export class AppComponent implements OnInit {
   config: DatasheetConfig = {
-    width: document.documentElement.clientWidth,
-    height: document.documentElement.clientHeight,
+    width: () => document.documentElement.clientWidth,
+    height: () => document.documentElement.clientHeight,
     row: {
       height: 25,
       count: 100,
@@ -24,6 +22,7 @@ export class AppComponent {
       indexWidth: 60,
     },
   };
+
   data: NDData = {
     sheets: [
       {
@@ -228,4 +227,7 @@ export class AppComponent {
       },
     ],
   };
+
+  ngOnInit(): void {
+  }
 }
