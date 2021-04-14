@@ -81,7 +81,7 @@ export class MergesService {
             meci,
           ),
         ];
-      } else {
+      } else if (sri <= meri) {
         // move and shrink
         const newSri = Math.min(sri, msri);
         mergeAttrSetter(newSri, msci, [newRowSpan, meci - msci]);
@@ -89,6 +89,8 @@ export class MergesService {
           ...prev,
           this.cellRangeFactory(newSri, newSri + newRowSpan, msci, meci),
         ];
+      } else {
+        return [...prev, range];
       }
     }, []);
   }
@@ -140,7 +142,7 @@ export class MergesService {
             meci - deleteCount,
           ),
         ];
-      } else {
+      } else if (sci <= meci) {
         // move and shrink
         const newSci = Math.min(sci, msci);
         mergeAttrSetter(msri, newSci, [meri - msri, newColSpan]);
@@ -148,6 +150,8 @@ export class MergesService {
           ...prev,
           this.cellRangeFactory(msri, meri, newSci, newSci + newColSpan),
         ];
+      } else {
+        return [...prev, range];
       }
     }, []);
   }
