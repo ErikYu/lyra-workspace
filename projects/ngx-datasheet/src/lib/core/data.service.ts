@@ -71,4 +71,20 @@ export class DataService {
     this.selectedSheet = newSheet;
     this.selectedIndex = this.sheets.length - 1;
   }
+
+  updateSheetName(index: number, name: string, onSuccess: () => void): void {
+    // validator
+    const hasDuplicate = !!this.sheets.find(
+      (sheet, i) => i !== index && sheet.name === name,
+    );
+    if (hasDuplicate) {
+      console.error('The new name is duplicate with exist sheet');
+      return;
+    }
+
+    // setter
+    this.sheets[index].name = name;
+
+    onSuccess();
+  }
 }

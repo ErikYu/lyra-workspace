@@ -48,6 +48,9 @@ export class SheetService implements NDSheet {
   get name(): string {
     return this.sheet.name;
   }
+  set name(val: string) {
+    this.sheet.name = val;
+  }
 
   constructor(
     private sheet: NDSheet,

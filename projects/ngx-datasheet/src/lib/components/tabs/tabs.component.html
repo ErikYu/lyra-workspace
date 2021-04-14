@@ -3,7 +3,19 @@
   class="nd-tab"
   [class.selected]="sheet.selected"
   (click)="selectSheet(i)"
+  (dblclick)="editSheetName(i)"
 >
-  <span *ngIf="!nameEditing">{{ sheet.name }}</span>
+  <input
+    #nameInput
+    class="name-input"
+    type="text"
+    *ngIf="i === editingIndex; else displayMode"
+    [value]="sheet.name"
+    (keydown.enter)="triggerBlur($event)"
+    (blur)="updateSheetName($event, i)"
+  />
+  <ng-template #displayMode>
+    <span>{{ sheet.name }}</span>
+  </ng-template>
 </div>
 <div class="nd-tab" (click)="addSheet()">+</div>

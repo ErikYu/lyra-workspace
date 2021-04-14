@@ -1,4 +1,11 @@
-import { Component, Input, OnInit } from '@angular/core';
+import {
+  ChangeDetectorRef,
+  Component,
+  ElementRef,
+  Input,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
 import { DataService } from '../../core/data.service';
 import { ViewRangeService } from '../../core/view-range.service';
 import { SheetService } from '../../core/sheet.service';
@@ -11,13 +18,16 @@ import { HistoryService } from '../../service/history.service';
   host: { class: 'nd-tabs' },
 })
 export class TabsComponent implements OnInit {
-  nameEditing = false;
+  editingIndex: number | null = null;
 
   @Input() tabs: SheetService[] = [];
+  @ViewChild('nameInput') nameInput!: ElementRef<HTMLInputElement>;
+
   constructor(
     public dataService: DataService,
     private viewRangeService: ViewRangeService,
     private historyService: HistoryService,
+    private cd: ChangeDetectorRef,
   ) {}
 
   ngOnInit(): void {}
@@ -26,6 +36,26 @@ export class TabsComponent implements OnInit {
     this.dataService.selectSheet(index);
     this.viewRangeService.init();
     this.dataService.rerender();
+  }
+
+  editSheetName(index: number): void {
+    this.editingIndex = index;
+    this.cd.detectChanges();
+    this.nameInput.nativeElement.select();
+  }
+
+  triggerBlur(evt: Event): void {
+    evt.stopPropagation();
+    const inputEl = evt.target as HTMLInputElement;
+    inputEl.blur();
+  }
+
+  updateSheetName(evt: Event, index: number): void {
+    const inputEl = evt.target as HTMLInputElement;
+    const newName = inputEl.value;
+    this.dataService.updateSheetName(index, newName, () => {
+      this.editingIndex = null;
+    });
   }
 
   addSheet(): void {
