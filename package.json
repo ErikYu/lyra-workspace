@@ -5,11 +5,12 @@
     "ng": "ng",
     "start": "ng serve ngx-datasheet-demo --port 4527 --open",
     "build-lib": "ng build ngx-datasheet --prod",
-    "build-demo": "ng build ngx-datasheet-demo --prod --base-href=https://erikyu.github.io/ngx-datasheet-demo/ --output-path=demo",
+    "build-demo": "ng build ngx-datasheet-demo --prod --base-href=https://erikyu.github.io/ngx-datasheet-demo/ --output-path=demo --source-map",
     "test": "ng test ngx-datasheet",
     "lint": "ng lint",
     "prettier-lib": "prettier --write \"projects/ngx-datasheet/src/lib/**/*.*\"",
     "prettier-demo": "prettier --write \"projects/ngx-datasheet-demo/src/app/**/*.*\"",
+    "see": "source-map-explorer demo/main.*.js",
     "e2e": "ng e2e"
   },
   "private": true,
@@ -49,6 +50,7 @@
     "protractor": "~7.0.0",
     "ts-node": "~8.3.0",
     "tslint": "~6.1.0",
-    "typescript": "~4.1.2"
+    "typescript": "~4.1.2",
+    "source-map-explorer": "^2.5.2"
   }
 }

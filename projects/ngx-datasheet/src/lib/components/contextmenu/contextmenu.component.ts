@@ -13,6 +13,7 @@ import { SelectorsService } from '../../core/selectors.service';
 import { fromEvent } from 'rxjs';
 import { CellRange } from '../../core/cell-range.factory';
 import { ConfigService } from '../../core/config.service';
+import { CONTEXTMENU_WIDTH } from '../../constants';
 
 type MenuItem = {
   label: string;
@@ -207,8 +208,8 @@ export class ContextmenuComponent implements OnInit {
         (evt.target as HTMLElement).getBoundingClientRect().right;
       this.activatedSubMenus = submenus;
       this.offsetTop = (evt.target as HTMLElement).offsetTop;
-      if (xLeft < 150) {
-        this.offsetLeft = -300;
+      if (xLeft < CONTEXTMENU_WIDTH) {
+        this.offsetLeft = -CONTEXTMENU_WIDTH * 2;
       } else {
         this.offsetLeft = 0;
       }

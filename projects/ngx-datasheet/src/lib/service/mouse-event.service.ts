@@ -6,7 +6,7 @@ import { ViewRangeService } from '../core/view-range.service';
 import { DataService } from '../core/data.service';
 import { SelectorsService } from '../core/selectors.service';
 import { ResizerService } from './resizer.service';
-import { ResizerThickness } from '../constants';
+import { CONTEXTMENU_WIDTH, ResizerThickness } from '../constants';
 import { HistoryService } from './history.service';
 import { TextInputService } from './text-input.service';
 import { ContextmenuService } from './contextmenu.service';
@@ -118,7 +118,6 @@ export class MouseEventService {
         tap((evt) => {
           evt.preventDefault();
           const xLeft = this.masker.getBoundingClientRect().width - evt.offsetX;
-          const CONTEXTMENU_WIDTH = 150;
           if (xLeft < CONTEXTMENU_WIDTH) {
             this.contextmenuService.show(
               evt.offsetX - CONTEXTMENU_WIDTH,
