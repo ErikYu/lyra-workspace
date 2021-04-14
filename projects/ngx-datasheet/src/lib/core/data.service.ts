@@ -4,10 +4,10 @@ import { BehaviorSubject } from 'rxjs';
 import { ConfigService } from './config.service';
 import { SheetService, SheetServiceFactory } from './sheet.service';
 import { ScrollingService } from './scrolling.service';
+import { RenderProxyService } from '../service/render-proxy.service';
 
 @Injectable()
 export class DataService {
-  shouldRerender$: BehaviorSubject<boolean> = new BehaviorSubject<any>(true);
   sheets: SheetService[] = [];
   selectedSheet!: SheetService;
   selectedIndex!: number;
@@ -25,11 +25,12 @@ export class DataService {
   constructor(
     private configService: ConfigService,
     private scrolling: ScrollingService,
+    private renderProxyService: RenderProxyService,
     @Inject(SheetService) private sheetServiceFactory: SheetServiceFactory,
   ) {}
 
   rerender(): void {
-    this.shouldRerender$.next(true);
+    this.renderProxyService.render('all');
   }
 
   loadData(val: NDData): void {

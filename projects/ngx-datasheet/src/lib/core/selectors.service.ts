@@ -6,7 +6,7 @@ import { Selector, SelectorFactory } from './selector.factory';
 import { DataService } from './data.service';
 import { Rect } from '../models';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { labelFromCell } from '../utils';
+import { RenderProxyService } from '../service/render-proxy.service';
 
 interface SelectorRect {
   left: number;
@@ -97,16 +97,19 @@ export class SelectorsService {
     private dataService: DataService,
     private viewRangeService: ViewRangeService,
     private configService: ConfigService,
+    private renderProxyService: RenderProxyService,
   ) {}
 
   addRange(sri: number, eri: number, sci: number, eci: number): void {
     this.selectors.push(this.selectorFactory(sri, eri, sci, eci));
     this.selectors$.next(this.selectors);
+    this.renderProxyService.render('header');
   }
 
   addOne(ri: number, ci: number): void {
     this.selectors.push(this.selectorFactory(ri, ri, ci, ci));
     this.selectors$.next(this.selectors);
+    this.renderProxyService.render('header');
   }
 
   addWholeRow(ri: number): void {
@@ -119,6 +122,7 @@ export class SelectorsService {
       ),
     );
     this.selectors$.next(this.selectors);
+    this.renderProxyService.render('header');
   }
 
   addWholeColumn(ci: number): void {
@@ -131,6 +135,7 @@ export class SelectorsService {
       ),
     );
     this.selectors$.next(this.selectors);
+    this.renderProxyService.render('header');
   }
 
   addAll(): void {
@@ -143,6 +148,7 @@ export class SelectorsService {
       ),
     );
     this.selectors$.next(this.selectors);
+    this.renderProxyService.render('header');
   }
 
   lastResizeTo(eri: number | undefined, eci: number | undefined): void {
@@ -186,15 +192,18 @@ export class SelectorsService {
       });
     }
     this.selectors$.next(this.selectors);
+    this.renderProxyService.render('header');
   }
 
   removeAll(): void {
     this.selectors = [];
     this.selectors$.next(this.selectors);
+    this.renderProxyService.render('header');
   }
 
   selectCell(ri: number, ci: number): void {
     this.selectors = [this.selectorFactory(ri, ri, ci, ci)];
     this.selectors$.next(this.selectors);
+    this.renderProxyService.render('header');
   }
 }

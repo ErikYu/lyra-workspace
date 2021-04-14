@@ -22,6 +22,7 @@ import { HtmlToRichTextService } from './service/html-to-rich-text.service';
 import { FocusedStyleService } from './service/focused-style.service';
 import { RichTextToHtmlService } from './service/rich-text-to-html.service';
 import { ContextmenuService } from './service/contextmenu.service';
+import { RenderProxyService } from './service/render-proxy.service';
 
 @Component({
   selector: 'nd-ngx-datasheet',
@@ -82,6 +83,7 @@ import { ContextmenuService } from './service/contextmenu.service';
     RichTextToHtmlService,
     FocusedStyleService,
     ContextmenuService,
+    RenderProxyService,
   ],
   host: { class: 'ngx-datasheet' },
 })

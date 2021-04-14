@@ -11,6 +11,7 @@ import { ConfigService } from '../../core/config.service';
 import { ScrollingService } from '../../core/scrolling.service';
 import { DataService } from '../../core/data.service';
 import { ViewRangeService } from '../../core/view-range.service';
+import { RenderProxyService } from '../../service/render-proxy.service';
 
 @Component({
   selector: 'nd-scrollbar-h',
@@ -27,6 +28,7 @@ export class ScrollbarHComponent implements OnInit, AfterViewInit {
     private scrolling: ScrollingService,
     private dataService: DataService,
     private viewRangeService: ViewRangeService,
+    private renderProxyService: RenderProxyService,
   ) {}
 
   @HostListener('scroll', ['$event'])
@@ -67,7 +69,7 @@ export class ScrollbarHComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    this.dataService.shouldRerender$.asObservable().subscribe(() => {
+    this.renderProxyService.shouldRender$.subscribe(() => {
       this.mocker.nativeElement.style.width = `${this.dataService.selectedSheet.getTotalWidth()}px`;
     });
   }

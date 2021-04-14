@@ -26,9 +26,8 @@ import { ResizerColComponent } from '../resizer-col/resizer-col.component';
 import { ResizerRowComponent } from '../resizer-row/resizer-row.component';
 import { KeyboardEventService } from '../../service/keyboard-event.service';
 import { CellFormat, Cord, TextAlignDir } from '../../models';
-import { combineLatest, merge } from 'rxjs';
 import { SelectorsService } from '../../core/selectors.service';
-import { startWith } from 'rxjs/operators';
+import { RenderProxyService } from '../../service/render-proxy.service';
 
 @Component({
   selector: 'nd-editor',
@@ -64,6 +63,7 @@ export class EditorComponent implements OnInit, AfterViewInit {
     private mouseEventService: MouseEventService,
     private keyboardEventService: KeyboardEventService,
     private selectorsService: SelectorsService,
+    private renderProxyService: RenderProxyService,
   ) {}
 
   ngOnInit(): void {
@@ -81,13 +81,10 @@ export class EditorComponent implements OnInit, AfterViewInit {
       this.rowResizer.nativeElement,
     );
     this.keyboardEventService.init();
-    merge(
-      this.dataService.shouldRerender$.asObservable(),
-      this.selectorsService.selectorChanged,
-    ).subscribe((item) => {
+    this.renderProxyService.shouldRender$.subscribe(({ type }) => {
       const rih = this.configService.configuration.row.indexHeight;
       const ciw = this.configService.configuration.col.indexWidth;
-      if (typeof item === 'boolean') {
+      if (type === 'all') {
         this.canvasService.clear().beginPath(); // clear all
         this.canvasService.setStyle({
           strokeStyle: '#ccc',
@@ -99,7 +96,7 @@ export class EditorComponent implements OnInit, AfterViewInit {
         this.renderContent(rih, ciw);
         this.renderFixedHeader(rih, ciw);
         this.renderAnchor(rih, ciw);
-      } else {
+      } else if (type === 'header') {
         this.renderFixedHeader(rih, ciw);
         this.renderAnchor(rih, ciw);
       }
