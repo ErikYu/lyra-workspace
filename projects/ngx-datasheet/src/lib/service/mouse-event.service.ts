@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { fromEvent } from 'rxjs';
-import { filter, tap } from 'rxjs/operators';
+import { filter, map, pairwise, tap } from 'rxjs/operators';
 import { ConfigService } from '../core/config.service';
 import { ViewRangeService } from '../core/view-range.service';
 import { DataService } from '../core/data.service';
@@ -122,76 +122,92 @@ export class MouseEventService {
       )
       .subscribe();
 
-    fromEvent<MouseEvent>(this.masker, 'mousemove').subscribe(
-      (mouseMoveEvent) => {
-        if (this.isSelecting) {
-          // should only trigger when move out current cell
-          const { hitRowIndex, hitColIndex } = this.getHitCell(mouseMoveEvent);
-          const [startCI, startRI] = this.selectStartAt!;
-          if (startCI === hitColIndex && startRI === hitRowIndex) {
-            return;
+    fromEvent<MouseEvent>(this.masker, 'mousemove')
+      .pipe(
+        filter((mouseMoveEvent) => {
+          if (!this.isSelecting) {
+            if (this.isColResizing) {
+              this.resizerService.moveColResizer(mouseMoveEvent.movementX);
+            } else if (this.isRowResizing) {
+              this.resizerService.moveRowResizer(mouseMoveEvent.movementY);
+            } else {
+              const inMask =
+                mouseMoveEvent.target ===
+                document.querySelector('.nd-editor-mask');
+              if (!inMask) {
+                this.resizerService.hideColResizer().hideRowResizer();
+              } else {
+                const isInRowHeader =
+                  mouseMoveEvent.offsetY <= this.configService.rih;
+                const isInColIndex =
+                  mouseMoveEvent.offsetX <= this.configService.ciw;
+                if (isInColIndex && isInRowHeader) {
+                  // ignore me
+                } else if (isInRowHeader) {
+                  const {
+                    right,
+                    colIndex,
+                  } = this.viewRangeService.cellRange.colIndexAt(
+                    this.dataService.selectedSheet,
+                    mouseMoveEvent.offsetX - this.configService.ciw,
+                  );
+                  this.resizerService.showColResizer(
+                    right + this.configService.ciw - ResizerThickness,
+                    colIndex,
+                  );
+                } else if (isInColIndex) {
+                  const {
+                    bottom,
+                    rowIndex,
+                  } = this.viewRangeService.cellRange.rowIndexAt(
+                    this.dataService.selectedSheet,
+                    mouseMoveEvent.offsetY - this.configService.rih,
+                  );
+                  this.resizerService.showRowResizer(
+                    bottom + this.configService.rih - ResizerThickness,
+                    rowIndex,
+                  );
+                }
+              }
+            }
           }
-          if (startRI !== undefined && startCI !== undefined) {
-            // cell range select
-            if (hitRowIndex !== undefined && hitColIndex !== undefined) {
-              this.selectorRangeService.lastResizeTo(hitRowIndex, hitColIndex);
-            }
-          } else if (startRI !== undefined && startCI === undefined) {
-            // row range select
-            if (hitRowIndex !== undefined) {
-              this.selectorRangeService.lastResizeTo(hitRowIndex, undefined);
-            }
-          } else if (startRI === undefined && startCI !== undefined) {
-            // col range select
-            if (hitColIndex !== undefined) {
-              this.selectorRangeService.lastResizeTo(undefined, hitColIndex);
-            }
+          return this.isSelecting;
+        }),
+        map((mouseMoveEvent) => ({
+          ...this.getHitCell(mouseMoveEvent),
+        })),
+        pairwise(),
+        filter(([before, after]) => {
+          return (
+            before.hitColIndex !== after.hitColIndex ||
+            before.hitRowIndex !== after.hitRowIndex
+          );
+        }),
+        map(([before, after]) => after),
+      )
+      .subscribe(({ hitRowIndex, hitColIndex }) => {
+        // should only trigger when move out current cell
+        const [startCI, startRI] = this.selectStartAt!;
+        if (startCI === hitColIndex && startRI === hitRowIndex) {
+          return;
+        }
+        if (startRI !== undefined && startCI !== undefined) {
+          // cell range select
+          if (hitRowIndex !== undefined && hitColIndex !== undefined) {
+            this.selectorRangeService.lastResizeTo(hitRowIndex, hitColIndex);
           }
-        } else if (this.isColResizing) {
-          this.resizerService.moveColResizer(mouseMoveEvent.movementX);
-        } else if (this.isRowResizing) {
-          this.resizerService.moveRowResizer(mouseMoveEvent.movementY);
-        } else {
-          const inMask =
-            mouseMoveEvent.target === document.querySelector('.nd-editor-mask');
-          if (!inMask) {
-            this.resizerService.hideColResizer().hideRowResizer();
-          } else {
-            const isInRowHeader =
-              mouseMoveEvent.offsetY <= this.configService.rih;
-            const isInColIndex =
-              mouseMoveEvent.offsetX <= this.configService.ciw;
-            if (isInColIndex && isInRowHeader) {
-              // ignore me
-            } else if (isInRowHeader) {
-              const {
-                right,
-                colIndex,
-              } = this.viewRangeService.cellRange.colIndexAt(
-                this.dataService.selectedSheet,
-                mouseMoveEvent.offsetX - this.configService.ciw,
-              );
-              this.resizerService.showColResizer(
-                right + this.configService.ciw - ResizerThickness,
-                colIndex,
-              );
-            } else if (isInColIndex) {
-              const {
-                bottom,
-                rowIndex,
-              } = this.viewRangeService.cellRange.rowIndexAt(
-                this.dataService.selectedSheet,
-                mouseMoveEvent.offsetY - this.configService.rih,
-              );
-              this.resizerService.showRowResizer(
-                bottom + this.configService.rih - ResizerThickness,
-                rowIndex,
-              );
-            }
+        } else if (startRI !== undefined && startCI === undefined) {
+          // row range select
+          if (hitRowIndex !== undefined) {
+            this.selectorRangeService.lastResizeTo(hitRowIndex, undefined);
+          }
+        } else if (startRI === undefined && startCI !== undefined) {
+          // col range select
+          if (hitColIndex !== undefined) {
+            this.selectorRangeService.lastResizeTo(undefined, hitColIndex);
           }
         }
-      },
-    );
+      });
 
     fromEvent(this.colResizer, 'mousedown').subscribe(() => {
       this.isColResizing = true;

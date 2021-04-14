@@ -9,7 +9,7 @@ import { ConfigService } from '../../core/config.service';
 import { DataService } from '../../core/data.service';
 import { Borders, CanvasService } from '../../core/canvas.service';
 import { NDCellData, RichTextSpan } from '../../ngx-datasheet.model';
-import { colLabelFromIndex, isNil, isNumber } from '../../utils';
+import { colLabelFromIndex, inRanges, isNil, isNumber } from '../../utils';
 import { ScrollingService } from '../../core/scrolling.service';
 import { EditorService } from './editor.service';
 import { ViewRangeService } from '../../core/view-range.service';
@@ -26,6 +26,9 @@ import { ResizerColComponent } from '../resizer-col/resizer-col.component';
 import { ResizerRowComponent } from '../resizer-row/resizer-row.component';
 import { KeyboardEventService } from '../../service/keyboard-event.service';
 import { CellFormat, Cord, TextAlignDir } from '../../models';
+import { combineLatest, merge } from 'rxjs';
+import { SelectorsService } from '../../core/selectors.service';
+import { startWith } from 'rxjs/operators';
 
 @Component({
   selector: 'nd-editor',
@@ -60,6 +63,7 @@ export class EditorComponent implements OnInit, AfterViewInit {
     private lineWrapService: LineWrapService,
     private mouseEventService: MouseEventService,
     private keyboardEventService: KeyboardEventService,
+    private selectorsService: SelectorsService,
   ) {}
 
   ngOnInit(): void {
@@ -77,20 +81,28 @@ export class EditorComponent implements OnInit, AfterViewInit {
       this.rowResizer.nativeElement,
     );
     this.keyboardEventService.init();
-    this.dataService.shouldRerender$.asObservable().subscribe(() => {
-      this.canvasService.clear().beginPath();
+    merge(
+      this.dataService.shouldRerender$.asObservable(),
+      this.selectorsService.selectorChanged,
+    ).subscribe((item) => {
       const rih = this.configService.configuration.row.indexHeight;
       const ciw = this.configService.configuration.col.indexWidth;
-      this.canvasService.setStyle({
-        strokeStyle: '#ccc',
-        textBaseline: 'middle',
-        textAlign: 'center',
-        font: `500 14px Helvetica`,
-      });
-      this.renderGrid(rih, ciw);
-      this.renderContent(rih, ciw);
-      this.renderFixedHeader(rih, ciw);
-      this.renderAnchor(rih, ciw);
+      if (typeof item === 'boolean') {
+        this.canvasService.clear().beginPath(); // clear all
+        this.canvasService.setStyle({
+          strokeStyle: '#ccc',
+          textBaseline: 'middle',
+          textAlign: 'center',
+          font: `500 14px Helvetica`,
+        });
+        this.renderGrid(rih, ciw);
+        this.renderContent(rih, ciw);
+        this.renderFixedHeader(rih, ciw);
+        this.renderAnchor(rih, ciw);
+      } else {
+        this.renderFixedHeader(rih, ciw);
+        this.renderAnchor(rih, ciw);
+      }
     });
   }
 
@@ -105,6 +117,13 @@ export class EditorComponent implements OnInit, AfterViewInit {
    * @private
    */
   private renderFixedHeader(rih: number, ciw: number): void {
+    const hitRowRanges: [number, number][] = [];
+    const hitColRanges: [number, number][] = [];
+    for (const { range } of this.selectorsService.selectors) {
+      const { sci, sri, eci, eri } = range;
+      hitRowRanges.push([sri, eri]);
+      hitColRanges.push([sci, eci]);
+    }
     this.canvasService.beginPath();
     this.canvasService.save();
 
@@ -124,6 +143,12 @@ export class EditorComponent implements OnInit, AfterViewInit {
     this.viewRangeService.cellRange.forEachCol(
       this.dataService.selectedSheet.data,
       (x, cw, ci) => {
+        if (inRanges(ci, hitColRanges)) {
+          this.canvasService.save();
+          this.canvasService.setStyle({ fillStyle: '#cacacd' });
+          this.canvasService.fillRect(x + ciw, 0, cw, rih);
+          this.canvasService.restore();
+        }
         const start: Cord = [x + ciw, rih];
         const mid: Cord = [x + ciw + cw, rih];
         const end: Cord = [x + ciw + cw, 0];
@@ -139,6 +164,12 @@ export class EditorComponent implements OnInit, AfterViewInit {
     this.viewRangeService.cellRange.forEachRow(
       this.dataService.selectedSheet.data,
       (y, rh, ri) => {
+        if (inRanges(ri, hitRowRanges)) {
+          this.canvasService.save();
+          this.canvasService.setStyle({ fillStyle: '#cac8c8' });
+          this.canvasService.fillRect(0, y + rih, ciw, rh);
+          this.canvasService.restore();
+        }
         const start: Cord = [ciw, y + rih];
         const mid: Cord = [ciw, y + rih + rh];
         const end: Cord = [0, y + rih + rh];

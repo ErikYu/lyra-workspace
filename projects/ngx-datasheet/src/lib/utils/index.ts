@@ -6,3 +6,4 @@ export * from './px-str2num';
 export * from './to-rgb';
 export * from './is-number';
 export * from './plain-text-from-lines';
+export * from './in-ranges';

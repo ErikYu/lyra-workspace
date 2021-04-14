@@ -7,7 +7,7 @@ import { ScrollingService } from './scrolling.service';
 
 @Injectable()
 export class DataService {
-  shouldRerender$: BehaviorSubject<any> = new BehaviorSubject<any>(null);
+  shouldRerender$: BehaviorSubject<boolean> = new BehaviorSubject<any>(true);
   sheets: SheetService[] = [];
   selectedSheet!: SheetService;
   selectedIndex!: number;
