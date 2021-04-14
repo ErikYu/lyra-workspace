@@ -25,7 +25,10 @@
 </div>
 <div
   class="nd-contextmenu-tree"
-  [ngStyle]="{ transform: 'translateY(' + offsetTop + 'px)' }"
+  *ngIf="activatedSubMenus && activatedSubMenus.length > 0"
+  [ngStyle]="{
+    transform: 'translate(' + offsetLeft + 'px,' + offsetTop + 'px)'
+  }"
 >
   <ng-container *ngFor="let subMenu of activatedSubMenus">
     <nd-dropdown-bar

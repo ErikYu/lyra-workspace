@@ -117,7 +117,16 @@ export class MouseEventService {
       .pipe(
         tap((evt) => {
           evt.preventDefault();
-          this.contextmenuService.show(evt.offsetX, evt.offsetY);
+          const xLeft = this.masker.getBoundingClientRect().width - evt.offsetX;
+          const CONTEXTMENU_WIDTH = 150;
+          if (xLeft < CONTEXTMENU_WIDTH) {
+            this.contextmenuService.show(
+              evt.offsetX - CONTEXTMENU_WIDTH,
+              evt.offsetY,
+            );
+          } else {
+            this.contextmenuService.show(evt.offsetX, evt.offsetY);
+          }
         }),
       )
       .subscribe();

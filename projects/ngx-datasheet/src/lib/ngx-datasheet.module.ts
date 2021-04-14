@@ -11,7 +11,6 @@ import { MaskerComponent } from './components/masker/masker.component';
 import { DropdownComponent } from './components/dropdown/dropdown.component';
 import { MergeDropdownComponent } from './components/toolbar/actions/merge-dropdown/merge-dropdown.component';
 import { BgColorDropdownComponent } from './components/toolbar/actions/bg-color-dropdown/bg-color-dropdown.component';
-import { PopupDirective } from './directives/popup/popup.directive';
 import { ColorPaletteComponent } from './components/color-palette/color-palette.component';
 import { OverlayModule } from '@angular/cdk/overlay';
 import { AlignDropdownComponent } from './components/toolbar/actions/align-dropdown/align-dropdown.component';
@@ -53,7 +52,6 @@ import { SelectorContainerComponent } from './components/selector-container/sele
     DropdownComponent,
     MergeDropdownComponent,
     BgColorDropdownComponent,
-    PopupDirective,
     ColorPaletteComponent,
     AlignDropdownComponent,
     ValignDropdownComponent,

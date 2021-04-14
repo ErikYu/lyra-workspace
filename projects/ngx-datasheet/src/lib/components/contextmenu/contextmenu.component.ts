@@ -12,6 +12,7 @@ import { HistoryService } from '../../service/history.service';
 import { SelectorsService } from '../../core/selectors.service';
 import { fromEvent } from 'rxjs';
 import { CellRange } from '../../core/cell-range.factory';
+import { ConfigService } from '../../core/config.service';
 
 type MenuItem = {
   label: string;
@@ -32,6 +33,7 @@ export class ContextmenuComponent implements OnInit {
 
   activatedSubMenus: MenuItem[] = [];
   offsetTop = 0;
+  offsetLeft = 0;
 
   private setUpMenus(
     rowCount: number,
@@ -161,6 +163,7 @@ export class ContextmenuComponent implements OnInit {
     private dataService: DataService,
     private historyService: HistoryService,
     private selectorsService: SelectorsService,
+    private configService: ConfigService,
     private el: ElementRef<HTMLElement>,
     private renderer: Renderer2,
   ) {}
@@ -172,18 +175,12 @@ export class ContextmenuComponent implements OnInit {
       setStyle(this.el.nativeElement, { display: 'none' });
       this.activatedSubMenus = [];
       document.removeEventListener('click', hideContextMenu);
-      // try {
-      //   document.body.removeChild(backdrop);
-      // } catch (e) {}
     };
 
-    // fromEvent(backdrop, 'click').subscribe(hideContextMenu);
-    // this.renderer.addClass(backdrop, 'nd-frozen-backdrop');
     this.contextmenuService.options$.subscribe((option) => {
       if (option === null) {
         hideContextMenu();
       } else {
-        // document.body.appendChild(backdrop);
         document.addEventListener('click', hideContextMenu);
         const { left, top } = option;
         const { sri, eri, sci, eci } = this.selectorsService.last.range;
@@ -192,8 +189,9 @@ export class ContextmenuComponent implements OnInit {
           eci - sci + 1,
           this.selectorsService.last.range,
         );
+        this.activatedSubMenus = [];
         setStyle(this.el.nativeElement, {
-          display: 'block',
+          display: 'flex',
           left: `${left}px`,
           top: `${top}px`,
           zIndex: '1',
@@ -204,8 +202,16 @@ export class ContextmenuComponent implements OnInit {
 
   showSubMenus(evt: MouseEvent, submenus?: MenuItem[]): void {
     if (Array.isArray(submenus) && submenus.length > 0) {
+      const xLeft =
+        this.configService.configuration.sheetWidth -
+        (evt.target as HTMLElement).getBoundingClientRect().right;
       this.activatedSubMenus = submenus;
       this.offsetTop = (evt.target as HTMLElement).offsetTop;
+      if (xLeft < 150) {
+        this.offsetLeft = -300;
+      } else {
+        this.offsetLeft = 0;
+      }
     } else {
       this.activatedSubMenus = [];
     }
