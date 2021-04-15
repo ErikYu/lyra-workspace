@@ -8,7 +8,6 @@ export interface RichTextSpan {
 export type RichTextLine = Array<RichTextSpan>;
 
 export interface NDCellData {
-  plainText: string;
   style?: CellStyle;
   richText?: Array<RichTextLine>;
   _preFormat?: 'text' | 'number';

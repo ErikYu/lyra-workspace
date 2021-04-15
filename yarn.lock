@@ -1070,6 +1070,14 @@
     lodash "^4.17.19"
     to-fast-properties "^2.0.0"
 
+"@formulajs/formulajs@^2.6.8":
+  version "2.6.8"
+  resolved "https://registry.yarnpkg.com/@formulajs/formulajs/-/formulajs-2.6.8.tgz#e5e6b55ec622fbe0758c82c78e4e6c8fe70b35d1"
+  integrity sha512-ObKANR9PSlYinPwCjPSq4CXZKE+kHQy1/qT2vb3ZVD8hLrB8cjb462WV/p4pNqXTSlvakJk0x8Fj+qXXKV+D8Q==
+  dependencies:
+    bessel "^1.0.2"
+    jstat "^1.9.2"
+
 "@istanbuljs/schema@^0.1.2":
   version "0.1.2"
   resolved "https://registry.yarnpkg.com/@istanbuljs/schema/-/schema-0.1.2.tgz#26520bf09abe4a5644cd5414e37125a8954241dd"
@@ -1970,6 +1978,11 @@ bcrypt-pbkdf@^1.0.0:
   integrity sha1-pDAdOJtqQ/m2f/PKEaP2Y342Dp4=
   dependencies:
     tweetnacl "^0.14.3"
+
+bessel@^1.0.2:
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/bessel/-/bessel-1.0.2.tgz#828812291e0b62e94959cdea43fac186e8a7202d"
+  integrity sha512-Al3nHGQGqDYqqinXhQzmwmcRToe/3WyBv4N8aZc5Pef8xw2neZlR9VPi84Sa23JtgWcucu18HxVZrnI0fn2etw==
 
 big.js@^5.2.2:
   version "5.2.2"
@@ -5365,6 +5378,11 @@ jsprim@^1.2.2:
     extsprintf "1.3.0"
     json-schema "0.2.3"
     verror "1.10.0"
+
+jstat@^1.9.2:
+  version "1.9.4"
+  resolved "https://registry.yarnpkg.com/jstat/-/jstat-1.9.4.tgz#5b787bcbc6353f54904307f2a4e6d4a4a1897f39"
+  integrity sha512-IiTPlI7pcrsq41EpDzrghlA1fhiC9GXxNqO4k5ogsjsM1XAWQ8zESH/bZsExLVgQsYpXE+7c11kEbbuxTLUpJQ==
 
 jszip@^3.1.3:
   version "3.5.0"

@@ -706,7 +706,6 @@ export class SheetService implements NDSheet {
         cells: {
           [ci]: {
             richText: [[]],
-            plainText: '',
             style: styles,
           },
         },
@@ -715,7 +714,6 @@ export class SheetService implements NDSheet {
       const cell = this.getCell(ri, ci);
       if (!cell) {
         row.cells[ci] = {
-          plainText: '',
           richText: [[]],
           style: styles,
         };
@@ -739,7 +737,6 @@ export class SheetService implements NDSheet {
         cells: {
           [ci]: {
             richText,
-            plainText: '',
           },
         },
       };
@@ -747,7 +744,6 @@ export class SheetService implements NDSheet {
       const cell = this.getCell(ri, ci);
       if (!cell) {
         row.cells[ci] = {
-          plainText: '',
           richText,
         };
       } else {
