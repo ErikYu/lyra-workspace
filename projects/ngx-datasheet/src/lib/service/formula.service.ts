@@ -15,14 +15,35 @@ const formulas: {
     executor: (args: number[]) => args.reduce((prev, item) => prev + item, 0),
   },
   {
+    key: 'AVERAGE',
+    title: 'AVERAGE',
+    executor: (ary: any[]) =>
+      ary.reduce((a, b) => Number(a) + Number(b), 0) / ary.length,
+  },
+  {
     key: 'MAX',
     title: 'MAX',
     executor: (args: number[]) => Math.max(...args.map((v) => Number(v))),
   },
   {
+    key: 'MIN',
+    title: 'MIN',
+    executor: (args: number[]) => Math.min(...args.map((v) => Number(v))),
+  },
+  {
     key: 'IF',
     title: 'IF',
     executor: ([b, t, f]: [boolean, any, any]) => (b ? t : f),
+  },
+  {
+    key: 'AND',
+    title: 'AND',
+    executor: (ary: any[]) => ary.every((it) => !!it),
+  },
+  {
+    key: 'OR',
+    title: 'OR',
+    executor: (ary: any[]) => ary.some((it) => !!it),
   },
 ];
 
