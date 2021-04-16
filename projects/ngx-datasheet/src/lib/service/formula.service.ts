@@ -4,8 +4,17 @@ import { RichTextLine } from '../ngx-datasheet.model';
 import { DataService } from '../core/data.service';
 import Big from 'big.js';
 
+export type FormulaNames =
+  | 'SUM'
+  | 'AVERAGE'
+  | 'MAX'
+  | 'MIN'
+  | 'IF'
+  | 'AND'
+  | 'OR';
+
 const formulas: {
-  key: string;
+  key: FormulaNames;
   title: string;
   executor: (...args: any) => any;
 }[] = [
@@ -50,13 +59,15 @@ const formulas: {
 export const formulaMap: Record<
   string,
   {
-    key: string;
+    key: FormulaNames;
     title: string;
     executor: (...args: any) => any;
   }
 > = formulas.reduce((prev, f) => {
   return { ...prev, [f.key]: f };
 }, {});
+
+export const formulaNames = formulas.map((i) => i.key);
 
 @Injectable()
 export class FormulaService {

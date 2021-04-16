@@ -38,6 +38,7 @@ import { CurrencyActionComponent } from './components/toolbar/actions/currency-a
 import { FormulaBarComponent } from './components/formula-bar/formula-bar.component';
 import { ContextmenuComponent } from './components/contextmenu/contextmenu.component';
 import { SelectorContainerComponent } from './components/selector-container/selector-container.component';
+import { FormulaDropdownComponent } from './components/toolbar/actions/formula-dropdown/formula-dropdown.component';
 
 @NgModule({
   declarations: [
@@ -78,6 +79,7 @@ import { SelectorContainerComponent } from './components/selector-container/sele
     FormulaBarComponent,
     ContextmenuComponent,
     SelectorContainerComponent,
+    FormulaDropdownComponent,
   ],
   imports: [CommonModule, OverlayModule],
   exports: [NgxDatasheetComponent],

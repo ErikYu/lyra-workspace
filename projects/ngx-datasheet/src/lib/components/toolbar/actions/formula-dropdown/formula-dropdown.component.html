@@ -1,0 +1,9 @@
+<nd-dropdown [(isOpen)]="isOpen" [dropdown]="dropdown">
+  <i class="nd-toolbar-icon formula-icon"></i>
+</nd-dropdown>
+
+<ng-template #dropdown>
+  <nd-dropdown-bar *ngFor="let f of formulaNames" (click)="applyFormula(f)">{{
+    f
+  }}</nd-dropdown-bar>
+</ng-template>
