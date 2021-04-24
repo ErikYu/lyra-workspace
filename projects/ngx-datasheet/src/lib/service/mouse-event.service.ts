@@ -106,7 +106,11 @@ export class MouseEventService {
             this.selectorRangeService.removeAll();
             this.selectorRangeService.addAll();
           }
-          this.textInputService.hide();
+          if (!this.textInputService.isEditing) {
+            this.textInputService.hide();
+          } else {
+
+          }
         } else if (mouseDownEvent.detail === 2 && mouseDownEvent.which === 1) {
           this.textInputService.show(false);
           this.textInputService.focus();

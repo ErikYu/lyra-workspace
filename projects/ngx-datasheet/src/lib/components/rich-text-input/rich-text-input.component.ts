@@ -41,11 +41,12 @@ export class RichTextInputComponent implements AfterViewInit {
     // sync with formula bar
     fromEvent<InputEvent>(this.editableZone.nativeElement, 'input')
       .pipe(filter(() => this.shown))
-      .subscribe((evt) =>
+      .subscribe((evt) => {
         this.textInputService.transferFromRichInput(
           this.editableZone.nativeElement.innerHTML,
-        ),
-      );
+        );
+        console.log(evt, (evt.target as HTMLElement).textContent);
+      });
 
     // option/alt + enter: add line breaker
     fromEvent<KeyboardEvent>(this.editableZone.nativeElement, 'keydown')

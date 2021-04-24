@@ -36,7 +36,7 @@ import { KeyboardEventService } from '../../service/keyboard-event.service';
 import { CellFormat, Cord, TextAlignDir } from '../../models';
 import { SelectorsService } from '../../core/selectors.service';
 import { RenderProxyService } from '../../service/render-proxy.service';
-import { FormulaService } from '../../service/formula.service';
+import { FormulaRenderService } from '../../service/formula-render.service';
 
 @Component({
   selector: 'nd-editor',
@@ -73,7 +73,7 @@ export class EditorComponent implements OnInit, AfterViewInit {
     private keyboardEventService: KeyboardEventService,
     private selectorsService: SelectorsService,
     private renderProxyService: RenderProxyService,
-    private formulaService: FormulaService,
+    private formulaService: FormulaRenderService,
   ) {}
 
   ngOnInit(): void {

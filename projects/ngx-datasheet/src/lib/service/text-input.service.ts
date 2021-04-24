@@ -7,6 +7,8 @@ import { HtmlToRichTextService } from './html-to-rich-text.service';
 import { RichTextToHtmlService } from './rich-text-to-html.service';
 import { SelectorsService } from '../core/selectors.service';
 import { HistoryService } from './history.service';
+import {FormulaEditService} from './formula-edit.service';
+import {plainTextFromLines} from '../utils';
 
 interface RichTextInputRect extends LocatedRect {
   html: string;
@@ -45,6 +47,7 @@ export class TextInputService {
     private richTextToHtmlService: RichTextToHtmlService,
     private selectorRangeService: SelectorsService,
     private historyService: HistoryService,
+    private formulaEditService: FormulaEditService,
   ) {}
 
   // when editing in formula bar, sync into rich-text-input
@@ -77,6 +80,7 @@ export class TextInputService {
     const locatedRect = this.vs.locateRect({ sci, eci, sri, eri });
     const html = clear ? '' : this.richTextToHtmlService.conv(cell?.richText);
     this._locatedRect$.next({ ...locatedRect, html });
+    this.formulaEditService.parsing(plainTextFromLines(cell?.richText || []));
   }
 
   hide(): void {

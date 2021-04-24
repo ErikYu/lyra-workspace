@@ -32,8 +32,9 @@ import { ContextmenuService } from './service/contextmenu.service';
 import { RenderProxyService } from './service/render-proxy.service';
 import { fromEvent } from 'rxjs';
 import { debounceTime, startWith, throttleTime } from 'rxjs/operators';
-import { FormulaService } from './service/formula.service';
+import { FormulaRenderService } from './service/formula-render.service';
 import { ExecCommandService } from './service/exec-command.service';
+import {FormulaEditService} from './service/formula-edit.service';
 
 @Component({
   selector: 'nd-ngx-datasheet',
@@ -95,7 +96,8 @@ import { ExecCommandService } from './service/exec-command.service';
     FocusedStyleService,
     ContextmenuService,
     RenderProxyService,
-    FormulaService,
+    FormulaRenderService,
+    FormulaEditService,
     ExecCommandService,
   ],
   host: { class: 'ngx-datasheet' },

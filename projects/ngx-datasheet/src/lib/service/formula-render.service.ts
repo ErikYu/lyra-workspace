@@ -70,7 +70,7 @@ export const formulaMap: Record<
 export const formulaNames = formulas.map((i) => i.key);
 
 @Injectable()
-export class FormulaService {
+export class FormulaRenderService {
   constructor(private dataService: DataService) {}
 
   conv(lines: RichTextLine[]): RichTextLine[] {

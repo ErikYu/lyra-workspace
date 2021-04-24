@@ -2,7 +2,7 @@ import { Component, ElementRef, OnInit } from '@angular/core';
 import {
   FormulaNames,
   formulaNames,
-} from '../../../../service/formula.service';
+} from '../../../../service/formula-render.service';
 import { TextInputService } from '../../../../service/text-input.service';
 import { HistoryService } from '../../../../service/history.service';
 import { SelectorsService } from '../../../../core/selectors.service';
