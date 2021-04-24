@@ -59,7 +59,7 @@ export class FormulaBarComponent implements OnInit {
     );
     htmlShouldChange.subscribe((html) => {
       this.textareaEl.nativeElement.innerHTML = html;
-      this.textInputService.focus();
+      this.textInputService.focus('last');
     });
 
     const textarea = this.textareaEl.nativeElement;

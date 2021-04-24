@@ -9,7 +9,15 @@ import { ConfigService } from '../../core/config.service';
 import { DataService } from '../../core/data.service';
 import { Borders, CanvasService } from '../../core/canvas.service';
 import { NDCellData, RichTextSpan } from '../../ngx-datasheet.model';
-import { colLabelFromIndex, inRanges, isNil, isNumber } from '../../utils';
+import {
+  colLabelFromIndex,
+  inRanges,
+  isNil,
+  isNumber,
+  labelFromCell,
+  plainTextFromLines,
+  xyFromLabel,
+} from '../../utils';
 import { ScrollingService } from '../../core/scrolling.service';
 import { EditorService } from './editor.service';
 import { ViewRangeService } from '../../core/view-range.service';
@@ -28,6 +36,7 @@ import { KeyboardEventService } from '../../service/keyboard-event.service';
 import { CellFormat, Cord, TextAlignDir } from '../../models';
 import { SelectorsService } from '../../core/selectors.service';
 import { RenderProxyService } from '../../service/render-proxy.service';
+import { FormulaRenderService } from '../../service/formula-render.service';
 
 @Component({
   selector: 'nd-editor',
@@ -64,6 +73,7 @@ export class EditorComponent implements OnInit, AfterViewInit {
     private keyboardEventService: KeyboardEventService,
     private selectorsService: SelectorsService,
     private renderProxyService: RenderProxyService,
+    private formulaService: FormulaRenderService,
   ) {}
 
   ngOnInit(): void {
@@ -220,7 +230,7 @@ export class EditorComponent implements OnInit, AfterViewInit {
             ri,
             ci,
           );
-          if (isNumber(plainText)) {
+          if (isNumber(plainText) || plainText?.startsWith('=')) {
             cellData._preFormat = 'number';
           } else {
             cellData._preFormat = 'text';
@@ -232,8 +242,6 @@ export class EditorComponent implements OnInit, AfterViewInit {
           this.renderCellRect(cellData, left, top, width, height);
           this.renderCellRichText(cellData, left, top, width, height);
           this.canvasService.restore();
-        } else if (cellData?.plainText) {
-          // render plain text directly
         }
       },
     );
@@ -297,6 +305,10 @@ export class EditorComponent implements OnInit, AfterViewInit {
       return;
     }
     let textConverted = cellData.richText;
+
+    // formula convert
+    textConverted = this.formulaService.conv(textConverted);
+
     // number precision convert
     if (!isNil(cellData.style?.precision)) {
       textConverted = this.lineWrapService.convOnPrecision(

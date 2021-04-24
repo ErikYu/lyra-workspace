@@ -13,6 +13,7 @@ import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { DataService } from '../../core/data.service';
 import { fromEvent } from 'rxjs';
 import { delay, filter } from 'rxjs/operators';
+import { FormulaEditService } from '../../service/formula-edit.service';
 
 @Component({
   selector: 'nd-rich-text-input',
@@ -35,17 +36,22 @@ export class RichTextInputComponent implements AfterViewInit {
     private dataService: DataService,
     private domSanitizer: DomSanitizer,
     private renderer: Renderer2,
+    private formulaEditService: FormulaEditService,
   ) {}
 
   ngAfterViewInit(): void {
     // sync with formula bar
     fromEvent<InputEvent>(this.editableZone.nativeElement, 'input')
       .pipe(filter(() => this.shown))
-      .subscribe((evt) =>
+      .subscribe((evt) => {
         this.textInputService.transferFromRichInput(
           this.editableZone.nativeElement.innerHTML,
-        ),
-      );
+        );
+        const { textContent } = evt.target as HTMLElement;
+        if (textContent) {
+          this.formulaEditService.parsing(textContent);
+        }
+      });
 
     // option/alt + enter: add line breaker
     fromEvent<KeyboardEvent>(this.editableZone.nativeElement, 'keydown')
@@ -83,8 +89,15 @@ export class RichTextInputComponent implements AfterViewInit {
         this.renderer.addClass(this.hostEl.nativeElement, 'silencer');
       }
     });
-    this.textInputService.focus$.pipe(delay(50)).subscribe(() => {
+    this.textInputService.focus$.pipe(delay(50)).subscribe((mode) => {
       this.editableZone.nativeElement.focus();
+      if (mode === 'last') {
+        const selection = getSelection();
+        if (selection) {
+          selection.selectAllChildren(this.editableZone.nativeElement);
+          selection.collapseToEnd();
+        }
+      }
     });
   }
 }

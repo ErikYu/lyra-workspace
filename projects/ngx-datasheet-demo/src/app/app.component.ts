@@ -166,10 +166,25 @@ export class AppComponent implements OnInit {
             //     },
             //   },
             // },
+            3: {
+             cells: {
+               1: {
+                 richText: [[{ text: '1' }]],
+               },
+               2: {
+                 richText: [[{ text: '2' }]],
+               },
+               3: {
+                 richText: [[{ text: '=(2*(B4+C4)+B4)/C4' }]],
+               },
+               4: {
+                 richText: [[{ text: '=D4' }]],
+               },
+             }
+            },
             4: {
               cells: {
                 3: {
-                  plainText: '',
                   richText: [[{ text: 'merge: 1,2' }]],
                   style: {
                     merge: [1, 2],
