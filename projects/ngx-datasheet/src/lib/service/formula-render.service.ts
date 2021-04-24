@@ -76,8 +76,13 @@ export class FormulaRenderService {
   conv(lines: RichTextLine[]): RichTextLine[] {
     const plainText = plainTextFromLines(lines);
     if (plainText.startsWith('=')) {
-      const calculated = this.convPlainText(plainText);
-      return [[{ text: calculated, style: lines[0][0].style }]];
+      try {
+        const calculated = this.convPlainText(plainText);
+        return [[{ text: calculated, style: lines[0][0].style }]];
+      } catch (error) {
+        console.error(error);
+        return [[{ text: '#Error', style: lines[0][0].style }]];
+      }
     } else {
       return lines;
     }

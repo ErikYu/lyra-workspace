@@ -34,7 +34,7 @@ import { fromEvent } from 'rxjs';
 import { debounceTime, startWith, throttleTime } from 'rxjs/operators';
 import { FormulaRenderService } from './service/formula-render.service';
 import { ExecCommandService } from './service/exec-command.service';
-import {FormulaEditService} from './service/formula-edit.service';
+import { FormulaEditService } from './service/formula-edit.service';
 
 @Component({
   selector: 'nd-ngx-datasheet',

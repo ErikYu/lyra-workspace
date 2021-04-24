@@ -10,6 +10,9 @@ import { CONTEXTMENU_WIDTH, ResizerThickness } from '../constants';
 import { HistoryService } from './history.service';
 import { TextInputService } from './text-input.service';
 import { ContextmenuService } from './contextmenu.service';
+import { FormulaEditService } from './formula-edit.service';
+import { labelFromCell } from '../utils';
+import { ExecCommandService } from './exec-command.service';
 
 @Injectable()
 export class MouseEventService {
@@ -32,6 +35,8 @@ export class MouseEventService {
     private historyService: HistoryService,
     private textInputService: TextInputService,
     private contextmenuService: ContextmenuService,
+    private formulaEditService: FormulaEditService,
+    private command: ExecCommandService,
   ) {}
 
   initDomElements(
@@ -109,11 +114,19 @@ export class MouseEventService {
           if (!this.textInputService.isEditing) {
             this.textInputService.hide();
           } else {
-
+            if (this.formulaEditService.activated) {
+              if (hitRowIndex !== undefined && hitColIndex !== undefined) {
+                const label = labelFromCell(hitRowIndex, hitColIndex);
+                this.command.insertText(label);
+              }
+            } else {
+              this.textInputService.hide();
+            }
           }
         } else if (mouseDownEvent.detail === 2 && mouseDownEvent.which === 1) {
+          // double click -> activate cell edit
           this.textInputService.show(false);
-          this.textInputService.focus();
+          this.textInputService.focus('last');
         }
       });
 
