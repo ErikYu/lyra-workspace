@@ -8,12 +8,12 @@ import { Rect } from '../models';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { RenderProxyService } from '../service/render-proxy.service';
 
-interface SelectorRect {
-  left: number;
-  top: number;
-  width: number;
-  height: number;
-}
+// interface SelectorRect {
+//   left: number;
+//   top: number;
+//   width: number;
+//   height: number;
+// }
 
 @Injectable()
 export class SelectorsService {
@@ -33,47 +33,48 @@ export class SelectorsService {
 
   selectors: Selector[] = [];
 
-  get rects(): SelectorRect[] {
-    const viewRange = this.viewRangeService.getViewRange();
-
-    return this.selectors.map(({ range: cellRange }) => {
-      let top = 0;
-      let left = 0;
-      let height = 0;
-      let width = 0;
-      if (viewRange.sri <= cellRange.sri) {
-        for (let ri = viewRange.sri; ri < cellRange.sri; ri++) {
-          top += this.dataService.selectedSheet.getRowHeight(ri);
-        }
-      } else {
-        for (let ri = cellRange.sri; ri < viewRange.sri; ri++) {
-          top -= this.dataService.selectedSheet.getRowHeight(ri);
-        }
-      }
-      for (let ri = cellRange.sri; ri <= cellRange.eri; ri++) {
-        height += this.dataService.selectedSheet.getRowHeight(ri);
-      }
-
-      if (viewRange.sci <= cellRange.sci) {
-        for (let ci = viewRange.sci; ci < cellRange.sci; ci++) {
-          left += this.dataService.selectedSheet.getColWidth(ci);
-        }
-      } else {
-        for (let ci = cellRange.sci; ci < viewRange.sci; ci++) {
-          left -= this.dataService.selectedSheet.getColWidth(ci);
-        }
-      }
-      for (let ci = cellRange.sci; ci <= cellRange.eci; ci++) {
-        width += this.dataService.selectedSheet.getColWidth(ci);
-      }
-      return {
-        left,
-        top,
-        width,
-        height,
-      };
-    });
-  }
+  // get rects(): SelectorRect[] {
+  //   const viewRange = this.viewRangeService.getViewRange();
+  //
+  //   return this.selectors.map(({ range: cellRange }) => {
+  //     return this.viewRangeService.locateRect(cellRange);
+  //     // let top = 0;
+  //     // let left = 0;
+  //     // let height = 0;
+  //     // let width = 0;
+  //     // if (viewRange.sri <= cellRange.sri) {
+  //     //   for (let ri = viewRange.sri; ri < cellRange.sri; ri++) {
+  //     //     top += this.dataService.selectedSheet.getRowHeight(ri);
+  //     //   }
+  //     // } else {
+  //     //   for (let ri = cellRange.sri; ri < viewRange.sri; ri++) {
+  //     //     top -= this.dataService.selectedSheet.getRowHeight(ri);
+  //     //   }
+  //     // }
+  //     // for (let ri = cellRange.sri; ri <= cellRange.eri; ri++) {
+  //     //   height += this.dataService.selectedSheet.getRowHeight(ri);
+  //     // }
+  //     //
+  //     // if (viewRange.sci <= cellRange.sci) {
+  //     //   for (let ci = viewRange.sci; ci < cellRange.sci; ci++) {
+  //     //     left += this.dataService.selectedSheet.getColWidth(ci);
+  //     //   }
+  //     // } else {
+  //     //   for (let ci = cellRange.sci; ci < viewRange.sci; ci++) {
+  //     //     left -= this.dataService.selectedSheet.getColWidth(ci);
+  //     //   }
+  //     // }
+  //     // for (let ci = cellRange.sci; ci <= cellRange.eci; ci++) {
+  //     //   width += this.dataService.selectedSheet.getColWidth(ci);
+  //     // }
+  //     // return {
+  //     //   left,
+  //     //   top,
+  //     //   width,
+  //     //   height,
+  //     // };
+  //   });
+  // }
 
   get last(): Selector {
     return this.selectors[this.selectors.length - 1];

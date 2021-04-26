@@ -1,5 +1,9 @@
 import { Component, ElementRef, HostBinding, OnInit } from '@angular/core';
 import { SelectorsService } from '../../core/selectors.service';
+import { ViewRangeService } from '../../core/view-range.service';
+import { combineLatest } from 'rxjs';
+import { ResizerService } from '../../service/resizer.service';
+import { LocatedRect } from '../../models';
 
 @Component({
   selector: 'nd-selector-container',
@@ -9,13 +13,26 @@ import { SelectorsService } from '../../core/selectors.service';
 export class SelectorContainerComponent implements OnInit {
   @HostBinding('class.nd-selector-container') h = true;
 
+  rects: LocatedRect[] = [];
+
   constructor(
-    public selectorRangeService: SelectorsService,
+    private selectorRangeService: SelectorsService,
+    private v: ViewRangeService,
     private el: ElementRef<HTMLElement>,
+    private r: ResizerService,
   ) {
     this.el.nativeElement.style.left = '60px';
     this.el.nativeElement.style.top = '25px';
   }
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    combineLatest([
+      this.selectorRangeService.selectorChanged,
+      // todo: can be optimized into resizerFinished$
+      this.r.colResizer$,
+      this.r.rowResizer$,
+    ]).subscribe(([selectors]) => {
+      this.rects = selectors.map((s) => this.v.locateRect(s.range));
+    });
+  }
 }
