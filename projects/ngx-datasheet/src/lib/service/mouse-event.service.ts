@@ -49,12 +49,17 @@ export class MouseEventService {
     this.rowResizer = rowResizer;
 
     fromEvent<MouseEvent>(this.masker, 'mousedown')
-      .pipe(
-        // tap((evt) => console.log(evt.target)),
-        filter((evt) => evt.which === 1 || evt.which === 3),
-      )
+      .pipe(filter((evt) => evt.which === 1 || evt.which === 3))
       .subscribe((mouseDownEvent) => {
         if (mouseDownEvent.detail === 1) {
+          const isAutofill = (mouseDownEvent.target as HTMLElement).classList.contains(
+            'nd-selector-autofill',
+          );
+
+          if (isAutofill) {
+            return;
+          }
+
           if (mouseDownEvent.which === 1) {
             this.isSelecting = true;
           }
@@ -82,6 +87,9 @@ export class MouseEventService {
               return;
             }
           }
+
+
+
           const { hitRowIndex, hitColIndex } = this.getHitCell(mouseDownEvent);
           this.selectStartAt = [hitColIndex, hitRowIndex];
           // draw box

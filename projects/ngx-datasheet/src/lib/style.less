@@ -146,26 +146,28 @@
     left: 0;
     top: 0;
     overflow: hidden;
-  }
-  & > .nd-selector-container {
-    right: 0;
-    bottom: 0;
-    position: absolute;
-    overflow: hidden;
-    & > .nd-selector {
+    & > .nd-selector-container {
+      right: 0;
+      bottom: 0;
       position: absolute;
-      border: 2px solid @primaryColor;
-      box-sizing: border-box;
-      background-color: fade(@primaryColor, 10%);
-    }
-    & > .nd-selector-autofill {
-      position: absolute;
-      width: 6px;
-      height: 6px;
-      background: @primaryColor;
-      cursor: crosshair;
-      border: 1px solid #ffffff;
-      box-sizing: border-box;
+      overflow: hidden;
+      pointer-events: none;
+      & > .nd-selector {
+        position: absolute;
+        border: 2px solid @primaryColor;
+        box-sizing: border-box;
+        background-color: fade(@primaryColor, 10%);
+      }
+      & > .nd-selector-autofill {
+        pointer-events: auto;
+        position: absolute;
+        width: 6px;
+        height: 6px;
+        background: @primaryColor;
+        cursor: crosshair;
+        border: 1px solid #ffffff;
+        box-sizing: border-box;
+      }
     }
   }
 }
