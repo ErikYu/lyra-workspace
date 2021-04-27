@@ -35,6 +35,7 @@ import { debounceTime, startWith, throttleTime } from 'rxjs/operators';
 import { FormulaRenderService } from './service/formula-render.service';
 import { ExecCommandService } from './service/exec-command.service';
 import { FormulaEditService } from './service/formula-edit.service';
+import { AutofillService } from './service/autofill.service';
 
 @Component({
   selector: 'nd-ngx-datasheet',
@@ -99,6 +100,7 @@ import { FormulaEditService } from './service/formula-edit.service';
     FormulaRenderService,
     FormulaEditService,
     ExecCommandService,
+    AutofillService,
   ],
   host: { class: 'ngx-datasheet' },
 })

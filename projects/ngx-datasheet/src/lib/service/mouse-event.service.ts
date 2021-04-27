@@ -13,6 +13,7 @@ import { ContextmenuService } from './contextmenu.service';
 import { FormulaEditService } from './formula-edit.service';
 import { labelFromCell } from '../utils';
 import { ExecCommandService } from './exec-command.service';
+import { AutofillService } from './autofill.service';
 
 @Injectable()
 export class MouseEventService {
@@ -21,6 +22,7 @@ export class MouseEventService {
   private rowResizer!: HTMLElement;
 
   isSelecting = false;
+  isAutoFilling = false;
   selectStartAt: [number | undefined, number | undefined] | null = null; // [ci, ri]
 
   isColResizing = false;
@@ -37,6 +39,7 @@ export class MouseEventService {
     private contextmenuService: ContextmenuService,
     private formulaEditService: FormulaEditService,
     private command: ExecCommandService,
+    private autofillService: AutofillService,
   ) {}
 
   initDomElements(
@@ -57,6 +60,8 @@ export class MouseEventService {
           );
 
           if (isAutofill) {
+            this.isAutoFilling = true;
+            this.autofillService.initAutofill(this.selectorRangeService.last, mouseDownEvent);
             return;
           }
 
@@ -157,6 +162,13 @@ export class MouseEventService {
 
     fromEvent<MouseEvent>(this.masker, 'mousemove')
       .pipe(
+        filter((mouseMoveEvent) => {
+          if (this.isAutoFilling) {
+            console.log('isAutoFilling');
+            this.getHitCell(mouseMoveEvent);
+          }
+          return !this.isAutoFilling;
+        }),
         filter((mouseMoveEvent) => {
           if (!this.isSelecting) {
             if (this.isColResizing) {
@@ -267,6 +279,7 @@ export class MouseEventService {
       }
       this.isSelecting = false;
       this.selectStartAt = null;
+      this.isAutoFilling = false;
     });
   }
 
