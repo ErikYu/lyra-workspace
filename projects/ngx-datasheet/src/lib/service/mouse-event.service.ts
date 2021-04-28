@@ -61,7 +61,10 @@ export class MouseEventService {
 
           if (isAutofill) {
             this.isAutoFilling = true;
-            this.autofillService.initAutofill(this.selectorRangeService.last, mouseDownEvent);
+            this.autofillService.showAutofill(
+              this.selectorRangeService.last,
+              mouseDownEvent,
+            );
             return;
           }
 
@@ -92,8 +95,6 @@ export class MouseEventService {
               return;
             }
           }
-
-
 
           const { hitRowIndex, hitColIndex } = this.getHitCell(mouseDownEvent);
           this.selectStartAt = [hitColIndex, hitRowIndex];
@@ -164,8 +165,12 @@ export class MouseEventService {
       .pipe(
         filter((mouseMoveEvent) => {
           if (this.isAutoFilling) {
-            console.log('isAutoFilling');
-            this.getHitCell(mouseMoveEvent);
+            const cell = this.getHitCell(mouseMoveEvent);
+            this.autofillService.moveAutofill(
+              cell.hitRowIndex!,
+              cell.hitColIndex!,
+              mouseMoveEvent,
+            );
           }
           return !this.isAutoFilling;
         }),
@@ -280,6 +285,7 @@ export class MouseEventService {
       this.isSelecting = false;
       this.selectStartAt = null;
       this.isAutoFilling = false;
+      this.autofillService.hideAutofill();
     });
   }
 

@@ -16,3 +16,15 @@
     }"
   ></div>
 </ng-container>
+
+<ng-container *ngIf="autofillRect">
+  <div
+    class="nd-autofill"
+    [ngStyle]="{
+      top: autofillRect.top + 'px',
+      left: autofillRect.left + 'px',
+      width: autofillRect.width + 'px',
+      height: autofillRect.height + 'px'
+    }"
+  ></div>
+</ng-container>
