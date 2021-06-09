@@ -36,8 +36,12 @@ export class ScrollbarVComponent implements OnInit, AfterViewInit {
   onScroll(evt: MouseEvent): void {
     const { scrollTop } = evt.target as HTMLElement;
     const targetRi = this.dataService.selectedSheet.getRowIndex(scrollTop);
-    this.scrolling.setRowIndex(targetRi);
+    // NOTICE:
+    // `setRowIndex` should be called after `setRowRange`
+    // as scroll will trigger selectors rerender, rerender requires latest viewRange
+    // related to /components/selector-container/selector-container.component.ts line 39
     this.viewRangeService.setRowRange(targetRi, scrollTop);
+    this.scrolling.setRowIndex(targetRi);
     this.dataService.rerender();
   }
 
