@@ -54,6 +54,7 @@ export class MouseEventService {
     fromEvent<MouseEvent>(this.masker, 'mousedown')
       .pipe(filter((evt) => evt.which === 1 || evt.which === 3))
       .subscribe((mouseDownEvent) => {
+        mouseDownEvent.preventDefault();
         if (mouseDownEvent.detail === 1) {
           const isAutofill = (mouseDownEvent.target as HTMLElement).classList.contains(
             'nd-selector-autofill',
