@@ -4,6 +4,7 @@ import { ViewRangeService } from '../../core/view-range.service';
 import { combineLatest } from 'rxjs';
 import { ResizerService } from '../../service/resizer.service';
 import { LocatedRect } from '../../models';
+import { AutofillService } from '../../service/autofill.service';
 import { ScrollingService } from '../../core/scrolling.service';
 
 @Component({
@@ -15,10 +16,12 @@ export class SelectorContainerComponent implements OnInit {
   @HostBinding('class.nd-selector-container') h = true;
 
   rects: LocatedRect[] = [];
+  autofillRect: LocatedRect | null = null;
 
   constructor(
     private selectorRangeService: SelectorsService,
-    private v: ViewRangeService,
+    public a: AutofillService,
+    public v: ViewRangeService,
     private el: ElementRef<HTMLElement>,
     private r: ResizerService,
     private s: ScrollingService,
@@ -36,6 +39,14 @@ export class SelectorContainerComponent implements OnInit {
       this.s.scrolled$,
     ]).subscribe(([selectors]) => {
       this.rects = selectors.map((s) => this.v.locateRect(s.range));
+    });
+
+    this.a.autofillChanged$.subscribe((rect) => {
+      if (rect) {
+        this.autofillRect = this.v.locateRect(rect);
+      } else {
+        this.autofillRect = null;
+      }
     });
   }
 }

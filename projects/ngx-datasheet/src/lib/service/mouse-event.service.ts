@@ -13,6 +13,7 @@ import { ContextmenuService } from './contextmenu.service';
 import { FormulaEditService } from './formula-edit.service';
 import { labelFromCell } from '../utils';
 import { ExecCommandService } from './exec-command.service';
+import { AutofillService } from './autofill.service';
 
 @Injectable()
 export class MouseEventService {
@@ -21,6 +22,7 @@ export class MouseEventService {
   private rowResizer!: HTMLElement;
 
   isSelecting = false;
+  isAutoFilling = false;
   selectStartAt: [number | undefined, number | undefined] | null = null; // [ci, ri]
 
   isColResizing = false;
@@ -37,6 +39,7 @@ export class MouseEventService {
     private contextmenuService: ContextmenuService,
     private formulaEditService: FormulaEditService,
     private command: ExecCommandService,
+    private autofillService: AutofillService,
   ) {}
 
   initDomElements(
@@ -49,12 +52,22 @@ export class MouseEventService {
     this.rowResizer = rowResizer;
 
     fromEvent<MouseEvent>(this.masker, 'mousedown')
-      .pipe(
-        // tap((evt) => console.log(evt.target)),
-        filter((evt) => evt.which === 1 || evt.which === 3),
-      )
+      .pipe(filter((evt) => evt.which === 1 || evt.which === 3))
       .subscribe((mouseDownEvent) => {
         if (mouseDownEvent.detail === 1) {
+          const isAutofill = (mouseDownEvent.target as HTMLElement).classList.contains(
+            'nd-selector-autofill',
+          );
+
+          if (isAutofill) {
+            this.isAutoFilling = true;
+            this.autofillService.showAutofill(
+              this.selectorRangeService.last,
+              mouseDownEvent,
+            );
+            return;
+          }
+
           if (mouseDownEvent.which === 1) {
             this.isSelecting = true;
           }
@@ -82,6 +95,7 @@ export class MouseEventService {
               return;
             }
           }
+
           const { hitRowIndex, hitColIndex } = this.getHitCell(mouseDownEvent);
           this.selectStartAt = [hitColIndex, hitRowIndex];
           // draw box
@@ -149,6 +163,17 @@ export class MouseEventService {
 
     fromEvent<MouseEvent>(this.masker, 'mousemove')
       .pipe(
+        filter((mouseMoveEvent) => {
+          if (this.isAutoFilling) {
+            const cell = this.getHitCell(mouseMoveEvent);
+            this.autofillService.moveAutofill(
+              cell.hitRowIndex!,
+              cell.hitColIndex!,
+              mouseMoveEvent,
+            );
+          }
+          return !this.isAutoFilling;
+        }),
         filter((mouseMoveEvent) => {
           if (!this.isSelecting) {
             if (this.isColResizing) {
@@ -259,6 +284,8 @@ export class MouseEventService {
       }
       this.isSelecting = false;
       this.selectStartAt = null;
+      this.isAutoFilling = false;
+      this.autofillService.hideAutofill();
     });
   }
 
