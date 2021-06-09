@@ -1,8 +1,12 @@
 import { Injectable } from '@angular/core';
-import { Subject } from 'rxjs';
+import { BehaviorSubject, Observable, Subject } from 'rxjs';
 
 @Injectable()
 export class ScrollingService {
+  private _scrolled$ = new BehaviorSubject(true);
+  get scrolled$(): Observable<unknown> {
+    return this._scrolled$.asObservable();
+  }
   vScrollbarShouldGoto = new Subject<number>();
   hScrollbarShouldGoto = new Subject<number>();
   get rowIndex(): number {
@@ -18,10 +22,12 @@ export class ScrollingService {
 
   setRowIndex(ri: number): void {
     this._rowIndex = ri;
+    this._scrolled$.next(true);
   }
 
   setColIndex(ci: number): void {
     this._colIndex = ci;
+    this._scrolled$.next(true);
   }
 
   resetScrollAt(): void {

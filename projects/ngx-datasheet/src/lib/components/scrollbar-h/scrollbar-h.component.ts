@@ -35,8 +35,8 @@ export class ScrollbarHComponent implements OnInit, AfterViewInit {
   onScroll(evt: MouseEvent): void {
     const { scrollLeft } = evt.target as HTMLElement;
     const targetCi = this.dataService.selectedSheet.getColIndex(scrollLeft);
-    this.scrolling.setColIndex(targetCi);
     this.viewRangeService.setColRange(targetCi, scrollLeft);
+    this.scrolling.setColIndex(targetCi);
     this.dataService.rerender();
   }
 
