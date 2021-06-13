@@ -130,9 +130,14 @@ export class MouseEventService {
             this.textInputService.hide();
           } else {
             if (this.formulaEditService.activated) {
+              let label = '';
               if (hitRowIndex !== undefined && hitColIndex !== undefined) {
-                const label = labelFromCell(hitRowIndex, hitColIndex);
+                label = labelFromCell(hitRowIndex, hitColIndex);
+              }
+              if (this.formulaEditService.shouldInsert) {
                 this.command.insertText(label);
+              } else {
+                this.textInputService.hide();
               }
             } else {
               this.textInputService.hide();

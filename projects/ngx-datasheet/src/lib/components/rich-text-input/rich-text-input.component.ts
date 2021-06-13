@@ -49,7 +49,7 @@ export class RichTextInputComponent implements AfterViewInit {
         );
         const { textContent } = evt.target as HTMLElement;
         if (textContent) {
-          this.formulaEditService.parsing(textContent);
+          this.formulaEditService.parsing(textContent, evt);
         }
       });
 
