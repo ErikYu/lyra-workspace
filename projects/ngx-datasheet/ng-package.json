@@ -9,5 +9,5 @@
       "dayjs": "dayjs"
     }
   },
-  "whitelistedNonPeerDependencies": ["@angular/cdk", "big.js", "dayjs"]
+  "allowedNonPeerDependencies": ["big.js", "dayjs"]
 }

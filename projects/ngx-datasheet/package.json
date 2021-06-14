@@ -2,11 +2,11 @@
   "name": "ngx-datasheet",
   "version": "0.0.1",
   "peerDependencies": {
-    "@angular/common": "^11.1.0",
-    "@angular/core": "^11.1.0"
+    "@angular/cdk": ">=11.0.0",
+    "@angular/common": ">=11.0.0",
+    "@angular/core": ">=11.0.0"
   },
   "dependencies": {
-    "@angular/cdk": "^11.1.0",
     "big.js": "^6.0.3",
     "dayjs": "^1.10.4",
     "tslib": "^2.0.0"
