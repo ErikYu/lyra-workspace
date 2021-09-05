@@ -76,7 +76,7 @@ export class CellRange implements Rect {
       }
       y += rowHeight;
     }
-    throw Error('should not go here');
+    return {} as any;
   }
 
   colIndexAt(
@@ -94,7 +94,7 @@ export class CellRange implements Rect {
       }
       x += colWidth;
     }
-    throw Error(`should not go here, left: ${left}`);
+    return {} as any;
   }
 
   forEachCell(

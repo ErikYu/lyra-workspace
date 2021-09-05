@@ -207,10 +207,12 @@ export class MouseEventService {
                     this.dataService.selectedSheet,
                     mouseMoveEvent.offsetX - this.configService.ciw,
                   );
-                  this.resizerService.showColResizer(
-                    right + this.configService.ciw - ResizerThickness,
-                    colIndex,
-                  );
+                  this.resizerService
+                    .hideRowResizer()
+                    .showColResizer(
+                      right + this.configService.ciw - ResizerThickness,
+                      colIndex,
+                    );
                 } else if (isInColIndex) {
                   const {
                     bottom,
@@ -219,10 +221,14 @@ export class MouseEventService {
                     this.dataService.selectedSheet,
                     mouseMoveEvent.offsetY - this.configService.rih,
                   );
-                  this.resizerService.showRowResizer(
-                    bottom + this.configService.rih - ResizerThickness,
-                    rowIndex,
-                  );
+                  this.resizerService
+                    .hideColResizer()
+                    .showRowResizer(
+                      bottom + this.configService.rih - ResizerThickness,
+                      rowIndex,
+                    );
+                } else {
+                  this.resizerService.hideRowResizer().hideColResizer();
                 }
               }
             }

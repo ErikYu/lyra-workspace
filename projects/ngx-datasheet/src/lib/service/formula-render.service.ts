@@ -92,7 +92,6 @@ export class FormulaRenderService {
     const src = plainText.substring(1);
     const stack = this.infix2suffix(src);
     if (stack.length > 0) {
-      console.log('stack: ', stack);
       return this.evalSuffixExpr(stack);
     }
     return plainText;
