@@ -48,13 +48,17 @@ export class RichTextToHtmlService {
           cssObject['font-size'] = `${value}px`;
           break;
         case 'italic':
-          cssObject['font-style'] = 'italic';
+          if (value) {
+            cssObject['font-style'] = 'italic';
+          }
           break;
         case 'strike':
-          if (cssObject.hasOwnProperty('text-decoration-line')) {
-            cssObject['text-decoration-line']!.push('line-through');
-          } else {
-            cssObject['text-decoration-line'] = ['line-through'];
+          if (value) {
+            if (cssObject.hasOwnProperty('text-decoration-line')) {
+              cssObject['text-decoration-line']!.push('line-through');
+            } else {
+              cssObject['text-decoration-line'] = ['line-through'];
+            }
           }
           break;
         case 'underline':
