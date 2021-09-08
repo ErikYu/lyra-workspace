@@ -5268,7 +5268,7 @@ less-loader@8.1.1:
   dependencies:
     klona "^2.0.4"
 
-less@4.1.1:
+less@4.1.1, less@^4.1.1:
   version "4.1.1"
   resolved "https://registry.npm.taobao.org/less/download/less-4.1.1.tgz#15bf253a9939791dc690888c3ff424f3e6c7edba"
   integrity sha1-Fb8lOpk5eR3GkIiMP/Qk8+bH7bo=

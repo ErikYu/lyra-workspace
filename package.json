@@ -1,10 +1,11 @@
 {
   "name": "ngx-datasheet",
-  "version": "0.0.0",
+  "version": "0.0.2",
   "scripts": {
     "ng": "ng",
     "start": "ng serve ngx-datasheet-demo --port 4527 --open",
-    "build-lib": "ng build ngx-datasheet --configuration production",
+    "build": "ng build ngx-datasheet --configuration production",
+    "postbuild": "cp projects/ngx-datasheet/src/lib/style.less dist/ngx-datasheet/style.less && lessc projects/ngx-datasheet/src/lib/style.less dist/ngx-datasheet/style.css",
     "build-demo": "ng build ngx-datasheet-demo --prod --base-href=https://erikyu.github.io/ngx-datasheet/ --output-path=docs --source-map",
     "test": "ng test ngx-datasheet",
     "lint": "ng lint",
@@ -45,6 +46,7 @@
     "karma-coverage": "~2.0.3",
     "karma-jasmine": "~4.0.0",
     "karma-jasmine-html-reporter": "^1.5.0",
+    "less": "^4.1.1",
     "ng-packagr": "^12.0.5",
     "prettier": "^2.2.1",
     "protractor": "~7.0.0",

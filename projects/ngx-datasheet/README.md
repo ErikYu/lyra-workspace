@@ -1,25 +1,25 @@
 # NgxDatasheet
 
-This library was generated with [Angular CLI](https://github.com/angular/angular-cli) version 11.1.0.
+This library was generated with [Angular CLI](https://github.com/angular/angular-cli)
 
-## Code scaffolding
-
-Run `ng generate component component-name --project ngx-datasheet` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module --project ngx-datasheet`.
-
-> Note: Don't forget to add `--project ngx-datasheet` or else it will be added to the default project in your `angular.json` file.
-
-## Build
-
-Run `ng build ngx-datasheet` to build the project. The build artifacts will be stored in the `dist/` directory.
-
-## Publishing
-
-After building your library with `ng build ngx-datasheet`, go to the dist folder `cd dist/ngx-datasheet` and run `npm publish`.
-
-## Running unit tests
-
-Run `ng test ngx-datasheet` to execute the unit tests via [Karma](https://karma-runner.github.io).
-
-## Further help
-
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+### Usage
+- `npm install --save @angular/cdk ngx-datasheet`
+- add `@import url("~ngx-datasheet/style.css");` on your `src/styles.css`
+- import `NgxDatasheetModule` to your AppModule
+  ```ts
+  @NgModule({
+    declarations: [
+      AppComponent
+    ],
+    imports: [
+      BrowserModule,
+      NgxDatasheetModule,  // import module
+    ],
+    providers: [],
+    bootstrap: [AppComponent]
+  })
+  ```
+- simple example
+  ```angular2html
+  <nd-ngx-datasheet></nd-ngx-datasheet>
+  ```

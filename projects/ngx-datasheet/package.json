@@ -1,6 +1,6 @@
 {
   "name": "ngx-datasheet",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "peerDependencies": {
     "@angular/cdk": ">=11.0.0",
     "@angular/common": ">=11.0.0",
