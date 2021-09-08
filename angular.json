@@ -75,6 +75,7 @@
               "projects/ngx-datasheet-demo/src/assets"
             ],
             "styles": [
+              "projects/ngx-datasheet/src/lib/style.less",
               "projects/ngx-datasheet-demo/src/styles.less"
             ],
             "allowedCommonJsDependencies": [
