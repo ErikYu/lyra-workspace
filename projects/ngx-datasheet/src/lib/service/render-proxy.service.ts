@@ -5,9 +5,12 @@ type RenderRange = 'all' | 'header';
 
 @Injectable()
 export class RenderProxyService {
-  get shouldRender$(): Observable<{ type: RenderRange }> {
-    return this._shouldRender$.asObservable();
+  shouldRender$: Observable<{ type: RenderRange }>;
+
+  constructor() {
+    this.shouldRender$ = this._shouldRender$.asObservable();
   }
+
   private _shouldRender$ = new BehaviorSubject<{ type: RenderRange }>({
     type: 'all',
   });

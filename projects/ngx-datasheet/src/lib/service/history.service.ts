@@ -70,6 +70,7 @@ export class HistoryService {
       ci: colIndex || 0,
       d: JSON.stringify(this.dataService.snapshot),
     });
+    this.dataService.notifyDataChange();
   }
 
   undo(): void {
@@ -84,6 +85,7 @@ export class HistoryService {
       );
       this.dataService.loadData(d);
       this.dataService.rerender();
+      this.dataService.notifyDataChange();
     }
   }
 
@@ -92,6 +94,7 @@ export class HistoryService {
       this.cursor += 1;
       this.dataService.loadData(JSON.parse(this.stack[this.cursor].d));
       this.dataService.rerender();
+      this.dataService.notifyDataChange();
     }
   }
 }

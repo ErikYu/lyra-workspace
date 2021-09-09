@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@angular/core';
 import { NDData } from '../ngx-datasheet.model';
-import { BehaviorSubject } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import { ConfigService } from './config.service';
 import { SheetService, SheetServiceFactory } from './sheet.service';
 import { ScrollingService } from './scrolling.service';
@@ -8,6 +8,8 @@ import { RenderProxyService } from '../service/render-proxy.service';
 
 @Injectable()
 export class DataService {
+  dataChanged$: Observable<NDData>;
+
   sheets: SheetService[] = [];
   selectedSheet!: SheetService;
   selectedIndex!: number;
@@ -21,13 +23,20 @@ export class DataService {
       })),
     };
   }
+  private dataChanged = new Subject<NDData>();
 
   constructor(
     private configService: ConfigService,
     private scrolling: ScrollingService,
     private renderProxyService: RenderProxyService,
     @Inject(SheetService) private sheetServiceFactory: SheetServiceFactory,
-  ) {}
+  ) {
+    this.dataChanged$ = this.dataChanged.asObservable();
+  }
+
+  notifyDataChange(): void {
+    this.dataChanged.next(this.snapshot);
+  }
 
   rerender(): void {
     this.renderProxyService.render('all');
@@ -71,6 +80,7 @@ export class DataService {
     this.sheets.push(newSheet);
     this.selectedSheet = newSheet;
     this.selectedIndex = this.sheets.length - 1;
+    this.notifyDataChange();
   }
 
   updateSheetName(index: number, name: string, onSuccess: () => void): void {
@@ -87,5 +97,6 @@ export class DataService {
     this.sheets[index].name = name;
 
     onSuccess();
+    this.notifyDataChange();
   }
 }

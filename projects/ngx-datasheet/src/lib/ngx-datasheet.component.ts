@@ -1,9 +1,11 @@
 import {
   Component,
   ElementRef,
+  EventEmitter,
   Input,
   OnChanges,
   OnInit,
+  Output,
   SimpleChanges,
 } from '@angular/core';
 import { Merge, NDData, NDSheet } from './ngx-datasheet.model';
@@ -36,6 +38,7 @@ import { FormulaRenderService } from './service/formula-render.service';
 import { ExecCommandService } from './service/exec-command.service';
 import { FormulaEditService } from './service/formula-edit.service';
 import { AutofillService } from './service/autofill.service';
+import { cloneDeep } from './utils';
 
 @Component({
   selector: 'nd-ngx-datasheet',
@@ -136,6 +139,8 @@ export class NgxDatasheetComponent implements OnInit, OnChanges {
     ],
   };
 
+  @Output() ndDataChange = new EventEmitter<NDData>();
+
   constructor(
     private configService: ConfigService,
     private dataService: DataService,
@@ -156,8 +161,12 @@ export class NgxDatasheetComponent implements OnInit, OnChanges {
         this.el.nativeElement.style.height = `${this.ndConfig.height()}px`;
         this.configService.resize(this.el.nativeElement);
       });
-    this.dataService.loadData(this.ndData);
-    this.historyService.init(this.ndData);
+    const initialData = cloneDeep(this.ndData);
+    this.dataService.loadData(initialData);
+    this.historyService.init(initialData);
     this.viewRangeService.init();
+    this.dataService.dataChanged$.subscribe((res) => {
+      this.ndDataChange.emit(res);
+    });
   }
 }
