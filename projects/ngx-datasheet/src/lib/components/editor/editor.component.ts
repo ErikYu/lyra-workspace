@@ -453,7 +453,7 @@ export class EditorComponent implements OnInit, AfterViewInit {
           break;
         case 'right':
           offsetLeft = left + width - GRID_LINE_WIDTH / 2 - CELL_PADDING;
-          for (const span of line.reverse()) {
+          for (const span of line.slice().reverse()) {
             this.canvasService.textStyle(span.style);
             const spanWidth = this.canvasService.measureTextWidth(span.text);
             offsetLeft -= spanWidth;
