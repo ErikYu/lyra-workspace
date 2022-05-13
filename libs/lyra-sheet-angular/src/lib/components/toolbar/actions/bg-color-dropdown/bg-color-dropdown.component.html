@@ -1,0 +1,22 @@
+<div
+  class="bg-color-icon-container"
+  cdkOverlayOrigin
+  #trigger="cdkOverlayOrigin"
+>
+  <i class="lyra-sheet-toolbar-icon bg-color-icon"></i>
+</div>
+
+<ng-template
+  cdkConnectedOverlay
+  [cdkConnectedOverlayOrigin]="trigger"
+  [cdkConnectedOverlayOpen]="isOpen"
+  [cdkConnectedOverlayHasBackdrop]="true"
+  [cdkConnectedOverlayBackdropClass]="'hidden-backdrop'"
+  (backdropClick)="isOpen = false"
+>
+  <div class="lyra-sheet-color-palette">
+    <lyra-sheet-color-palette
+      (chosenColor)="onSelectColor($event)"
+    ></lyra-sheet-color-palette>
+  </div>
+</ng-template>

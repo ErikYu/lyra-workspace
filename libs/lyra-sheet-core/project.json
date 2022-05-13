@@ -1,0 +1,34 @@
+{
+  "root": "libs/lyra-sheet-core",
+  "sourceRoot": "libs/lyra-sheet-core/src",
+  "projectType": "library",
+  "targets": {
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["libs/lyra-sheet-core/**/*.ts"]
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/libs/lyra-sheet-core"],
+      "options": {
+        "jestConfig": "libs/lyra-sheet-core/jest.config.js",
+        "passWithNoTests": true
+      }
+    },
+    "build": {
+      "executor": "@nrwl/js:tsc",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/libs/lyra-sheet-core",
+        "tsConfig": "libs/lyra-sheet-core/tsconfig.lib.json",
+        "packageJson": "libs/lyra-sheet-core/package.json",
+        "main": "libs/lyra-sheet-core/src/index.ts",
+        "assets": ["libs/lyra-sheet-core/*.md"]
+      }
+    }
+  },
+  "tags": []
+}

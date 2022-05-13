@@ -1,0 +1,16 @@
+<lyra-sheet-dropdown [dropdown]="colorPalette" [(isOpen)]="isOpen">
+  <div style="width: 18px">
+    <div style="text-align: center">A</div>
+    <div
+      style="height: 3px; width: 100%"
+      [ngStyle]="{ backgroundColor: curFontColor }"
+    ></div>
+  </div>
+</lyra-sheet-dropdown>
+<ng-template #colorPalette>
+  <div class="lyra-sheet-color-palette">
+    <lyra-sheet-color-palette
+      (chosenColor)="applyTextColor($event)"
+    ></lyra-sheet-color-palette>
+  </div>
+</ng-template>

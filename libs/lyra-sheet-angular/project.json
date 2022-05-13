@@ -1,0 +1,42 @@
+{
+  "projectType": "library",
+  "root": "libs/lyra-sheet-angular",
+  "sourceRoot": "libs/lyra-sheet-angular/src",
+  "prefix": "lyra-workspace",
+  "targets": {
+    "build": {
+      "executor": "@nrwl/angular:package",
+      "outputs": ["dist/libs/lyra-sheet-angular"],
+      "options": {
+        "project": "libs/lyra-sheet-angular/ng-package.json"
+      },
+      "configurations": {
+        "production": {
+          "tsConfig": "libs/lyra-sheet-angular/tsconfig.lib.prod.json"
+        },
+        "development": {
+          "tsConfig": "libs/lyra-sheet-angular/tsconfig.lib.json"
+        }
+      },
+      "defaultConfiguration": "production"
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/libs/lyra-sheet-angular"],
+      "options": {
+        "jestConfig": "libs/lyra-sheet-angular/jest.config.js",
+        "passWithNoTests": true
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "options": {
+        "lintFilePatterns": [
+          "libs/lyra-sheet-angular/src/**/*.ts",
+          "libs/lyra-sheet-angular/src/**/*.html"
+        ]
+      }
+    }
+  },
+  "tags": []
+}

@@ -1,0 +1,12 @@
+<lyra-sheet-dropdown [dropdown]="sizeTmpl" [(isOpen)]="open">
+  {{ curFontSize }}
+</lyra-sheet-dropdown>
+<ng-template #sizeTmpl>
+  <lyra-sheet-dropdown-bar
+    *ngFor="let op of menus"
+    [checked]="op.checked"
+    (click)="applyFontSize(op)"
+  >
+    {{ op.pt }}
+  </lyra-sheet-dropdown-bar>
+</ng-template>

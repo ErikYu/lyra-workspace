@@ -1,0 +1,11 @@
+{
+  "name": "@lyra-sheet/core",
+  "version": "0.0.1",
+  "dependencies": {
+    "rxjs": "^7.4.0",
+    "tsyringe": "^4.6.0",
+    "big.js": "^6.1.1",
+    "dayjs": "^1.11.0",
+    "tslib": "^2.0.0"
+  }
+}

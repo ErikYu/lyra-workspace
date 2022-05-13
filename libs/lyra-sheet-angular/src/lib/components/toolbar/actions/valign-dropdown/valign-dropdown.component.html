@@ -1,0 +1,20 @@
+<lyra-sheet-dropdown [dropdown]="dropdownTmpl" [(isOpen)]="isOpen">
+  <i
+    [ngClass]="[
+      'lyra-sheet-toolbar-icon',
+      'valign-' + (controller.currentDir$ | async) + '-icon'
+    ]"
+  ></i>
+</lyra-sheet-dropdown>
+
+<ng-template #dropdownTmpl>
+  <div class="lyra-sheet-dropdown-option" (click)="applyTextValign('bottom')">
+    <i class="lyra-sheet-toolbar-icon valign-bottom-icon"></i>
+  </div>
+  <div class="lyra-sheet-dropdown-option" (click)="applyTextValign('center')">
+    <i class="lyra-sheet-toolbar-icon valign-center-icon"></i>
+  </div>
+  <div class="lyra-sheet-dropdown-option" (click)="applyTextValign('top')">
+    <i class="lyra-sheet-toolbar-icon valign-top-icon"></i>
+  </div>
+</ng-template>

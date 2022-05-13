@@ -1,0 +1,11 @@
+<lyra-sheet-dropdown [(isOpen)]="isOpen" [dropdown]="dropdown">
+  <i class="lyra-sheet-toolbar-icon formula-icon"></i>
+</lyra-sheet-dropdown>
+
+<ng-template #dropdown>
+  <lyra-sheet-dropdown-bar
+    *ngFor="let f of formulaNames"
+    (click)="applyFormula(f)"
+    >{{ f }}</lyra-sheet-dropdown-bar
+  >
+</ng-template>

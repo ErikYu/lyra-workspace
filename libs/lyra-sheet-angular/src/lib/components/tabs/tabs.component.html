@@ -1,0 +1,21 @@
+<div
+  *ngFor="let sheet of tabs; index as i"
+  class="lyra-sheet-tab"
+  [class.selected]="sheet.selected"
+  (click)="tabsController.selectSheet(i)"
+  (dblclick)="editSheetName(i)"
+>
+  <input
+    #nameInput
+    class="name-input"
+    type="text"
+    *ngIf="i === (tabsController.editingIndex$ | async); else displayMode"
+    [value]="sheet.name"
+    (keydown.enter)="tabsController.triggerBlur($event)"
+    (blur)="tabsController.updateSheetName($event, i)"
+  />
+  <ng-template #displayMode>
+    <span>{{ sheet.name }}</span>
+  </ng-template>
+</div>
+<div class="lyra-sheet-tab" (click)="tabsController.addSheet()">+</div>

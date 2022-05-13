@@ -1,0 +1,91 @@
+:host {
+  display: block;
+}
+
+::ng-deep {
+  .checked-icon {
+    background: url('../icons/校验_check.svg') no-repeat center;
+  }
+  &.pencil-icon {
+    background-image: url('../icons/写作_write.svg');
+  }
+  &.icon-text-wrap {
+    background-image: url('../icons/text-wrap.svg');
+  }
+  &.icon-text-overflow {
+    background-image: url('../icons/text-overflow.svg');
+  }
+  &.icon-text-clip {
+    background-image: url('../icons/text-truncation.svg');
+  }
+  &.undo-icon {
+    background-image: url('../icons/undo.svg');
+  }
+  &.redo-icon {
+    background-image: url('../icons/redo.svg');
+  }
+  &.strike-icon {
+    background-image: url('../icons/strikethrough.svg');
+  }
+  &.bold-icon {
+    background-image: url('../icons/text-bold.svg');
+  }
+  &.italic-icon {
+    background-image: url('../icons/text-italic.svg');
+  }
+  &.underline-icon {
+    background-image: url('../icons/text-underline.svg');
+  }
+  &.add-decimal-icon {
+    background-image: url('../icons/add-decimal.svg');
+  }
+  &.reduce-decimal-icon {
+    background-image: url('../icons/reduce-decimal.svg');
+  }
+  &.formula-icon {
+    background-image: url('../icons/formula.svg');
+  }
+  .border-vertical-icon {
+    background-image: url('../icons/border_vertical.svg');
+  }
+
+  .border-horizontal-icon {
+    background-image: url('../icons/border_horizontal.svg');
+  }
+
+  .border-all-icon {
+    background-image: url('../icons/border_all.svg');
+  }
+
+  .border-bottom-icon {
+    background-image: url('../icons/border_bottom.svg');
+  }
+
+  .border-clear-icon {
+    background-image: url('../icons/border_clear.svg');
+  }
+
+  .border-inner-icon {
+    background-image: url('../icons/border_inner.svg');
+  }
+
+  .border-left-icon {
+    background-image: url('../icons/border_left.svg');
+  }
+
+  .border-right-icon {
+    background-image: url('../icons/border_right.svg');
+  }
+
+  .border-top-icon {
+    background-image: url('../icons/border_top.svg');
+  }
+
+  .border-outer-icon {
+    background-image: url('../icons/border_outer.svg');
+  }
+
+  .dividing-line-icon {
+    background-image: url('../icons/分割线_dividing-line.svg');
+  }
+}

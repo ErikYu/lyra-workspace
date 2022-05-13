@@ -1,0 +1,6 @@
+<div class="lyra-sheet-resizer-header" [ngStyle]="staticStyle"></div>
+<div
+  *ngIf="c.mouseEventService.isRowResizing$.value"
+  class="lyra-sheet-resizer-row-line"
+  [ngStyle]="lineStyle"
+></div>

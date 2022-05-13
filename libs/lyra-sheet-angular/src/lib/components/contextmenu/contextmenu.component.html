@@ -1,0 +1,50 @@
+<div class="lyra-sheet-contextmenu-tree">
+  <ng-container *ngFor="let menu of contextMenuController.menus$ | async">
+    <ng-container *ngIf="menu !== 'DIVIDER'; else dividerTmpl">
+      <lyra-sheet-dropdown-bar
+        *ngIf="menu.action; else navItem"
+        (mouseenter)="contextMenuController.showSubMenus($event)"
+        (click)="menu.action()"
+        [desc]="menu.desc || ' '"
+      >
+        {{ menu.label }}
+      </lyra-sheet-dropdown-bar>
+      <ng-template #navItem>
+        <lyra-sheet-dropdown-bar
+          [desc]="'>'"
+          (mouseenter)="
+            contextMenuController.showSubMenus($event, menu.children!)
+          "
+        >
+          {{ menu.label }}
+        </lyra-sheet-dropdown-bar>
+      </ng-template>
+    </ng-container>
+    <ng-template #dividerTmpl>
+      <lyra-sheet-divider direction="horizontal"></lyra-sheet-divider>
+    </ng-template>
+  </ng-container>
+</div>
+<div
+  class="lyra-sheet-contextmenu-tree"
+  [ngStyle]="{
+    transform:
+      'translate(' +
+      (contextMenuController.offsetLeft$ | async) +
+      'px,' +
+      (contextMenuController.offsetTop$ | async) +
+      'px)'
+  }"
+>
+  <ng-container
+    *ngFor="let subMenu of contextMenuController.activatedSubMenus$ | async"
+  >
+    <lyra-sheet-dropdown-bar
+      *ngIf="subMenu !== 'DIVIDER' && subMenu.action"
+      (click)="subMenu.action()"
+      [desc]="subMenu.desc || ' '"
+    >
+      {{ subMenu.label }}
+    </lyra-sheet-dropdown-bar>
+  </ng-container>
+</div>

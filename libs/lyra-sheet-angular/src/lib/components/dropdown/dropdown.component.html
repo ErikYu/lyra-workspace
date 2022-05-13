@@ -1,0 +1,22 @@
+<div
+  class="lyra-sheet-dropdown-control"
+  [class.is-open]="isOpen"
+  cdkOverlayOrigin
+  #trigger="cdkOverlayOrigin"
+>
+  <ng-content></ng-content>
+  <span class="triangle"></span>
+</div>
+
+<ng-template
+  cdkConnectedOverlay
+  [cdkConnectedOverlayOrigin]="trigger"
+  [cdkConnectedOverlayOpen]="isOpen"
+  [cdkConnectedOverlayHasBackdrop]="true"
+  [cdkConnectedOverlayBackdropClass]="'hidden-backdrop'"
+  (backdropClick)="backdropClick()"
+>
+  <div class="lyra-sheet-dropdown-content">
+    <ng-template [ngTemplateOutlet]="dropdown"></ng-template>
+  </div>
+</ng-template>

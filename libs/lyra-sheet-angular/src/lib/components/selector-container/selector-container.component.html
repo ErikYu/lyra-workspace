@@ -1,0 +1,30 @@
+<ng-container *ngFor="let r of rects">
+  <div
+    class="lyra-sheet-selector"
+    [ngStyle]="{
+      top: r.top + 'px',
+      left: r.left + 'px',
+      width: r.width + 'px',
+      height: r.height + 'px'
+    }"
+  ></div>
+  <div
+    class="lyra-sheet-selector-autofill"
+    [ngStyle]="{
+      top: r.top + r.height - 4 + 'px',
+      left: r.left + r.width - 4 + 'px'
+    }"
+  ></div>
+</ng-container>
+
+<ng-container *ngIf="autofillRect">
+  <div
+    class="lyra-sheet-autofill"
+    [ngStyle]="{
+      top: autofillRect.top + 'px',
+      left: autofillRect.left + 'px',
+      width: autofillRect.width + 'px',
+      height: autofillRect.height + 'px'
+    }"
+  ></div>
+</ng-container>

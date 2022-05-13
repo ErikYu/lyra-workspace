@@ -1,0 +1,13 @@
+<lyra-sheet-dropdown [dropdown]="familyTmpl" [(isOpen)]="open">
+  {{ fontFamily }}
+</lyra-sheet-dropdown>
+<ng-template #familyTmpl>
+  <lyra-sheet-dropdown-bar
+    *ngFor="let op of allFontFamilies"
+    [checked]="op.checked"
+    (click)="applyFontFamily(op.label)"
+    [ngStyle]="{ fontFamily: op.label }"
+  >
+    {{ op.label }}
+  </lyra-sheet-dropdown-bar>
+</ng-template>

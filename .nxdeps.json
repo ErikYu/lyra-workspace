@@ -1,0 +1,1952 @@
+{
+  "graph": {
+    "nodes": {
+      "lyra-sheet-angular": {
+        "name": "lyra-sheet-angular",
+        "type": "lib",
+        "data": {
+          "projectType": "library",
+          "root": "libs/lyra-sheet-angular",
+          "sourceRoot": "libs/lyra-sheet-angular/src",
+          "prefix": "lyra-workspace",
+          "targets": {
+            "build": {
+              "executor": "@nrwl/angular:package",
+              "outputs": ["dist/libs/lyra-sheet-angular"],
+              "options": {
+                "project": "libs/lyra-sheet-angular/ng-package.json"
+              },
+              "configurations": {
+                "production": {
+                  "tsConfig": "libs/lyra-sheet-angular/tsconfig.lib.prod.json"
+                },
+                "development": {
+                  "tsConfig": "libs/lyra-sheet-angular/tsconfig.lib.json"
+                }
+              },
+              "defaultConfiguration": "production"
+            },
+            "test": {
+              "executor": "@nrwl/jest:jest",
+              "outputs": ["coverage/libs/lyra-sheet-angular"],
+              "options": {
+                "jestConfig": "libs/lyra-sheet-angular/jest.config.js",
+                "passWithNoTests": true
+              }
+            },
+            "lint": {
+              "executor": "@nrwl/linter:eslint",
+              "options": {
+                "lintFilePatterns": [
+                  "libs/lyra-sheet-angular/src/**/*.ts",
+                  "libs/lyra-sheet-angular/src/**/*.html"
+                ]
+              }
+            }
+          },
+          "tags": [],
+          "files": [
+            {
+              "file": "libs/lyra-sheet-angular/.browserslistrc",
+              "hash": "4f9ac26980c156a3d525267010d5f78144b43519"
+            },
+            {
+              "file": "libs/lyra-sheet-angular/.eslintrc.json",
+              "hash": "fc860e71bf33cf41c05e6fdc9cea07c0ae50e384"
+            },
+            {
+              "file": "libs/lyra-sheet-angular/jest.config.js",
+              "hash": "f3341f459ea0a0f583f2d80977efc828421f4e83"
+            },
+            {
+              "file": "libs/lyra-sheet-angular/ng-package.json",
+              "hash": "72e4078e2ab30d7b3e26bc595542dfe35dff6353"
+            },
+            {
+              "file": "libs/lyra-sheet-angular/package.json",
+              "hash": "8d1c4d6523adaee8077260e55d7b057f89d3abd1",
+              "deps": ["npm:tslib", "npm:@angular/common", "npm:@angular/core"]
+            },
+            {
+              "file": "libs/lyra-sheet-angular/project.json",
+              "hash": "25f1076566e44d9d138d2bbeab9ae4775072f56a"
+            },
+            {
+              "file": "libs/lyra-sheet-angular/README.md",
+              "hash": "75d39734717f60614cccd0c8ac53cad114e570ee"
+            },
+            {
+              "file": "libs/lyra-sheet-angular/src/icons/add-decimal.svg",
+              "hash": "8d4524af60ada3c3ee5f9668b0cb9878466329cf"
+            },
+            {
+              "file": "libs/lyra-sheet-angular/src/icons/border_all.svg",
+              "hash": "9ed70b5e9934b16e3fc79b5003e27fba2e422378"
+            },
+            {
+              "file": "libs/lyra-sheet-angular/src/icons/border_bottom.svg",
+              "hash": "d8c7209380766862078524e69980f31d74db39e4"
+            },
+            {
+              "file": "libs/lyra-sheet-angular/src/icons/border_clear.svg",
+              "hash": "7c311525a48498da29bf7690e5a7d3b01dcd34a4"
+            },
+            {
+              "file": "libs/lyra-sheet-angular/src/icons/border_horizontal.svg",
+              "hash": "11172542624ec315b3a6eea40a7276bf47a08bb3"
+            },
+            {
+              "file": "libs/lyra-sheet-angular/src/icons/border_inner.svg",
+              "hash": "f9b09f927d3f103b5f2481ae5fb9f3d162a63ae2"
+            },
+            {
+              "file": "libs/lyra-sheet-angular/src/icons/border_left.svg",
+              "hash": "3703252b093d278a70248bd537bb45589c11a4ab"
+            },
+            {
+              "file": "libs/lyra-sheet-angular/src/icons/border_outer.svg",
+              "hash": "134f895a3b46e5ddc26fb18e52b990959879cc7b"
+            },
+            {
+              "file": "libs/lyra-sheet-angular/src/icons/border_right.svg",
+              "hash": "25d31b76a15de03ab0a9cb557fcdb42e9180715b"
+            },
+            {
+              "file": "libs/lyra-sheet-angular/src/icons/border_top.svg",
+              "hash": "d86accef203b0be14158f9c2ff8ce3e3d91ed49d"
+            },
+            {
+              "file": "libs/lyra-sheet-angular/src/icons/border_vertical.svg",
+              "hash": "ccce83cd7ec57c6b3d2a7b18b8ad8c0a4de46a06"
+            },
+            {
+              "file": "libs/lyra-sheet-angular/src/icons/formula.svg",
+              "hash": "ac89986109a48035d9774f5c0addbdb1e695430f"
+            },
+            {
+              "file": "libs/lyra-sheet-angular/src/icons/merge-cells.svg",
+              "hash": "32a426dfa6f0b3ab62abc8c38b217580400e3ea7"
+            },
+            {
+              "file": "libs/lyra-sheet-angular/src/icons/redo.svg",
+              "hash": "1c7bcc42613b65eb3a2643d40755175244882ce1"
+            },
+            {
+              "file": "libs/lyra-sheet-angular/src/icons/reduce-decimal.svg",
+              "hash": "0b7ef48ee16a5f1be083ce8459423b75273e4b18"
+            },
+            {
+              "file": "libs/lyra-sheet-angular/src/icons/split-cells.svg",
+              "hash": "1db066587839c26647243434be06d64f5dde2c96"
+            },
+            {
+              "file": "libs/lyra-sheet-angular/src/icons/strikethrough.svg",
+              "hash": "634fd583cb32c8823ff544f0b43a59a181fe2111"
+            },
+            {
+              "file": "libs/lyra-sheet-angular/src/icons/text-bold.svg",
+              "hash": "22773fedad5e547383a0fd182b341b8ffdf0b2c8"
+            },
+            {
+              "file": "libs/lyra-sheet-angular/src/icons/text-italic.svg",
+              "hash": "018734b63e03b95b92c6d018e0f133fc563ac027"
+            },
+            {
+              "file": "libs/lyra-sheet-angular/src/icons/text-overflow.svg",
+              "hash": "b0a391b96d4d4876e64b89f6bac533d60bbf193f"
+            },
+            {
+              "file": "libs/lyra-sheet-angular/src/icons/text-truncation.svg",
+              "hash": "0abe8a70d1f5a384c3a590242e9c54e4bc4589a1"
+            },
+            {
+              "file": "libs/lyra-sheet-angular/src/icons/text-underline.svg",
+              "hash": "946f6d0e751fd2b6cfbd9240f858ab459a5bdfe3"
+            },
+            {
+              "file": "libs/lyra-sheet-angular/src/icons/text-wrap.svg",
+              "hash": "def4b654b514182c153359267631eebd688c95cb"
+            },
+            {
+              "file": "libs/lyra-sheet-angular/src/icons/undo.svg",
+              "hash": "870fd0b7ca535941a4f7083dcd12388e446fe245"
+            },
+            {
+              "file": "libs/lyra-sheet-angular/src/icons/写作_write.svg",
+              "hash": "25f00433ef3362ecb244b8c7e7b84ed7a32ed02a"
+            },
+            {
+              "file": "libs/lyra-sheet-angular/src/icons/分割线_dividing-line.svg",
+              "hash": "7eee84d7083397529bbcda56b3b9b35ed377ff94"
+            },
+            {
+              "file": "libs/lyra-sheet-angular/src/icons/垂直对齐_align-vertically.svg",
+              "hash": "43abee97fcca48739b068f81e2cc5ecb94d4999f"
+            },
+            {
+              "file": "libs/lyra-sheet-angular/src/icons/底对齐_align-bottom.svg",
+              "hash": "22cade228d90e87ad13b1a772e63501b1d212eec"
+            },
+            {
+              "file": "libs/lyra-sheet-angular/src/icons/文字居中_align-text-center.svg",
+              "hash": "ac50021ad2bf077f0d496c6b4d516c7e7691c458"
+            },
+            {
+              "file": "libs/lyra-sheet-angular/src/icons/文字居右_align-text-right.svg",
+              "hash": "543ee142ce14f841ab8bb35d50a35fead46c473b"
+            },
+            {
+              "file": "libs/lyra-sheet-angular/src/icons/文字居左_align-text-left.svg",
+              "hash": "e11393f8d21003db44745e95996938e92bc50da6"
+            },
+            {
+              "file": "libs/lyra-sheet-angular/src/icons/校验_check.svg",
+              "hash": "1fefd0f4dac6e6e1960875b6b11512e12e83e696"
+            },
+            {
+              "file": "libs/lyra-sheet-angular/src/icons/背景颜色_background-color.svg",
+              "hash": "64430a764dd91f7cb11f1c77d599f20a81d83884"
+            },
+            {
+              "file": "libs/lyra-sheet-angular/src/icons/顶对齐_align-top.svg",
+              "hash": "b7ff71106af16750fb6e8f75c6f67401bf8f1169"
+            },
+            {
+              "file": "libs/lyra-sheet-angular/src/index.ts",
+              "hash": "1d839aaa18d0d651acccd766f96fc32c84918cb9"
+            },
+            {
+              "file": "libs/lyra-sheet-angular/src/lib/components/color-palette/color-palette.component.html",
+              "hash": "d4886fd628d6e277b7393e8f535514a21da73618"
+            },
+            {
+              "file": "libs/lyra-sheet-angular/src/lib/components/color-palette/color-palette.component.scss",
+              "hash": "a47b1a2b562f943bfb7f662efa5a0ca5d85e7707"
+            },
+            {
+              "file": "libs/lyra-sheet-angular/src/lib/components/color-palette/color-palette.component.spec.ts",
+              "hash": "6c514ab4248d88d7865e22064f44966fe0a7be09",
+              "deps": ["npm:@angular/core"]
+            },
+            {
+              "file": "libs/lyra-sheet-angular/src/lib/components/color-palette/color-palette.component.ts",
+              "hash": "1bda30d2e5b0816f03feeaecec6d1e6d26dc7766",
+              "deps": ["npm:@angular/core"]
+            },
+            {
+              "file": "libs/lyra-sheet-angular/src/lib/components/contextmenu/contextmenu.component.html",
+              "hash": "f7029fefdc1a63a9d1430aa82edfab91e4d015bb"
+            },
+            {
+              "file": "libs/lyra-sheet-angular/src/lib/components/contextmenu/contextmenu.component.scss",
+              "hash": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+            },
+            {
+              "file": "libs/lyra-sheet-angular/src/lib/components/contextmenu/contextmenu.component.spec.ts",
+              "hash": "39b9fa100c1515a43f97af2c6207243ba6972b75",
+              "deps": ["npm:@angular/core"]
+            },
+            {
+              "file": "libs/lyra-sheet-angular/src/lib/components/contextmenu/contextmenu.component.ts",
+              "hash": "091a20c1412bc1fe2567b63822337d89a0e9ad4c",
+              "deps": ["npm:@angular/core", "lyra-sheet-core"]
+            },
+            {
+              "file": "libs/lyra-sheet-angular/src/lib/components/divider/divider.component.html",
+              "hash": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+            },
+            {
+              "file": "libs/lyra-sheet-angular/src/lib/components/divider/divider.component.scss",
+              "hash": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+            },
+            {
+              "file": "libs/lyra-sheet-angular/src/lib/components/divider/divider.component.spec.ts",
+              "hash": "2faa70ef7cf94e853dfdbb180e640137503536d2",
+              "deps": ["npm:@angular/core"]
+            },
+            {
+              "file": "libs/lyra-sheet-angular/src/lib/components/divider/divider.component.ts",
+              "hash": "1334518ca4294836502837d766683f639f116cba",
+              "deps": ["npm:@angular/core"]
+            },
+            {
+              "file": "libs/lyra-sheet-angular/src/lib/components/dropdown/dropdown-bar/dropdown-bar.component.html",
+              "hash": "df8ebee84438b6d774df3b667bc92a7ee3ffcf73"
+            },
+            {
+              "file": "libs/lyra-sheet-angular/src/lib/components/dropdown/dropdown-bar/dropdown-bar.component.scss",
+              "hash": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+            },
+            {
+              "file": "libs/lyra-sheet-angular/src/lib/components/dropdown/dropdown-bar/dropdown-bar.component.spec.ts",
+              "hash": "d0581db2cabc68f6437df03ef8e10a9b641b45bf",
+              "deps": ["npm:@angular/core"]
+            },
+            {
+              "file": "libs/lyra-sheet-angular/src/lib/components/dropdown/dropdown-bar/dropdown-bar.component.ts",
+              "hash": "1097498d67266bf2f4b6e5b314c6a71c8de9822b",
+              "deps": ["npm:@angular/core"]
+            },
+            {
+              "file": "libs/lyra-sheet-angular/src/lib/components/dropdown/dropdown.component.html",
+              "hash": "243b1b9da7d8c149ff5135436aeb2a24cfccff15"
+            },
+            {
+              "file": "libs/lyra-sheet-angular/src/lib/components/dropdown/dropdown.component.scss",
+              "hash": "bc7dfd3d6a670cfd4e7a5413dfa0818f7f9d0c27"
+            },
+            {
+              "file": "libs/lyra-sheet-angular/src/lib/components/dropdown/dropdown.component.spec.ts",
+              "hash": "94dc03dc7293e636002486c9531d6e85f21ad6a9",
+              "deps": ["npm:@angular/core"]
+            },
+            {
+              "file": "libs/lyra-sheet-angular/src/lib/components/dropdown/dropdown.component.ts",
+              "hash": "8adc5e1e4546a288a9c03d2a425cf8f3c2ada35f",
+              "deps": ["npm:@angular/core"]
+            },
+            {
+              "file": "libs/lyra-sheet-angular/src/lib/components/editor/editor.component.html",
+              "hash": "4a1149d09b5aa2e0ee9731f9f7d3e80eae3e9edb"
+            },
+            {
+              "file": "libs/lyra-sheet-angular/src/lib/components/editor/editor.component.scss",
+              "hash": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+            },
+            {
+              "file": "libs/lyra-sheet-angular/src/lib/components/editor/editor.component.spec.ts",
+              "hash": "0d769cf78dbfdab627609c5a928bea1bc36c9145",
+              "deps": ["npm:@angular/core"]
+            },
+            {
+              "file": "libs/lyra-sheet-angular/src/lib/components/editor/editor.component.ts",
+              "hash": "85763fa8e6a46ff3c6f50fadb4ade405052d7368",
+              "deps": ["npm:@angular/core", "lyra-sheet-core"]
+            },
+            {
+              "file": "libs/lyra-sheet-angular/src/lib/components/formula-bar/formula-bar.component.html",
+              "hash": "9c170dac092efc8351d2dca7eccadd7cd2f5318b"
+            },
+            {
+              "file": "libs/lyra-sheet-angular/src/lib/components/formula-bar/formula-bar.component.scss",
+              "hash": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+            },
+            {
+              "file": "libs/lyra-sheet-angular/src/lib/components/formula-bar/formula-bar.component.spec.ts",
+              "hash": "50e8f66c891d698553e1600d4e9fdcc1786b6e10",
+              "deps": ["npm:@angular/core"]
+            },
+            {
+              "file": "libs/lyra-sheet-angular/src/lib/components/formula-bar/formula-bar.component.ts",
+              "hash": "3da4eab20c67fab155179d41141f612b62adfdb4",
+              "deps": ["npm:@angular/core", "lyra-sheet-core", "npm:rxjs"]
+            },
+            {
+              "file": "libs/lyra-sheet-angular/src/lib/components/masker/masker.component.html",
+              "hash": "64300623e331cf9491770be1ce2852d7bae2dd14"
+            },
+            {
+              "file": "libs/lyra-sheet-angular/src/lib/components/masker/masker.component.scss",
+              "hash": "5750ecb78474863b018407516c55bb2d4f7ee10f"
+            },
+            {
+              "file": "libs/lyra-sheet-angular/src/lib/components/masker/masker.component.spec.ts",
+              "hash": "91bbafa3ada90abb5565e1e405294b73418e2c41",
+              "deps": ["npm:@angular/core"]
+            },
+            {
+              "file": "libs/lyra-sheet-angular/src/lib/components/masker/masker.component.ts",
+              "hash": "af2e95929bc392234e2a58037e20e2ee85149ca7",
+              "deps": ["npm:@angular/core", "npm:rxjs", "lyra-sheet-core"]
+            },
+            {
+              "file": "libs/lyra-sheet-angular/src/lib/components/resizer-col/resizer-col.component.html",
+              "hash": "0ffa24e2b081aec0a2dc42a344417ff87d06adca"
+            },
+            {
+              "file": "libs/lyra-sheet-angular/src/lib/components/resizer-col/resizer-col.component.scss",
+              "hash": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+            },
+            {
+              "file": "libs/lyra-sheet-angular/src/lib/components/resizer-col/resizer-col.component.spec.ts",
+              "hash": "58c92c62166b5f386067502b5c76ff9189073dcf",
+              "deps": ["npm:@angular/core"]
+            },
+            {
+              "file": "libs/lyra-sheet-angular/src/lib/components/resizer-col/resizer-col.component.ts",
+              "hash": "d6ef9867cb35a9a1f81218a652690ddda0b058cc",
+              "deps": ["npm:@angular/core", "lyra-sheet-core"]
+            },
+            {
+              "file": "libs/lyra-sheet-angular/src/lib/components/resizer-row/resizer-row.component.html",
+              "hash": "41041e5b455209d6b73f8d298c7f5eebb8d16647"
+            },
+            {
+              "file": "libs/lyra-sheet-angular/src/lib/components/resizer-row/resizer-row.component.scss",
+              "hash": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+            },
+            {
+              "file": "libs/lyra-sheet-angular/src/lib/components/resizer-row/resizer-row.component.spec.ts",
+              "hash": "554e92313cd94d526bc7e1cf47ec828b5337e121",
+              "deps": ["npm:@angular/core"]
+            },
+            {
+              "file": "libs/lyra-sheet-angular/src/lib/components/resizer-row/resizer-row.component.ts",
+              "hash": "e42b68c809fc9163c512d1a46ae4be9f6cfa391a",
+              "deps": ["npm:@angular/core", "lyra-sheet-core"]
+            },
+            {
+              "file": "libs/lyra-sheet-angular/src/lib/components/rich-text-input/rich-text-input.component.html",
+              "hash": "a7d0c71f1a77025207ce73f6cc90dcc4f561e9ac"
+            },
+            {
+              "file": "libs/lyra-sheet-angular/src/lib/components/rich-text-input/rich-text-input.component.scss",
+              "hash": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+            },
+            {
+              "file": "libs/lyra-sheet-angular/src/lib/components/rich-text-input/rich-text-input.component.spec.ts",
+              "hash": "86e73f7de0782755c73ee01514a1c7ae18dd1e49",
+              "deps": ["npm:@angular/core"]
+            },
+            {
+              "file": "libs/lyra-sheet-angular/src/lib/components/rich-text-input/rich-text-input.component.ts",
+              "hash": "c4a201ef0e2ee5ca53cd8f002e4813cd2329d8dd",
+              "deps": [
+                "npm:@angular/core",
+                "lyra-sheet-core",
+                "npm:@angular/platform-browser",
+                "npm:rxjs"
+              ]
+            },
+            {
+              "file": "libs/lyra-sheet-angular/src/lib/components/scrollbar-h/scrollbar-h.component.html",
+              "hash": "6dbd73aacef39202821fa6f38cf27e16af144bb5"
+            },
+            {
+              "file": "libs/lyra-sheet-angular/src/lib/components/scrollbar-h/scrollbar-h.component.scss",
+              "hash": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+            },
+            {
+              "file": "libs/lyra-sheet-angular/src/lib/components/scrollbar-h/scrollbar-h.component.spec.ts",
+              "hash": "f41eff47ad05209461b0a7d9181fb25613fd0858",
+              "deps": ["npm:@angular/core"]
+            },
+            {
+              "file": "libs/lyra-sheet-angular/src/lib/components/scrollbar-h/scrollbar-h.component.ts",
+              "hash": "7d86bcbf8deba63bf519c4391bfd1a47b0849332",
+              "deps": ["npm:@angular/core", "lyra-sheet-core"]
+            },
+            {
+              "file": "libs/lyra-sheet-angular/src/lib/components/scrollbar-v/scrollbar-v.component.html",
+              "hash": "3ddd0677aeea7156805046295fb06e0f122e436f"
+            },
+            {
+              "file": "libs/lyra-sheet-angular/src/lib/components/scrollbar-v/scrollbar-v.component.scss",
+              "hash": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+            },
+            {
+              "file": "libs/lyra-sheet-angular/src/lib/components/scrollbar-v/scrollbar-v.component.spec.ts",
+              "hash": "4229948b12b5a10cce67d4d928b65f563f876bcb",
+              "deps": ["npm:@angular/core"]
+            },
+            {
+              "file": "libs/lyra-sheet-angular/src/lib/components/scrollbar-v/scrollbar-v.component.ts",
+              "hash": "333547f9d9e5e8534500d04899629fdad4b17fd8",
+              "deps": ["npm:@angular/core", "lyra-sheet-core"]
+            },
+            {
+              "file": "libs/lyra-sheet-angular/src/lib/components/selector-container/selector-container.component.html",
+              "hash": "0613dde7a6db4b0252c51714611eb91454692f99"
+            },
+            {
+              "file": "libs/lyra-sheet-angular/src/lib/components/selector-container/selector-container.component.scss",
+              "hash": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+            },
+            {
+              "file": "libs/lyra-sheet-angular/src/lib/components/selector-container/selector-container.component.spec.ts",
+              "hash": "b04482e9afeec1b0f6d402caf72637fc8d3f4c63",
+              "deps": ["npm:@angular/core"]
+            },
+            {
+              "file": "libs/lyra-sheet-angular/src/lib/components/selector-container/selector-container.component.ts",
+              "hash": "bff2742d490660ba66e4d13123f1fc351c4f0e97",
+              "deps": ["npm:@angular/core", "npm:rxjs", "lyra-sheet-core"]
+            },
+            {
+              "file": "libs/lyra-sheet-angular/src/lib/components/tabs/tabs.component.html",
+              "hash": "e88b108de4e77121bed1311e3a622704e2bddc2e"
+            },
+            {
+              "file": "libs/lyra-sheet-angular/src/lib/components/tabs/tabs.component.scss",
+              "hash": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+            },
+            {
+              "file": "libs/lyra-sheet-angular/src/lib/components/tabs/tabs.component.spec.ts",
+              "hash": "a9722dfaba2519737347cc12328854aed449c324",
+              "deps": ["npm:@angular/core"]
+            },
+            {
+              "file": "libs/lyra-sheet-angular/src/lib/components/tabs/tabs.component.ts",
+              "hash": "87f6aabd9af2ffb8f280c4f481e029ae9b8c1a39",
+              "deps": ["npm:@angular/core", "lyra-sheet-core"]
+            },
+            {
+              "file": "libs/lyra-sheet-angular/src/lib/components/toolbar-item/toolbar-item.component.scss",
+              "hash": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+            },
+            {
+              "file": "libs/lyra-sheet-angular/src/lib/components/toolbar-item/toolbar-item.component.spec.ts",
+              "hash": "ba26264463153590f98d5dc1c699fc70ead460c4",
+              "deps": ["npm:@angular/core"]
+            },
+            {
+              "file": "libs/lyra-sheet-angular/src/lib/components/toolbar-item/toolbar-item.component.ts",
+              "hash": "cf499a74df1045af2c25d9add64fcc74eceed50c",
+              "deps": ["npm:@angular/core"]
+            },
+            {
+              "file": "libs/lyra-sheet-angular/src/lib/components/toolbar/actions/align-dropdown/align-dropdown.component.html",
+              "hash": "0cb12a21854917243fa8163de6c9361be4c71f51"
+            },
+            {
+              "file": "libs/lyra-sheet-angular/src/lib/components/toolbar/actions/align-dropdown/align-dropdown.component.scss",
+              "hash": "14f47c1593a03d0c176b5818b02f63a6fb8563ac"
+            },
+            {
+              "file": "libs/lyra-sheet-angular/src/lib/components/toolbar/actions/align-dropdown/align-dropdown.component.spec.ts",
+              "hash": "bf0d5847ae7aec4de9548082bd2d71ae1726fd80",
+              "deps": ["npm:@angular/core"]
+            },
+            {
+              "file": "libs/lyra-sheet-angular/src/lib/components/toolbar/actions/align-dropdown/align-dropdown.component.ts",
+              "hash": "6e95252e69457f6b3fe0b45825455f693099b42d",
+              "deps": ["npm:@angular/core", "lyra-sheet-core"]
+            },
+            {
+              "file": "libs/lyra-sheet-angular/src/lib/components/toolbar/actions/bg-color-dropdown/bg-color-dropdown.component.html",
+              "hash": "48d93036e5a1e2f1f3c1449dd39832e7dde520c2"
+            },
+            {
+              "file": "libs/lyra-sheet-angular/src/lib/components/toolbar/actions/bg-color-dropdown/bg-color-dropdown.component.scss",
+              "hash": "a2945f8308b4f3fc762b0d57656cd29700eabb5f"
+            },
+            {
+              "file": "libs/lyra-sheet-angular/src/lib/components/toolbar/actions/bg-color-dropdown/bg-color-dropdown.component.spec.ts",
+              "hash": "171e813482597f554619b6a0b5296b007e1d1330",
+              "deps": ["npm:@angular/core"]
+            },
+            {
+              "file": "libs/lyra-sheet-angular/src/lib/components/toolbar/actions/bg-color-dropdown/bg-color-dropdown.component.ts",
+              "hash": "cccf2c43e8d6e6e74ed0f4697a08754a07abe745",
+              "deps": ["npm:@angular/core"]
+            },
+            {
+              "file": "libs/lyra-sheet-angular/src/lib/components/toolbar/actions/bold-action/bold-action.component.html",
+              "hash": "213658298114674dd375202e4a1caa5813e623f1"
+            },
+            {
+              "file": "libs/lyra-sheet-angular/src/lib/components/toolbar/actions/bold-action/bold-action.component.scss",
+              "hash": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+            },
+            {
+              "file": "libs/lyra-sheet-angular/src/lib/components/toolbar/actions/bold-action/bold-action.component.spec.ts",
+              "hash": "e99a917d20fa523c2fd4304d5060185c6a11c272",
+              "deps": ["npm:@angular/core"]
+            },
+            {
+              "file": "libs/lyra-sheet-angular/src/lib/components/toolbar/actions/bold-action/bold-action.component.ts",
+              "hash": "b3cc06d393d547c36e53a550aca4fb5d9069c294",
+              "deps": ["npm:@angular/core"]
+            },
+            {
+              "file": "libs/lyra-sheet-angular/src/lib/components/toolbar/actions/border-dropdown/border-dropdown.component.html",
+              "hash": "f9e2940a79cbe0eae3eb219e1c6748d4f73d3bf8"
+            },
+            {
+              "file": "libs/lyra-sheet-angular/src/lib/components/toolbar/actions/border-dropdown/border-dropdown.component.scss",
+              "hash": "c3303bd32835dbce3e95d00c6f1ef2a02bd663e1"
+            },
+            {
+              "file": "libs/lyra-sheet-angular/src/lib/components/toolbar/actions/border-dropdown/border-dropdown.component.spec.ts",
+              "hash": "255331bd55a034836bbc3a70ee53f85d66892859",
+              "deps": ["npm:@angular/core"]
+            },
+            {
+              "file": "libs/lyra-sheet-angular/src/lib/components/toolbar/actions/border-dropdown/border-dropdown.component.ts",
+              "hash": "220fc77a85e97eae6e5e8e227c038f89093309c1",
+              "deps": ["npm:@angular/core", "lyra-sheet-core"]
+            },
+            {
+              "file": "libs/lyra-sheet-angular/src/lib/components/toolbar/actions/currency-action/currency-action.component.html",
+              "hash": "2d9b7bb54b728345008195c4d71df25f19e8e248"
+            },
+            {
+              "file": "libs/lyra-sheet-angular/src/lib/components/toolbar/actions/currency-action/currency-action.component.scss",
+              "hash": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+            },
+            {
+              "file": "libs/lyra-sheet-angular/src/lib/components/toolbar/actions/currency-action/currency-action.component.spec.ts",
+              "hash": "4b2adfe8977b57ec6424bb2143db866c01336b0b",
+              "deps": ["npm:@angular/core"]
+            },
+            {
+              "file": "libs/lyra-sheet-angular/src/lib/components/toolbar/actions/currency-action/currency-action.component.ts",
+              "hash": "802909fd4aec60118c3fe4c2e4da339a995f2869",
+              "deps": ["npm:@angular/core"]
+            },
+            {
+              "file": "libs/lyra-sheet-angular/src/lib/components/toolbar/actions/decimal-action/decimal-action.component.html",
+              "hash": "22b1c2190234459f5727362fe15b839221b963ae"
+            },
+            {
+              "file": "libs/lyra-sheet-angular/src/lib/components/toolbar/actions/decimal-action/decimal-action.component.scss",
+              "hash": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+            },
+            {
+              "file": "libs/lyra-sheet-angular/src/lib/components/toolbar/actions/decimal-action/decimal-action.component.spec.ts",
+              "hash": "c48343c705a2bfd5ffbb33028f4d044209f9e3bf",
+              "deps": ["npm:@angular/core"]
+            },
+            {
+              "file": "libs/lyra-sheet-angular/src/lib/components/toolbar/actions/decimal-action/decimal-action.component.ts",
+              "hash": "b5b8d378ccc23e6b33373b9055db063bfd33a7b7",
+              "deps": ["npm:@angular/core", "lyra-sheet-core"]
+            },
+            {
+              "file": "libs/lyra-sheet-angular/src/lib/components/toolbar/actions/font-color-dropdown/font-color-dropdown.component.html",
+              "hash": "ff6d3b21571e1c437f7d9569133e4a2493b5e91a"
+            },
+            {
+              "file": "libs/lyra-sheet-angular/src/lib/components/toolbar/actions/font-color-dropdown/font-color-dropdown.component.scss",
+              "hash": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+            },
+            {
+              "file": "libs/lyra-sheet-angular/src/lib/components/toolbar/actions/font-color-dropdown/font-color-dropdown.component.spec.ts",
+              "hash": "6e6935df462fc79400ed0b9c7fc97abdcc05c770",
+              "deps": ["npm:@angular/core"]
+            },
+            {
+              "file": "libs/lyra-sheet-angular/src/lib/components/toolbar/actions/font-color-dropdown/font-color-dropdown.component.ts",
+              "hash": "e2e8325f041285fa903706f0a103d26f8e4bf45d",
+              "deps": ["npm:@angular/core", "lyra-sheet-core"]
+            },
+            {
+              "file": "libs/lyra-sheet-angular/src/lib/components/toolbar/actions/font-family-dropdown/font-family-dropdown.component.html",
+              "hash": "7b2f3d17bc64f97c7f7d20342d52e55cf78f4783"
+            },
+            {
+              "file": "libs/lyra-sheet-angular/src/lib/components/toolbar/actions/font-family-dropdown/font-family-dropdown.component.scss",
+              "hash": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+            },
+            {
+              "file": "libs/lyra-sheet-angular/src/lib/components/toolbar/actions/font-family-dropdown/font-family-dropdown.component.spec.ts",
+              "hash": "31d92b2b9c4231b83d8559ac3438c9f0dfbddaeb",
+              "deps": ["npm:@angular/core"]
+            },
+            {
+              "file": "libs/lyra-sheet-angular/src/lib/components/toolbar/actions/font-family-dropdown/font-family-dropdown.component.ts",
+              "hash": "0da1a0a9f79c1cd2bf8cbf825ddf63ec59385ad2",
+              "deps": ["npm:@angular/core", "lyra-sheet-core"]
+            },
+            {
+              "file": "libs/lyra-sheet-angular/src/lib/components/toolbar/actions/font-size-dropdown/font-size-dropdown.component.html",
+              "hash": "ecfb0320347d42d0d830debb7e58149ac8016177"
+            },
+            {
+              "file": "libs/lyra-sheet-angular/src/lib/components/toolbar/actions/font-size-dropdown/font-size-dropdown.component.scss",
+              "hash": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+            },
+            {
+              "file": "libs/lyra-sheet-angular/src/lib/components/toolbar/actions/font-size-dropdown/font-size-dropdown.component.spec.ts",
+              "hash": "409188c64510d5a5de596643fc2a27af28de089a",
+              "deps": ["npm:@angular/core"]
+            },
+            {
+              "file": "libs/lyra-sheet-angular/src/lib/components/toolbar/actions/font-size-dropdown/font-size-dropdown.component.ts",
+              "hash": "9248f827da1f52ebf0d591f81b47829697558482",
+              "deps": ["npm:@angular/core", "lyra-sheet-core"]
+            },
+            {
+              "file": "libs/lyra-sheet-angular/src/lib/components/toolbar/actions/format-dropdown/format-dropdown.component.html",
+              "hash": "67427aec799910bc4aa94356f86ed7ff70369dce"
+            },
+            {
+              "file": "libs/lyra-sheet-angular/src/lib/components/toolbar/actions/format-dropdown/format-dropdown.component.scss",
+              "hash": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+            },
+            {
+              "file": "libs/lyra-sheet-angular/src/lib/components/toolbar/actions/format-dropdown/format-dropdown.component.spec.ts",
+              "hash": "d302499166dd9747cedecce36f7f69529e62c1fa",
+              "deps": ["npm:@angular/core"]
+            },
+            {
+              "file": "libs/lyra-sheet-angular/src/lib/components/toolbar/actions/format-dropdown/format-dropdown.component.ts",
+              "hash": "c8601ed3ed49013c8bb050b7478f3dfdb676b359",
+              "deps": ["npm:@angular/core", "lyra-sheet-core"]
+            },
+            {
+              "file": "libs/lyra-sheet-angular/src/lib/components/toolbar/actions/formula-dropdown/formula-dropdown.component.html",
+              "hash": "235fede32ac7f710a2f08e6ed0b50bf2efc509fb"
+            },
+            {
+              "file": "libs/lyra-sheet-angular/src/lib/components/toolbar/actions/formula-dropdown/formula-dropdown.component.scss",
+              "hash": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+            },
+            {
+              "file": "libs/lyra-sheet-angular/src/lib/components/toolbar/actions/formula-dropdown/formula-dropdown.component.spec.ts",
+              "hash": "6a42b25f291e3f958bb01fa8de2eeae9be32f4f7",
+              "deps": ["npm:@angular/core"]
+            },
+            {
+              "file": "libs/lyra-sheet-angular/src/lib/components/toolbar/actions/formula-dropdown/formula-dropdown.component.ts",
+              "hash": "26d0cc062f3e4c0dcc573c0d4abbf66ef835a30e",
+              "deps": ["npm:@angular/core", "lyra-sheet-core"]
+            },
+            {
+              "file": "libs/lyra-sheet-angular/src/lib/components/toolbar/actions/italic-action/italic-action.component.html",
+              "hash": "10b2fdeaee78e7b95062a1fa79b4a8af5c75a529"
+            },
+            {
+              "file": "libs/lyra-sheet-angular/src/lib/components/toolbar/actions/italic-action/italic-action.component.scss",
+              "hash": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+            },
+            {
+              "file": "libs/lyra-sheet-angular/src/lib/components/toolbar/actions/italic-action/italic-action.component.spec.ts",
+              "hash": "8ced156c4fed1b7972ef68d73586b01bd0c49b67",
+              "deps": ["npm:@angular/core"]
+            },
+            {
+              "file": "libs/lyra-sheet-angular/src/lib/components/toolbar/actions/italic-action/italic-action.component.ts",
+              "hash": "ecc330a6ae3ffa98e75983caec5424bbf41f4fd6",
+              "deps": ["npm:@angular/core"]
+            },
+            {
+              "file": "libs/lyra-sheet-angular/src/lib/components/toolbar/actions/merge-dropdown/merge-dropdown.component.html",
+              "hash": "6cff46dabf95ab72139ce0e83c986b16afd61293"
+            },
+            {
+              "file": "libs/lyra-sheet-angular/src/lib/components/toolbar/actions/merge-dropdown/merge-dropdown.component.scss",
+              "hash": "537223fc15d01c236040c9c8da8389d3e935d5c7"
+            },
+            {
+              "file": "libs/lyra-sheet-angular/src/lib/components/toolbar/actions/merge-dropdown/merge-dropdown.component.spec.ts",
+              "hash": "0d6d9445c3e3dbdd980dd7f66eaeb38be1f839e1",
+              "deps": ["npm:@angular/core"]
+            },
+            {
+              "file": "libs/lyra-sheet-angular/src/lib/components/toolbar/actions/merge-dropdown/merge-dropdown.component.ts",
+              "hash": "7e9d15a86d5e7ae7e51ef0d4dec8418b77230d5c",
+              "deps": ["npm:@angular/core"]
+            },
+            {
+              "file": "libs/lyra-sheet-angular/src/lib/components/toolbar/actions/percent-action/percent-action.component.html",
+              "hash": "722176bf10060ed01483a0882a62343cdc9d0079"
+            },
+            {
+              "file": "libs/lyra-sheet-angular/src/lib/components/toolbar/actions/percent-action/percent-action.component.scss",
+              "hash": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+            },
+            {
+              "file": "libs/lyra-sheet-angular/src/lib/components/toolbar/actions/percent-action/percent-action.component.spec.ts",
+              "hash": "06b6525c7c18ef2f1218ae93a98de15433ec1034",
+              "deps": ["npm:@angular/core"]
+            },
+            {
+              "file": "libs/lyra-sheet-angular/src/lib/components/toolbar/actions/percent-action/percent-action.component.ts",
+              "hash": "013b8185e85cad6154a3bb27ac3d7cd6495d9608",
+              "deps": ["npm:@angular/core"]
+            },
+            {
+              "file": "libs/lyra-sheet-angular/src/lib/components/toolbar/actions/redo-action/redo-action.component.html",
+              "hash": "b0f4b135739260145461d04a6ca1c9b808ca2a6d"
+            },
+            {
+              "file": "libs/lyra-sheet-angular/src/lib/components/toolbar/actions/redo-action/redo-action.component.scss",
+              "hash": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+            },
+            {
+              "file": "libs/lyra-sheet-angular/src/lib/components/toolbar/actions/redo-action/redo-action.component.spec.ts",
+              "hash": "9f0aa78a4e52966dcf7cdc9b76be770ab0bd960b",
+              "deps": ["npm:@angular/core"]
+            },
+            {
+              "file": "libs/lyra-sheet-angular/src/lib/components/toolbar/actions/redo-action/redo-action.component.ts",
+              "hash": "fdbe2d50507abe4938b1ee347be7e8d3c3b285e1",
+              "deps": ["npm:@angular/core"]
+            },
+            {
+              "file": "libs/lyra-sheet-angular/src/lib/components/toolbar/actions/strike-action/strike-action.component.html",
+              "hash": "1478e2f7ace06c254fbda02f63a7ee6d0620e9a9"
+            },
+            {
+              "file": "libs/lyra-sheet-angular/src/lib/components/toolbar/actions/strike-action/strike-action.component.scss",
+              "hash": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+            },
+            {
+              "file": "libs/lyra-sheet-angular/src/lib/components/toolbar/actions/strike-action/strike-action.component.spec.ts",
+              "hash": "a941994bad526d2be0a45526ac57c68c6a070085",
+              "deps": ["npm:@angular/core"]
+            },
+            {
+              "file": "libs/lyra-sheet-angular/src/lib/components/toolbar/actions/strike-action/strike-action.component.ts",
+              "hash": "af11605c0b8d1c4fb3d1ec3727f34edbf509dbf2",
+              "deps": ["npm:@angular/core"]
+            },
+            {
+              "file": "libs/lyra-sheet-angular/src/lib/components/toolbar/actions/text-wrap-dropdown/text-wrap-dropdown.component.html",
+              "hash": "589ff8247bdd3d7e7aeee6fc8d8973e73ffaf698"
+            },
+            {
+              "file": "libs/lyra-sheet-angular/src/lib/components/toolbar/actions/text-wrap-dropdown/text-wrap-dropdown.component.scss",
+              "hash": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+            },
+            {
+              "file": "libs/lyra-sheet-angular/src/lib/components/toolbar/actions/text-wrap-dropdown/text-wrap-dropdown.component.spec.ts",
+              "hash": "ab84a7e3f6fa86015bbf78cb4b8bd23e011062e6",
+              "deps": ["npm:@angular/core"]
+            },
+            {
+              "file": "libs/lyra-sheet-angular/src/lib/components/toolbar/actions/text-wrap-dropdown/text-wrap-dropdown.component.ts",
+              "hash": "887ec2a919116dcac45cbf12756b97e1410da851",
+              "deps": ["npm:@angular/core", "lyra-sheet-core"]
+            },
+            {
+              "file": "libs/lyra-sheet-angular/src/lib/components/toolbar/actions/underline-action/underline-action.component.html",
+              "hash": "24ba7ae09931f25565723e67ba2e1e988d12db45"
+            },
+            {
+              "file": "libs/lyra-sheet-angular/src/lib/components/toolbar/actions/underline-action/underline-action.component.scss",
+              "hash": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+            },
+            {
+              "file": "libs/lyra-sheet-angular/src/lib/components/toolbar/actions/underline-action/underline-action.component.spec.ts",
+              "hash": "16e64832320b2e70745f1bbb0ab1341955d54cb2",
+              "deps": ["npm:@angular/core"]
+            },
+            {
+              "file": "libs/lyra-sheet-angular/src/lib/components/toolbar/actions/underline-action/underline-action.component.ts",
+              "hash": "dfe99359af8016a0769e883f7f56f67257c5930c",
+              "deps": ["npm:@angular/core"]
+            },
+            {
+              "file": "libs/lyra-sheet-angular/src/lib/components/toolbar/actions/undo-action/undo-action.component.html",
+              "hash": "e1a7c27e7543937398a19a4b1b49c5de0a99c7a3"
+            },
+            {
+              "file": "libs/lyra-sheet-angular/src/lib/components/toolbar/actions/undo-action/undo-action.component.scss",
+              "hash": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+            },
+            {
+              "file": "libs/lyra-sheet-angular/src/lib/components/toolbar/actions/undo-action/undo-action.component.spec.ts",
+              "hash": "f10152c19560866f9339bdbd9d80149335bba249",
+              "deps": ["npm:@angular/core"]
+            },
+            {
+              "file": "libs/lyra-sheet-angular/src/lib/components/toolbar/actions/undo-action/undo-action.component.ts",
+              "hash": "d1ac38eaf2d4f666c453a7e2d0a4bff2cb2156c0",
+              "deps": ["npm:@angular/core"]
+            },
+            {
+              "file": "libs/lyra-sheet-angular/src/lib/components/toolbar/actions/valign-dropdown/valign-dropdown.component.html",
+              "hash": "f6146373baa7924fd8884ef1176f6e45caf7d952"
+            },
+            {
+              "file": "libs/lyra-sheet-angular/src/lib/components/toolbar/actions/valign-dropdown/valign-dropdown.component.scss",
+              "hash": "d3bb19fe4324fa53247f55ff3fc4e32a72bfd2f5"
+            },
+            {
+              "file": "libs/lyra-sheet-angular/src/lib/components/toolbar/actions/valign-dropdown/valign-dropdown.component.spec.ts",
+              "hash": "c382778a80ce5fcd9338d7a9f6208670950ac5c5",
+              "deps": ["npm:@angular/core"]
+            },
+            {
+              "file": "libs/lyra-sheet-angular/src/lib/components/toolbar/actions/valign-dropdown/valign-dropdown.component.ts",
+              "hash": "63ddafd2b5b536d1c88ee77fa08f0650817f0699",
+              "deps": ["npm:@angular/core", "lyra-sheet-core"]
+            },
+            {
+              "file": "libs/lyra-sheet-angular/src/lib/components/toolbar/toolbar.component.html",
+              "hash": "26e88f303c3fb40f74eaead9c5ae7d723e956eaa"
+            },
+            {
+              "file": "libs/lyra-sheet-angular/src/lib/components/toolbar/toolbar.component.scss",
+              "hash": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+            },
+            {
+              "file": "libs/lyra-sheet-angular/src/lib/components/toolbar/toolbar.component.spec.ts",
+              "hash": "31ca83455df5e099d57d0ececcd28308979a82f3",
+              "deps": ["npm:@angular/core"]
+            },
+            {
+              "file": "libs/lyra-sheet-angular/src/lib/components/toolbar/toolbar.component.ts",
+              "hash": "e291f6d8bda4bb446ac60849c1db512d63741ced",
+              "deps": ["npm:@angular/core"]
+            },
+            {
+              "file": "libs/lyra-sheet-angular/src/lib/lyra-sheet.component.html",
+              "hash": "f23fb679639ea4650cfec1ffb5eb69e3e1243926"
+            },
+            {
+              "file": "libs/lyra-sheet-angular/src/lib/lyra-sheet.component.scss",
+              "hash": "41a76b0877602d0b4c51c78eddd8fa9436627356"
+            },
+            {
+              "file": "libs/lyra-sheet-angular/src/lib/lyra-sheet.component.spec.ts",
+              "hash": "f134c9d51f44638dd33e171c6a695e1c83664c73",
+              "deps": ["npm:@angular/core"]
+            },
+            {
+              "file": "libs/lyra-sheet-angular/src/lib/lyra-sheet.component.ts",
+              "hash": "688c19f5b481bd7b170cfe5330ca6ad87707d09c",
+              "deps": ["npm:@angular/core", "lyra-sheet-core", "npm:rxjs"]
+            },
+            {
+              "file": "libs/lyra-sheet-angular/src/lib/lyra-sheet.module.ts",
+              "hash": "95894761c24dfa253b1af7a52d745b9d20a9d500",
+              "deps": [
+                "npm:@angular/core",
+                "npm:@angular/common",
+                "npm:@angular/cdk"
+              ]
+            },
+            {
+              "file": "libs/lyra-sheet-angular/src/lib/services/_base_container.ts",
+              "hash": "39e04d8babac66e8b101fe09fd57697b3ea84a58",
+              "deps": ["npm:@angular/core", "npm:tsyringe", "lyra-sheet-core"]
+            },
+            {
+              "file": "libs/lyra-sheet-angular/src/lib/style.scss",
+              "hash": "1791bfdc64afc72cca5638fd90d2ae31fc679a1b"
+            },
+            {
+              "file": "libs/lyra-sheet-angular/src/test-setup.ts",
+              "hash": "1100b3e8a6ed08f4b5c27a96471846d57023c320",
+              "deps": ["npm:jest-preset-angular"]
+            },
+            {
+              "file": "libs/lyra-sheet-angular/tsconfig.json",
+              "hash": "92d5a13833a8b80a6161739da0abf089a78b19e2"
+            },
+            {
+              "file": "libs/lyra-sheet-angular/tsconfig.lib.json",
+              "hash": "b9774de5470414b85dfbf776f38d7e2561290f7b"
+            },
+            {
+              "file": "libs/lyra-sheet-angular/tsconfig.lib.prod.json",
+              "hash": "2a2faa884cf3a054c72288f62b9a9f9560ca4996"
+            },
+            {
+              "file": "libs/lyra-sheet-angular/tsconfig.spec.json",
+              "hash": "e70b1ea78035cb8183ce8dd1ab2f8967898f5a8a"
+            }
+          ]
+        }
+      },
+      "lyra-sheet-react": {
+        "name": "lyra-sheet-react",
+        "type": "lib",
+        "data": {
+          "root": "libs/lyra-sheet-react",
+          "sourceRoot": "libs/lyra-sheet-react/src",
+          "projectType": "library",
+          "tags": [],
+          "targets": {
+            "build": {
+              "executor": "@nrwl/web:rollup",
+              "outputs": ["{options.outputPath}"],
+              "options": {
+                "outputPath": "dist/libs/lyra-sheet-react",
+                "tsConfig": "libs/lyra-sheet-react/tsconfig.lib.json",
+                "project": "libs/lyra-sheet-react/package.json",
+                "entryFile": "libs/lyra-sheet-react/src/index.ts",
+                "external": ["react/jsx-runtime"],
+                "rollupConfig": "@nrwl/react/plugins/bundle-rollup",
+                "compiler": "babel",
+                "assets": [
+                  {
+                    "glob": "libs/lyra-sheet-react/README.md",
+                    "input": ".",
+                    "output": "."
+                  }
+                ]
+              }
+            },
+            "lint": {
+              "executor": "@nrwl/linter:eslint",
+              "outputs": ["{options.outputFile}"],
+              "options": {
+                "lintFilePatterns": [
+                  "libs/lyra-sheet-react/**/*.{ts,tsx,js,jsx}"
+                ]
+              }
+            },
+            "test": {
+              "executor": "@nrwl/jest:jest",
+              "outputs": ["coverage/libs/lyra-sheet-react"],
+              "options": {
+                "jestConfig": "libs/lyra-sheet-react/jest.config.js",
+                "passWithNoTests": true
+              }
+            }
+          },
+          "files": [
+            {
+              "file": "libs/lyra-sheet-react/.babelrc",
+              "hash": "ccae900be42788285eb6e1b3a2af4b81f56f14fe"
+            },
+            {
+              "file": "libs/lyra-sheet-react/.eslintrc.json",
+              "hash": "734ddaceea447738208c9519158ad6b3062f3929"
+            },
+            {
+              "file": "libs/lyra-sheet-react/jest.config.js",
+              "hash": "06b73f9bb1a170fbf8ce82970bbefd04a42022be"
+            },
+            {
+              "file": "libs/lyra-sheet-react/package.json",
+              "hash": "82bac2f32c1f02a1713d6d81dc75f295fcfb0a41"
+            },
+            {
+              "file": "libs/lyra-sheet-react/project.json",
+              "hash": "4aa59daf01b5aae62a9f20caf7d62ad9746c6205"
+            },
+            {
+              "file": "libs/lyra-sheet-react/README.md",
+              "hash": "eb7181d2742f7a595c55bbb790121b5390fddfd7"
+            },
+            {
+              "file": "libs/lyra-sheet-react/src/index.ts",
+              "hash": "967087100f937e0c794f46ffa9a9adba1d62980a"
+            },
+            {
+              "file": "libs/lyra-sheet-react/src/lib/lyra-sheet-react.module.scss",
+              "hash": "45c2aa47e9879fa033c0d1f266154dd6106c2201"
+            },
+            {
+              "file": "libs/lyra-sheet-react/src/lib/lyra-sheet-react.spec.tsx",
+              "hash": "5b4e6cf883b20e07671b3349e828280a5b4b361e",
+              "deps": ["npm:@testing-library/react"]
+            },
+            {
+              "file": "libs/lyra-sheet-react/src/lib/lyra-sheet-react.tsx",
+              "hash": "694cc09b92055edce3ec3ceabb6f1ef5c5bd0112"
+            },
+            {
+              "file": "libs/lyra-sheet-react/tsconfig.json",
+              "hash": "4c089585ed6b0a3c4767aee6a136bb6f47cad2b6"
+            },
+            {
+              "file": "libs/lyra-sheet-react/tsconfig.lib.json",
+              "hash": "252904bb73871a10597dc233e4a528e13c6af9c4"
+            },
+            {
+              "file": "libs/lyra-sheet-react/tsconfig.spec.json",
+              "hash": "67f149c4c04b9fad28e3b59462e55ba2d1e1d09b"
+            }
+          ]
+        }
+      },
+      "lyra-sheet-core": {
+        "name": "lyra-sheet-core",
+        "type": "lib",
+        "data": {
+          "root": "libs/lyra-sheet-core",
+          "sourceRoot": "libs/lyra-sheet-core/src",
+          "projectType": "library",
+          "targets": {
+            "lint": {
+              "executor": "@nrwl/linter:eslint",
+              "outputs": ["{options.outputFile}"],
+              "options": {
+                "lintFilePatterns": ["libs/lyra-sheet-core/**/*.ts"]
+              }
+            },
+            "test": {
+              "executor": "@nrwl/jest:jest",
+              "outputs": ["coverage/libs/lyra-sheet-core"],
+              "options": {
+                "jestConfig": "libs/lyra-sheet-core/jest.config.js",
+                "passWithNoTests": true
+              }
+            },
+            "build": {
+              "executor": "@nrwl/js:tsc",
+              "outputs": ["{options.outputPath}"],
+              "options": {
+                "outputPath": "dist/libs/lyra-sheet-core",
+                "tsConfig": "libs/lyra-sheet-core/tsconfig.lib.json",
+                "packageJson": "libs/lyra-sheet-core/package.json",
+                "main": "libs/lyra-sheet-core/src/index.ts",
+                "assets": ["libs/lyra-sheet-core/*.md"]
+              }
+            }
+          },
+          "tags": [],
+          "files": [
+            {
+              "file": "libs/lyra-sheet-core/.babelrc",
+              "hash": "cf7ddd99c615a064ac18eb3109eee4f394ab1faf"
+            },
+            {
+              "file": "libs/lyra-sheet-core/.eslintrc.json",
+              "hash": "9effef2fdb7727dfc2517d9ff59625893ffca8dd"
+            },
+            {
+              "file": "libs/lyra-sheet-core/jest.config.js",
+              "hash": "8c96c16cabdbf97a14d15e5708ac75a0b4d960ad"
+            },
+            {
+              "file": "libs/lyra-sheet-core/package.json",
+              "hash": "a9a218f84a510e0cbfea08e4a839c0430cce2a13",
+              "deps": [
+                "npm:rxjs",
+                "npm:tsyringe",
+                "npm:big.js",
+                "npm:dayjs",
+                "npm:tslib"
+              ]
+            },
+            {
+              "file": "libs/lyra-sheet-core/project.json",
+              "hash": "513931ea5db3f9ed4d7ed68946674d31d69db5c7"
+            },
+            {
+              "file": "libs/lyra-sheet-core/README.md",
+              "hash": "1fa133715070113c51a37a0a284226da7969fea6"
+            },
+            {
+              "file": "libs/lyra-sheet-core/src/index.ts",
+              "hash": "560ef65491dcd07d699e5c3f8bc212d2f9a88637",
+              "deps": ["npm:tsyringe"]
+            },
+            {
+              "file": "libs/lyra-sheet-core/src/lib/constants/context-menu.ts",
+              "hash": "a9021022742b7961181cb26bd0379070f4146b2d"
+            },
+            {
+              "file": "libs/lyra-sheet-core/src/lib/constants/default-cell-style.ts",
+              "hash": "4b6c1c70b3a82d7072239d08f202a626bb72c485"
+            },
+            {
+              "file": "libs/lyra-sheet-core/src/lib/constants/default-text-style.ts",
+              "hash": "6946a159640ffef0adb4053c7dbfa23efafe268c"
+            },
+            {
+              "file": "libs/lyra-sheet-core/src/lib/constants/font-family-options.ts",
+              "hash": "4f68573a4582c071a6ef478cfd11c5ff9b73bbc4"
+            },
+            {
+              "file": "libs/lyra-sheet-core/src/lib/constants/font-size-options.ts",
+              "hash": "2367fea66c4f996c7757c08f278f111d7893a66e"
+            },
+            {
+              "file": "libs/lyra-sheet-core/src/lib/constants/grid-style.ts",
+              "hash": "8af7b26cf5a0954b2b1b1fc6adbb35c7cab91e1a"
+            },
+            {
+              "file": "libs/lyra-sheet-core/src/lib/constants/index.ts",
+              "hash": "f6991d8e5d298c0a1f010844870733153b906e89"
+            },
+            {
+              "file": "libs/lyra-sheet-core/src/lib/constants/resizer.ts",
+              "hash": "661c8ba669cef589b00ba46d739e14b59f2de828"
+            },
+            {
+              "file": "libs/lyra-sheet-core/src/lib/services/autofill.service.ts",
+              "hash": "1a1d9fa091d8c0ae987b63e073dec0c47bc322b7",
+              "deps": ["npm:rxjs", "npm:tsyringe"]
+            },
+            {
+              "file": "libs/lyra-sheet-core/src/lib/services/canvas.service.ts",
+              "hash": "0244a88f510807c2e30cc28db07dbf0e7eb29321",
+              "deps": ["npm:tsyringe"]
+            },
+            {
+              "file": "libs/lyra-sheet-core/src/lib/services/cell-range.factory.ts",
+              "hash": "619cf65c292c51f1f4f81876899202aecbe3b765"
+            },
+            {
+              "file": "libs/lyra-sheet-core/src/lib/services/char-size.service.ts",
+              "hash": "87284663b7f77ef04334c1926986cd69f96a3a47",
+              "deps": ["npm:tsyringe"]
+            },
+            {
+              "file": "libs/lyra-sheet-core/src/lib/services/config.service.ts",
+              "hash": "ae4910e34a055c2196caa5897c984483b89b8299",
+              "deps": ["npm:rxjs", "npm:tsyringe"]
+            },
+            {
+              "file": "libs/lyra-sheet-core/src/lib/services/contextmenu.service.ts",
+              "hash": "8176f90b7dfd938b71d111774f62c66f01c73862",
+              "deps": ["npm:rxjs", "npm:tsyringe"]
+            },
+            {
+              "file": "libs/lyra-sheet-core/src/lib/services/data.service.ts",
+              "hash": "350aa76ee420dc2ba41ddbce9dfa3e32c6710128",
+              "deps": ["npm:rxjs", "npm:tsyringe"]
+            },
+            {
+              "file": "libs/lyra-sheet-core/src/lib/services/dpr.service.ts",
+              "hash": "5964538bdbfc5da2ec31757c63657a9d7caea9aa",
+              "deps": ["npm:tsyringe"]
+            },
+            {
+              "file": "libs/lyra-sheet-core/src/lib/services/editor.service.ts",
+              "hash": "39e492ee2a32b6fe8a26dbd1d83148c93c0ecc9c",
+              "deps": ["npm:tsyringe"]
+            },
+            {
+              "file": "libs/lyra-sheet-core/src/lib/services/element-ref.service.ts",
+              "hash": "55bf5bd385d15ee35e2333626e87f30e149aa682",
+              "deps": ["npm:tsyringe"]
+            },
+            {
+              "file": "libs/lyra-sheet-core/src/lib/services/exec-command.service.ts",
+              "hash": "09ed2800f2ff3a8eca071055c5096b179e08b509",
+              "deps": ["npm:tsyringe"]
+            },
+            {
+              "file": "libs/lyra-sheet-core/src/lib/services/focused-style.service.ts",
+              "hash": "6f0441bd8010ca2c2522cc02589399759608ba3b",
+              "deps": ["npm:tsyringe"]
+            },
+            {
+              "file": "libs/lyra-sheet-core/src/lib/services/formula-edit.service.ts",
+              "hash": "aab99f409bbbad7180ea5d00906f08caebff4889",
+              "deps": ["npm:tsyringe"]
+            },
+            {
+              "file": "libs/lyra-sheet-core/src/lib/services/formula-render.service.ts",
+              "hash": "b0f14e3c22a1c24040297cddeb512f200dd68137",
+              "deps": ["npm:big.js", "npm:tsyringe"]
+            },
+            {
+              "file": "libs/lyra-sheet-core/src/lib/services/history.service.ts",
+              "hash": "ffb4bcebe81f2fe48c2a261254a158cb48a9f69f",
+              "deps": ["npm:tsyringe"]
+            },
+            {
+              "file": "libs/lyra-sheet-core/src/lib/services/html-to-rich-text.service.ts",
+              "hash": "c28223d4ea7b458331d8c228c53b4cd2bae68023",
+              "deps": ["npm:tsyringe"]
+            },
+            {
+              "file": "libs/lyra-sheet-core/src/lib/services/index.ts",
+              "hash": "19de30fc96354ceee9fa259d758cef8fa21f03d6"
+            },
+            {
+              "file": "libs/lyra-sheet-core/src/lib/services/keyboard-event.service.ts",
+              "hash": "9bc7a449e5becbf7ae0de6244e3a9ff46ca49ee4",
+              "deps": ["npm:rxjs", "npm:tsyringe"]
+            },
+            {
+              "file": "libs/lyra-sheet-core/src/lib/services/line-wrap.service.spec.ts",
+              "hash": "52b53451b6fb2e5967c63b1290d070688e0cebba"
+            },
+            {
+              "file": "libs/lyra-sheet-core/src/lib/services/line-wrap.service.ts",
+              "hash": "77337e3dc0e21fbf375e156458f8f4e8d4c38862",
+              "deps": ["npm:big.js", "npm:dayjs", "npm:tsyringe"]
+            },
+            {
+              "file": "libs/lyra-sheet-core/src/lib/services/merges.service.ts",
+              "hash": "75916a2ea96d429194e173aafb8e5f1e27164b97",
+              "deps": ["npm:tsyringe"]
+            },
+            {
+              "file": "libs/lyra-sheet-core/src/lib/services/mouse-event.service.ts",
+              "hash": "9d22ee546d595f3185c3af0785e0fa1ab7907dd2",
+              "deps": ["npm:rxjs", "npm:tsyringe"]
+            },
+            {
+              "file": "libs/lyra-sheet-core/src/lib/services/render-proxy.service.ts",
+              "hash": "c97e8448e286d834b5a42585c636aaeeec3472e7",
+              "deps": ["npm:rxjs", "npm:tsyringe"]
+            },
+            {
+              "file": "libs/lyra-sheet-core/src/lib/services/render.service.ts",
+              "hash": "653f2fa33ac37537e37dcac45c94de666153ea68",
+              "deps": ["npm:tsyringe"]
+            },
+            {
+              "file": "libs/lyra-sheet-core/src/lib/services/resizer.service.ts",
+              "hash": "1e51ed22d5c7157a7c104f3fe192acb8ab63915f",
+              "deps": ["npm:rxjs", "npm:tsyringe"]
+            },
+            {
+              "file": "libs/lyra-sheet-core/src/lib/services/rich-text-to-html.service.ts",
+              "hash": "707d03e1519d290fdf6346da0d4d0b81c4fdfb16",
+              "deps": ["npm:tsyringe"]
+            },
+            {
+              "file": "libs/lyra-sheet-core/src/lib/services/scrolling.service.ts",
+              "hash": "bc85539dc8a0882e835a1ce5106ade6a303fc185",
+              "deps": ["npm:rxjs", "npm:tsyringe"]
+            },
+            {
+              "file": "libs/lyra-sheet-core/src/lib/services/selector.factory.ts",
+              "hash": "00f88ae233c5e5e7ff08cf85d1d24bda4ffbf5a7",
+              "deps": ["npm:tsyringe"]
+            },
+            {
+              "file": "libs/lyra-sheet-core/src/lib/services/selectors.service.ts",
+              "hash": "d68dd670d2915538fe568f3fe71a89cde34514c8",
+              "deps": ["npm:rxjs", "npm:tsyringe"]
+            },
+            {
+              "file": "libs/lyra-sheet-core/src/lib/services/sheet.service.ts",
+              "hash": "38f738a41efd049ed96202a2bf94432226d20b1e",
+              "deps": ["npm:tsyringe"]
+            },
+            {
+              "file": "libs/lyra-sheet-core/src/lib/services/text-input.service.ts",
+              "hash": "92db396e3399327a5deee8b4e092b3252f22f5f4",
+              "deps": ["npm:rxjs", "npm:tsyringe"]
+            },
+            {
+              "file": "libs/lyra-sheet-core/src/lib/services/view-range.service.ts",
+              "hash": "d18f09f4e6ed73094be97670385b5720549ea03e",
+              "deps": ["npm:tsyringe"]
+            },
+            {
+              "file": "libs/lyra-sheet-core/src/lib/types/cell-style.model.ts",
+              "hash": "0f2c6e262a9d2cad91a05db4ae29f249dfc3a8ce"
+            },
+            {
+              "file": "libs/lyra-sheet-core/src/lib/types/config.model.ts",
+              "hash": "b5b7d1ec020046725324bc7fd8483cb27d85d7cd"
+            },
+            {
+              "file": "libs/lyra-sheet-core/src/lib/types/cord.model.ts",
+              "hash": "c1d4d20308e78439c31ca7ef8871f75bcc763502"
+            },
+            {
+              "file": "libs/lyra-sheet-core/src/lib/types/index.ts",
+              "hash": "6927e390f5e82f64c6cc32c40f649774f0fe54bd"
+            },
+            {
+              "file": "libs/lyra-sheet-core/src/lib/types/rect.model.ts",
+              "hash": "bafbd928eb67ba17cf38063dee254942c07978ac"
+            },
+            {
+              "file": "libs/lyra-sheet-core/src/lib/types/text-style.model.ts",
+              "hash": "d8e3333a78db61f899fbdb0ccff0e3b5cdd08589"
+            },
+            {
+              "file": "libs/lyra-sheet-core/src/lib/types/types.model.ts",
+              "hash": "2a75409e201d59e46d81d35d14f024a58b8e8cfd"
+            },
+            {
+              "file": "libs/lyra-sheet-core/src/lib/utils/clone-deep.ts",
+              "hash": "9a1ec1bc94be7399f06dee511730bd1a822126fe"
+            },
+            {
+              "file": "libs/lyra-sheet-core/src/lib/utils/cord-conv.ts",
+              "hash": "04159af5c65b272ca22fdc9c8543aca11ac7886c"
+            },
+            {
+              "file": "libs/lyra-sheet-core/src/lib/utils/in-ranges.ts",
+              "hash": "bfca875afe70cc37d15470b2144411476b62e7b4"
+            },
+            {
+              "file": "libs/lyra-sheet-core/src/lib/utils/index.ts",
+              "hash": "34c210b247a088a0900dd9d95da64c5bc1361820"
+            },
+            {
+              "file": "libs/lyra-sheet-core/src/lib/utils/is-nil.ts",
+              "hash": "0ea3aebe3540053e1f95bf1e88f36b4b705d69dc"
+            },
+            {
+              "file": "libs/lyra-sheet-core/src/lib/utils/is-number.ts",
+              "hash": "482b0e2ec26008a2188d42b20c3c9f356637a47a"
+            },
+            {
+              "file": "libs/lyra-sheet-core/src/lib/utils/plain-text-from-lines.ts",
+              "hash": "6696a2da7e31440b9078fd0907e9c5aaf0d2c177"
+            },
+            {
+              "file": "libs/lyra-sheet-core/src/lib/utils/px-str2num.ts",
+              "hash": "db47c6e6a689d0ef0643d253fc6ccf27d735ba86"
+            },
+            {
+              "file": "libs/lyra-sheet-core/src/lib/utils/set-style.ts",
+              "hash": "75b46676189afea64fddba56f418c43551c7687a"
+            },
+            {
+              "file": "libs/lyra-sheet-core/src/lib/utils/to-rgb.ts",
+              "hash": "778f9455ad0eceede759bfffad4d9c170635ad0a"
+            },
+            {
+              "file": "libs/lyra-sheet-core/tsconfig.json",
+              "hash": "3e2562adbbd2b647be708d51de2674c1cd84b9f0"
+            },
+            {
+              "file": "libs/lyra-sheet-core/tsconfig.lib.json",
+              "hash": "6efdbeecb5481388fd79af80e5825e38c25bc038"
+            },
+            {
+              "file": "libs/lyra-sheet-core/tsconfig.spec.json",
+              "hash": "67f149c4c04b9fad28e3b59462e55ba2d1e1d09b"
+            }
+          ]
+        }
+      },
+      "demo-react-e2e": {
+        "name": "demo-react-e2e",
+        "type": "e2e",
+        "data": {
+          "root": "apps/demo-react-e2e",
+          "sourceRoot": "apps/demo-react-e2e/src",
+          "projectType": "application",
+          "targets": {
+            "e2e": {
+              "executor": "@nrwl/cypress:cypress",
+              "options": {
+                "cypressConfig": "apps/demo-react-e2e/cypress.json",
+                "devServerTarget": "demo-react:serve"
+              },
+              "configurations": {
+                "production": {
+                  "devServerTarget": "demo-react:serve:production"
+                }
+              }
+            },
+            "lint": {
+              "executor": "@nrwl/linter:eslint",
+              "outputs": ["{options.outputFile}"],
+              "options": {
+                "lintFilePatterns": ["apps/demo-react-e2e/**/*.{js,ts}"]
+              }
+            }
+          },
+          "tags": [],
+          "implicitDependencies": ["demo-react"],
+          "files": [
+            {
+              "file": "apps/demo-react-e2e/.eslintrc.json",
+              "hash": "696cb8b12127425419f6d2809c5f15a5963d86de"
+            },
+            {
+              "file": "apps/demo-react-e2e/cypress.json",
+              "hash": "c7639dfb43fa878ecde3bb1f597d0698143116dd"
+            },
+            {
+              "file": "apps/demo-react-e2e/project.json",
+              "hash": "e91eb406250d8d97c8c2567f1aff4923e28317ef"
+            },
+            {
+              "file": "apps/demo-react-e2e/src/fixtures/example.json",
+              "hash": "294cbed6ce9e0b948b787452e8676aee486cb3be"
+            },
+            {
+              "file": "apps/demo-react-e2e/src/integration/app.spec.ts",
+              "hash": "6c02d92415d4dc452a49dc630ffbec32d7566534"
+            },
+            {
+              "file": "apps/demo-react-e2e/src/support/app.po.ts",
+              "hash": "32934246969c2ecb827ac05677785933a707a54d"
+            },
+            {
+              "file": "apps/demo-react-e2e/src/support/commands.ts",
+              "hash": "310f1fa0e043ffebbbcf575c5a4d17f13a6b14d6"
+            },
+            {
+              "file": "apps/demo-react-e2e/src/support/index.ts",
+              "hash": "3d469a6b6cf31eb66117d73e278bcf74f398f1db"
+            },
+            {
+              "file": "apps/demo-react-e2e/tsconfig.json",
+              "hash": "c4f818ecd40fbce82c3e08bf25cde3043970f8f3"
+            }
+          ]
+        }
+      },
+      "demo-ng-e2e": {
+        "name": "demo-ng-e2e",
+        "type": "e2e",
+        "data": {
+          "root": "apps/demo-ng-e2e",
+          "sourceRoot": "apps/demo-ng-e2e/src",
+          "projectType": "application",
+          "targets": {
+            "e2e": {
+              "executor": "@nrwl/cypress:cypress",
+              "options": {
+                "cypressConfig": "apps/demo-ng-e2e/cypress.json",
+                "devServerTarget": "demo-ng:serve:development"
+              },
+              "configurations": {
+                "production": {
+                  "devServerTarget": "demo-ng:serve:production"
+                }
+              }
+            },
+            "lint": {
+              "executor": "@nrwl/linter:eslint",
+              "outputs": ["{options.outputFile}"],
+              "options": {
+                "lintFilePatterns": ["apps/demo-ng-e2e/**/*.{js,ts}"]
+              }
+            }
+          },
+          "tags": [],
+          "implicitDependencies": ["demo-ng"],
+          "files": [
+            {
+              "file": "apps/demo-ng-e2e/.eslintrc.json",
+              "hash": "4c5989b23b5aa8cc7aba2a07d1ae7daee19c1555"
+            },
+            {
+              "file": "apps/demo-ng-e2e/cypress.json",
+              "hash": "9948455d3518df601faa270901ed36ea242ce294"
+            },
+            {
+              "file": "apps/demo-ng-e2e/project.json",
+              "hash": "4e1e1444a2bad7cac2599676f975bfcba797c083"
+            },
+            {
+              "file": "apps/demo-ng-e2e/src/fixtures/example.json",
+              "hash": "294cbed6ce9e0b948b787452e8676aee486cb3be"
+            },
+            {
+              "file": "apps/demo-ng-e2e/src/integration/app.spec.ts",
+              "hash": "db2cf038975115c25d0d7b3ce020396e29c99467"
+            },
+            {
+              "file": "apps/demo-ng-e2e/src/support/app.po.ts",
+              "hash": "32934246969c2ecb827ac05677785933a707a54d"
+            },
+            {
+              "file": "apps/demo-ng-e2e/src/support/commands.ts",
+              "hash": "310f1fa0e043ffebbbcf575c5a4d17f13a6b14d6"
+            },
+            {
+              "file": "apps/demo-ng-e2e/src/support/index.ts",
+              "hash": "3d469a6b6cf31eb66117d73e278bcf74f398f1db"
+            },
+            {
+              "file": "apps/demo-ng-e2e/tsconfig.json",
+              "hash": "eed477927cc7ae6bd893346f66121ea1338218e1"
+            }
+          ]
+        }
+      },
+      "demo-react": {
+        "name": "demo-react",
+        "type": "app",
+        "data": {
+          "root": "apps/demo-react",
+          "sourceRoot": "apps/demo-react/src",
+          "projectType": "application",
+          "targets": {
+            "build": {
+              "executor": "@nrwl/web:webpack",
+              "outputs": ["{options.outputPath}"],
+              "defaultConfiguration": "production",
+              "options": {
+                "compiler": "babel",
+                "outputPath": "dist/apps/demo-react",
+                "index": "apps/demo-react/src/index.html",
+                "baseHref": "/",
+                "main": "apps/demo-react/src/main.tsx",
+                "polyfills": "apps/demo-react/src/polyfills.ts",
+                "tsConfig": "apps/demo-react/tsconfig.app.json",
+                "assets": [
+                  "apps/demo-react/src/favicon.ico",
+                  "apps/demo-react/src/assets"
+                ],
+                "styles": ["apps/demo-react/src/styles.scss"],
+                "scripts": [],
+                "webpackConfig": "@nrwl/react/plugins/webpack"
+              },
+              "configurations": {
+                "production": {
+                  "fileReplacements": [
+                    {
+                      "replace": "apps/demo-react/src/environments/environment.ts",
+                      "with": "apps/demo-react/src/environments/environment.prod.ts"
+                    }
+                  ],
+                  "optimization": true,
+                  "outputHashing": "all",
+                  "sourceMap": false,
+                  "namedChunks": false,
+                  "extractLicenses": true,
+                  "vendorChunk": false
+                }
+              }
+            },
+            "serve": {
+              "executor": "@nrwl/web:dev-server",
+              "options": {
+                "buildTarget": "demo-react:build",
+                "hmr": true
+              },
+              "configurations": {
+                "production": {
+                  "buildTarget": "demo-react:build:production",
+                  "hmr": false
+                }
+              }
+            },
+            "lint": {
+              "executor": "@nrwl/linter:eslint",
+              "outputs": ["{options.outputFile}"],
+              "options": {
+                "lintFilePatterns": ["apps/demo-react/**/*.{ts,tsx,js,jsx}"]
+              }
+            },
+            "test": {
+              "executor": "@nrwl/jest:jest",
+              "outputs": ["coverage/apps/demo-react"],
+              "options": {
+                "jestConfig": "apps/demo-react/jest.config.js",
+                "passWithNoTests": true
+              }
+            }
+          },
+          "tags": [],
+          "files": [
+            {
+              "file": "apps/demo-react/.babelrc",
+              "hash": "61641ec8ac3659e204441c80bb06defe323e3110"
+            },
+            {
+              "file": "apps/demo-react/.browserslistrc",
+              "hash": "f1d12df4faa25ab7f0f03196105e957395f609af"
+            },
+            {
+              "file": "apps/demo-react/.eslintrc.json",
+              "hash": "734ddaceea447738208c9519158ad6b3062f3929"
+            },
+            {
+              "file": "apps/demo-react/jest.config.js",
+              "hash": "84a26b255d3c5bb704935f27dc4080c927f2f144"
+            },
+            {
+              "file": "apps/demo-react/project.json",
+              "hash": "d9c28a216737bef9dc85f978550c9f9b3fcf892b"
+            },
+            {
+              "file": "apps/demo-react/src/app/app.module.scss",
+              "hash": "7b88fbabf87b258bc8a0cc5b78800551134ca195"
+            },
+            {
+              "file": "apps/demo-react/src/app/app.spec.tsx",
+              "hash": "63a10a37d340b5c82bb7c2f9990e27016a7ee358",
+              "deps": ["npm:@testing-library/react"]
+            },
+            {
+              "file": "apps/demo-react/src/app/app.tsx",
+              "hash": "c60bbddf2f7c9b4b5ce564f7d3e8ddc120491e00"
+            },
+            {
+              "file": "apps/demo-react/src/app/nx-welcome.tsx",
+              "hash": "6278272a11a2dbfd9013b1156a8f58b61cce8341"
+            },
+            {
+              "file": "apps/demo-react/src/assets/.gitkeep",
+              "hash": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+            },
+            {
+              "file": "apps/demo-react/src/environments/environment.prod.ts",
+              "hash": "c9669790be176ac85a5d8c11278875c2f52dc507"
+            },
+            {
+              "file": "apps/demo-react/src/environments/environment.ts",
+              "hash": "7ed83767fff25adfed19d52b2821a432f8ed18b1"
+            },
+            {
+              "file": "apps/demo-react/src/favicon.ico",
+              "hash": "317ebcb2336e0833a22dddf0ab287849f26fda57"
+            },
+            {
+              "file": "apps/demo-react/src/index.html",
+              "hash": "fd238359a5d613d03c92e8c9c883230fb69732da"
+            },
+            {
+              "file": "apps/demo-react/src/main.tsx",
+              "hash": "edb257a2b153fc4e8ca2a6143bd80edc21a3a37d",
+              "deps": ["npm:react", "npm:react-dom"]
+            },
+            {
+              "file": "apps/demo-react/src/polyfills.ts",
+              "hash": "2adf3d05b6fcf479dd61c74f6bda95d9edb6ac6b",
+              "deps": ["npm:core-js", "npm:regenerator-runtime"]
+            },
+            {
+              "file": "apps/demo-react/src/styles.scss",
+              "hash": "90d4ee0072ce3fc41812f8af910219f9eea3c3de"
+            },
+            {
+              "file": "apps/demo-react/tsconfig.app.json",
+              "hash": "252904bb73871a10597dc233e4a528e13c6af9c4"
+            },
+            {
+              "file": "apps/demo-react/tsconfig.json",
+              "hash": "9657042e495d5b69d338455a91b5fcaae1bddff3"
+            },
+            {
+              "file": "apps/demo-react/tsconfig.spec.json",
+              "hash": "95ef66a08a930c883fae51ec55020ad0ceab2ce9"
+            }
+          ]
+        }
+      },
+      "demo-ng": {
+        "name": "demo-ng",
+        "type": "app",
+        "data": {
+          "projectType": "application",
+          "root": "apps/demo-ng",
+          "sourceRoot": "apps/demo-ng/src",
+          "prefix": "lyra-workspace",
+          "targets": {
+            "build": {
+              "executor": "@angular-devkit/build-angular:browser",
+              "outputs": ["{options.outputPath}"],
+              "options": {
+                "outputPath": "dist/apps/demo-ng",
+                "index": "apps/demo-ng/src/index.html",
+                "main": "apps/demo-ng/src/main.ts",
+                "polyfills": "apps/demo-ng/src/polyfills.ts",
+                "tsConfig": "apps/demo-ng/tsconfig.app.json",
+                "inlineStyleLanguage": "scss",
+                "assets": [
+                  "apps/demo-ng/src/favicon.ico",
+                  "apps/demo-ng/src/assets"
+                ],
+                "styles": ["apps/demo-ng/src/styles.scss"],
+                "scripts": []
+              },
+              "configurations": {
+                "production": {
+                  "budgets": [
+                    {
+                      "type": "initial",
+                      "maximumWarning": "500kb",
+                      "maximumError": "1mb"
+                    },
+                    {
+                      "type": "anyComponentStyle",
+                      "maximumWarning": "2kb",
+                      "maximumError": "4kb"
+                    }
+                  ],
+                  "fileReplacements": [
+                    {
+                      "replace": "apps/demo-ng/src/environments/environment.ts",
+                      "with": "apps/demo-ng/src/environments/environment.prod.ts"
+                    }
+                  ],
+                  "outputHashing": "all"
+                },
+                "development": {
+                  "buildOptimizer": false,
+                  "optimization": false,
+                  "vendorChunk": true,
+                  "extractLicenses": false,
+                  "sourceMap": true,
+                  "namedChunks": true
+                }
+              },
+              "defaultConfiguration": "production"
+            },
+            "serve": {
+              "executor": "@angular-devkit/build-angular:dev-server",
+              "configurations": {
+                "production": {
+                  "browserTarget": "demo-ng:build:production"
+                },
+                "development": {
+                  "browserTarget": "demo-ng:build:development"
+                }
+              },
+              "defaultConfiguration": "development",
+              "options": {
+                "proxyConfig": "apps/demo-ng/proxy.conf.json"
+              }
+            },
+            "extract-i18n": {
+              "executor": "@angular-devkit/build-angular:extract-i18n",
+              "options": {
+                "browserTarget": "demo-ng:build"
+              }
+            },
+            "lint": {
+              "executor": "@nrwl/linter:eslint",
+              "options": {
+                "lintFilePatterns": [
+                  "apps/demo-ng/src/**/*.ts",
+                  "apps/demo-ng/src/**/*.html"
+                ]
+              }
+            },
+            "test": {
+              "executor": "@nrwl/jest:jest",
+              "outputs": ["coverage/apps/demo-ng"],
+              "options": {
+                "jestConfig": "apps/demo-ng/jest.config.js",
+                "passWithNoTests": true
+              }
+            }
+          },
+          "tags": [],
+          "files": [
+            {
+              "file": "apps/demo-ng/.browserslistrc",
+              "hash": "4f9ac26980c156a3d525267010d5f78144b43519"
+            },
+            {
+              "file": "apps/demo-ng/.eslintrc.json",
+              "hash": "008d5531be8124499d7ae2191de890d1dab4e2bc"
+            },
+            {
+              "file": "apps/demo-ng/jest.config.js",
+              "hash": "c27fe1d2c4ff6203a58172efcf565ef352f60e4f"
+            },
+            {
+              "file": "apps/demo-ng/project.json",
+              "hash": "13405a2afe9a6efdb7e98ed841a2cea8f3b8480d"
+            },
+            {
+              "file": "apps/demo-ng/proxy.conf.json",
+              "hash": "62a1e7b762cec5ece007e8e21daaf5eb141e0e7b"
+            },
+            {
+              "file": "apps/demo-ng/src/app/app.component.html",
+              "hash": "2bece8b7c9391c6496e49c3f71df16301a96633c"
+            },
+            {
+              "file": "apps/demo-ng/src/app/app.component.scss",
+              "hash": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+            },
+            {
+              "file": "apps/demo-ng/src/app/app.component.spec.ts",
+              "hash": "5729e412c613d8a8ccb0e9166e83d06f8387b73d",
+              "deps": ["npm:@angular/core", "npm:@angular/common"]
+            },
+            {
+              "file": "apps/demo-ng/src/app/app.component.ts",
+              "hash": "63e34b60728c5e4206a3e13e2d1af1a6071dcecf",
+              "deps": ["npm:@angular/core", "lyra-sheet-core"]
+            },
+            {
+              "file": "apps/demo-ng/src/app/app.module.ts",
+              "hash": "13ad78b36c219200901c00346257294602fdba5b",
+              "deps": [
+                "npm:@angular/core",
+                "npm:@angular/platform-browser",
+                "npm:@angular/common",
+                "lyra-sheet-angular"
+              ]
+            },
+            {
+              "file": "apps/demo-ng/src/app/nx-welcome.component.ts",
+              "hash": "223e2438c841fcf64d643753a061d782e8efefc7",
+              "deps": ["npm:@angular/core"]
+            },
+            {
+              "file": "apps/demo-ng/src/assets/.gitkeep",
+              "hash": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391"
+            },
+            {
+              "file": "apps/demo-ng/src/environments/environment.prod.ts",
+              "hash": "c9669790be176ac85a5d8c11278875c2f52dc507"
+            },
+            {
+              "file": "apps/demo-ng/src/environments/environment.ts",
+              "hash": "66998ae9a7c27359bc473c6d2aa0029dd1f4b700"
+            },
+            {
+              "file": "apps/demo-ng/src/favicon.ico",
+              "hash": "1df1067781456ecf684aabe4f2765dd03ca84a59"
+            },
+            {
+              "file": "apps/demo-ng/src/index.html",
+              "hash": "473eb126fc338bc275c9124a05d28c377a18ea6a"
+            },
+            {
+              "file": "apps/demo-ng/src/main.ts",
+              "hash": "d9a2e7e4a582e265db779363bd8b2492c43c141b",
+              "deps": [
+                "npm:@angular/core",
+                "npm:@angular/platform-browser-dynamic"
+              ]
+            },
+            {
+              "file": "apps/demo-ng/src/polyfills.ts",
+              "hash": "a5013e703eb41b43c3ce9dcf2a75d14435440e30",
+              "deps": ["npm:zone.js", "npm:reflect-metadata"]
+            },
+            {
+              "file": "apps/demo-ng/src/styles.scss",
+              "hash": "e9e94b61dd44caeb5b7b7f9b56f705cc3706e0f9"
+            },
+            {
+              "file": "apps/demo-ng/src/test-setup.ts",
+              "hash": "1100b3e8a6ed08f4b5c27a96471846d57023c320",
+              "deps": ["npm:jest-preset-angular"]
+            },
+            {
+              "file": "apps/demo-ng/tsconfig.app.json",
+              "hash": "d02668407209d10ca36e7122b06dbaf0ce3457e9"
+            },
+            {
+              "file": "apps/demo-ng/tsconfig.editor.json",
+              "hash": "20c4afdbf437457984afcb236d4b5e588aec858a"
+            },
+            {
+              "file": "apps/demo-ng/tsconfig.json",
+              "hash": "02add216608561f0c4385feaf9c5082f2d71bf60"
+            },
+            {
+              "file": "apps/demo-ng/tsconfig.spec.json",
+              "hash": "e70b1ea78035cb8183ce8dd1ab2f8967898f5a8a"
+            }
+          ]
+        }
+      }
+    },
+    "dependencies": {
+      "lyra-sheet-angular": [
+        {
+          "source": "lyra-sheet-angular",
+          "target": "lyra-sheet-core",
+          "type": "static"
+        }
+      ],
+      "lyra-sheet-react": [],
+      "lyra-sheet-core": [],
+      "demo-react-e2e": [
+        {
+          "source": "demo-react-e2e",
+          "target": "demo-react",
+          "type": "implicit"
+        }
+      ],
+      "demo-ng-e2e": [
+        {
+          "source": "demo-ng-e2e",
+          "target": "demo-ng",
+          "type": "implicit"
+        }
+      ],
+      "demo-react": [],
+      "demo-ng": [
+        {
+          "source": "demo-ng",
+          "target": "lyra-sheet-core",
+          "type": "static"
+        },
+        {
+          "source": "demo-ng",
+          "target": "lyra-sheet-angular",
+          "type": "static"
+        }
+      ]
+    }
+  },
+  "affectedProjects": ["demo-react-e2e", "demo-react"],
+  "criticalPath": ["demo-react-e2e", "demo-react"]
+}

@@ -1,0 +1,9 @@
+<div class="lyra-sheet-toolbar-dropdown-bar-prefix">
+  <i *ngIf="checked" style="width: 100%; height: 100%" class="checked-icon"></i>
+</div>
+<div class="lyra-sheet-toolbar-dropdown-bar-content">
+  <ng-content></ng-content>
+  <span class="lyra-sheet-toolbar-dropdown-bar-desc" *ngIf="desc">{{
+    desc
+  }}</span>
+</div>

@@ -1,32 +1,12 @@
-# ngx-datasheet
-A web-canvas-rxjs-angular-based spreadsheet.
+# LyraWorkspace
 
-## DEMO
-[erikyu.github.io/ngx-datasheet/](https://erikyu.github.io/ngx-datasheet/)
+A web-canvas-based spreadsheet. Support angular and react now.
 
-## Usage
-- `npm install --save @angular/cdk ngx-datasheet`
-- add `@import url("~ngx-datasheet/style.css");` on your `src/styles.css`
-- import `NgxDatasheetModule` to your AppModule
-  ```ts
-  @NgModule({
-    declarations: [
-      AppComponent
-    ],
-    imports: [
-      BrowserModule,
-      NgxDatasheetModule,  // import module
-    ],
-    providers: [],
-    bootstrap: [AppComponent]
-  })
-  ```
-- simple example
-  ```angular2html
-  <nd-ngx-datasheet [ndData]="data" (ndDataChange)="onChange($event)"></nd-ngx-datasheet>
-  ```
-  
 ## Development
-Suggest yarn when develop
-- `yarn install`
-- `yarn start`
+
+- Install dependencies
+  - `yarn install`
+- Start angular version demo
+  - `yarn run start-ng`
+- Start react version demo
+  - `yarn run start-react`

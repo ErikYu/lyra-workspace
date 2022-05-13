@@ -1,0 +1,46 @@
+{
+  "root": "libs/lyra-sheet-react",
+  "sourceRoot": "libs/lyra-sheet-react/src",
+  "projectType": "library",
+  "tags": [],
+  "targets": {
+    "build": {
+      "executor": "@nrwl/web:rollup",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/libs/lyra-sheet-react",
+        "tsConfig": "libs/lyra-sheet-react/tsconfig.lib.json",
+        "project": "libs/lyra-sheet-react/package.json",
+        "entryFile": "libs/lyra-sheet-react/src/index.ts",
+        "external": ["react/jsx-runtime"],
+        "rollupConfig": [
+          "@nrwl/react/plugins/bundle-rollup",
+          "./libs/lyra-sheet-react/bundle-rollup.cjs"
+        ],
+        "compiler": "babel",
+        "assets": [
+          {
+            "glob": "libs/lyra-sheet-react/README.md",
+            "input": ".",
+            "output": "."
+          }
+        ]
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["libs/lyra-sheet-react/**/*.{ts,tsx,js,jsx}"]
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/libs/lyra-sheet-react"],
+      "options": {
+        "jestConfig": "libs/lyra-sheet-react/jest.config.js",
+        "passWithNoTests": true
+      }
+    }
+  }
+}

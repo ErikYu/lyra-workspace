@@ -1,0 +1,99 @@
+<lyra-sheet-dropdown [dropdown]="bordersTmpl" [(isOpen)]="open">
+  <i class="lyra-sheet-toolbar-icon border-all-icon"></i>
+</lyra-sheet-dropdown>
+<ng-template #bordersTmpl>
+  <div class="border-dropdown">
+    <div class="left-section">
+      <div class="lyra-sheet-dropdown-option" (click)="applyBorder('all')">
+        <i class="lyra-sheet-toolbar-icon border-all-icon"></i>
+      </div>
+      <div class="lyra-sheet-dropdown-option" (click)="applyBorder('inner')">
+        <i class="lyra-sheet-toolbar-icon border-inner-icon"></i>
+      </div>
+      <div
+        class="lyra-sheet-dropdown-option"
+        (click)="applyBorder('horizontal')"
+      >
+        <i class="lyra-sheet-toolbar-icon border-horizontal-icon"></i>
+      </div>
+      <div class="lyra-sheet-dropdown-option" (click)="applyBorder('vertical')">
+        <i class="lyra-sheet-toolbar-icon border-vertical-icon"></i>
+      </div>
+      <div class="lyra-sheet-dropdown-option" (click)="applyBorder('outer')">
+        <i class="lyra-sheet-toolbar-icon border-outer-icon"></i>
+      </div>
+      <div class="lyra-sheet-dropdown-option" (click)="applyBorder('left')">
+        <i class="lyra-sheet-toolbar-icon border-left-icon"></i>
+      </div>
+      <div class="lyra-sheet-dropdown-option" (click)="applyBorder('top')">
+        <i class="lyra-sheet-toolbar-icon border-top-icon"></i>
+      </div>
+      <div class="lyra-sheet-dropdown-option" (click)="applyBorder('right')">
+        <i class="lyra-sheet-toolbar-icon border-right-icon"></i>
+      </div>
+      <div class="lyra-sheet-dropdown-option" (click)="applyBorder('bottom')">
+        <i class="lyra-sheet-toolbar-icon border-bottom-icon"></i>
+      </div>
+      <div class="lyra-sheet-dropdown-option" (click)="applyBorder('clear')">
+        <i class="lyra-sheet-toolbar-icon border-clear-icon"></i>
+      </div>
+    </div>
+    <div class="right-section">
+      <lyra-sheet-dropdown
+        [dropdown]="colorPalette"
+        [(isOpen)]="borderColorOpen"
+      >
+        <div
+          class="lyra-sheet-dropdown-option"
+          style="display: flex; flex-direction: column"
+        >
+          <i class="lyra-sheet-toolbar-icon pencil-icon"></i>
+          <div
+            style="width: 20px; height: 2px; margin-top: 2px"
+            [ngStyle]="{
+              backgroundColor: controller.defaultBorderColor$ | async
+            }"
+          ></div>
+        </div>
+      </lyra-sheet-dropdown>
+      <lyra-sheet-dropdown
+        [dropdown]="borderTypeTmpl"
+        [(isOpen)]="borderTypeOpen"
+      >
+        <div class="lyra-sheet-dropdown-option">
+          <i class="lyra-sheet-toolbar-icon dividing-line-icon"></i>
+        </div>
+      </lyra-sheet-dropdown>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #colorPalette>
+  <lyra-sheet-color-palette
+    (chosenColor)="onSelectColor($event)"
+  ></lyra-sheet-color-palette>
+</ng-template>
+
+<ng-template #borderTypeTmpl>
+  <div
+    class="lyra-sheet-toolbar-dropdown-bar"
+    [class.checked]="(controller.defaultBorderType$ | async) === 'thin'"
+    (click)="onSelectType('thin')"
+  >
+    <div style="width: 50px; height: 1px; background: #000"></div>
+  </div>
+  <div
+    class="lyra-sheet-toolbar-dropdown-bar"
+    [class.checked]="(controller.defaultBorderType$ | async) === 'medium'"
+    (click)="onSelectType('medium')"
+  >
+    <div style="width: 50px; height: 2px; background: #000"></div>
+  </div>
+  <div
+    class="lyra-sheet-toolbar-dropdown-bar"
+    [class.checked]="(controller.defaultBorderType$ | async) === 'bold'"
+    (click)="onSelectType('bold')"
+  >
+    <div style="width: 50px; height: 3px; background: #000"></div>
+  </div>
+</ng-template>

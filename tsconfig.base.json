@@ -1,0 +1,24 @@
+{
+  "compileOnSave": false,
+  "compilerOptions": {
+    "rootDir": ".",
+    "sourceMap": true,
+    "declaration": false,
+    "moduleResolution": "node",
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "importHelpers": true,
+    "target": "es2015",
+    "module": "esnext",
+    "lib": ["es2017", "dom"],
+    "skipLibCheck": true,
+    "skipDefaultLibCheck": true,
+    "baseUrl": ".",
+    "paths": {
+      "@lyra-sheet/angular": ["libs/lyra-sheet-angular/src/index.ts"],
+      "@lyra-sheet/core": ["libs/lyra-sheet-core/src/index.ts"],
+      "@lyra-sheet/react": ["libs/lyra-sheet-react/src/index.ts"]
+    }
+  },
+  "exclude": ["node_modules", "tmp"]
+}

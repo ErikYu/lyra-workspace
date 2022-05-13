@@ -1,0 +1,21 @@
+<lyra-sheet-dropdown [dropdown]="dropdown" [(isOpen)]="isOpen">
+  {{ controlDisplayLabel }}
+</lyra-sheet-dropdown>
+<ng-template #dropdown>
+  <ng-container *ngFor="let item of items">
+    <lyra-sheet-dropdown-bar
+      *ngIf="item !== 'DIVIDER'; else dividerTmpl"
+      [desc]="item.desc"
+      [checked]="item.checked()"
+      (click)="applyFormat(item.fmt)"
+    >
+      {{ item.label }}
+    </lyra-sheet-dropdown-bar>
+  </ng-container>
+  <ng-template #dividerTmpl>
+    <lyra-sheet-divider
+      direction="horizontal"
+      style="margin: 8px 0"
+    ></lyra-sheet-divider>
+  </ng-template>
+</ng-template>

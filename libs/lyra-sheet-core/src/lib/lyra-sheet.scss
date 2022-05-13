@@ -1,0 +1,414 @@
+$prefix: lyra-sheet;
+$tabHeight: 30px;
+$toolbarHeight: 30px;
+$formulaBarHeight: 25px;
+$vScrollWidth: 17px;
+$primaryColor: #1890ff;
+$firstTextSize: 14px;
+$secondTextSize: 12px;
+$contextMenuWidth: 200px;
+
+.lyra-sheet {
+  font-family: 'Helvetica Neue', Helvetica, serif;
+  font-size: $secondTextSize;
+  overflow: hidden;
+}
+
+.lyra-sheet-toolbar {
+  display: flex;
+  height: $toolbarHeight;
+  font-size: $firstTextSize;
+  border-bottom: 0.5px solid #f1f3f4;
+  box-sizing: border-box;
+  &-item {
+    cursor: pointer;
+    height: $toolbarHeight;
+    box-sizing: border-box;
+    min-width: 30px;
+    border-radius: 2px;
+    background: transparent;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    &:hover {
+      background: #f1f3f4;
+    }
+    &.activated {
+      background-color: fade-out($primaryColor, 0.9);
+    }
+  }
+  &-icon {
+    background-size: contain;
+    background-repeat: no-repeat;
+    width: 18px;
+    height: 18px;
+    display: inline-block;
+  }
+  &-dropdown-bar {
+    cursor: pointer;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    font-family: 'Helvetica Neue', Helvetica, serif;
+    padding-left: 5px;
+    padding-right: 5px;
+    &:hover {
+      background: #f1f3f4;
+    }
+    &-prefix {
+      width: 30px;
+      height: 30px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+    &-content {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-grow: 1;
+      font-size: $firstTextSize;
+    }
+    &-desc {
+      margin-left: 16px;
+      color: #80868b;
+      display: inline-block;
+      font-size: $secondTextSize;
+    }
+  }
+}
+
+.lyra-sheet-formula-bar {
+  display: flex;
+  height: $formulaBarHeight;
+  font-size: $firstTextSize;
+  & textarea {
+    outline: none;
+    border: none;
+  }
+  &-label {
+    width: 60px;
+    display: flex;
+    color: #80868b;
+    align-items: center;
+    padding: 0 5px;
+    box-sizing: border-box;
+  }
+  &-fx {
+    width: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 20px;
+    color: #80868b;
+    font-weight: 300;
+    font-style: italic;
+  }
+  &-input {
+    flex-grow: 1;
+    outline: none;
+    line-height: $formulaBarHeight;
+    overflow-y: auto;
+    overflow-x: hidden;
+    width: 100%;
+
+    // reset all rich style
+    &,
+    & * {
+      color: #000000 !important;
+      font-size: 12px !important;
+      font-weight: normal !important;
+      text-decoration-line: none !important;
+      font-style: normal !important;
+    }
+  }
+}
+
+.#{$prefix}-editor {
+  border-top: 1px solid #ccc;
+  display: block;
+  position: relative;
+  box-sizing: border-box;
+  &-mask {
+    position: absolute;
+    left: 0;
+    top: 0;
+    overflow: hidden;
+    & > .lyra-sheet-selector-container {
+      right: 0;
+      bottom: 0;
+      position: absolute;
+      overflow: hidden;
+      pointer-events: none;
+      & > .lyra-sheet-selector {
+        position: absolute;
+        border: 2px solid $primaryColor;
+        box-sizing: border-box;
+        background-color: fade-out($primaryColor, 0.9);
+      }
+      & > .lyra-sheet-autofill {
+        position: absolute;
+        border: 1px dashed #ccc;
+        box-sizing: border-box;
+      }
+      & > .lyra-sheet-selector-autofill {
+        pointer-events: auto;
+        position: absolute;
+        width: 6px;
+        height: 6px;
+        background: $primaryColor;
+        cursor: crosshair;
+        border: 1px solid #ffffff;
+        box-sizing: border-box;
+      }
+    }
+  }
+}
+
+.#{$prefix}-tabs {
+  display: flex;
+  position: absolute;
+  bottom: 0;
+  background: #f1f3f4;
+  left: 0;
+  right: 0;
+  height: 30px;
+}
+.#{$prefix}-tab {
+  cursor: pointer;
+  min-width: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 16px;
+  border: 1px solid #e8eaed;
+  border-left: none;
+  box-sizing: border-box;
+  color: #80868b;
+  font-size: 14px;
+  user-select: none;
+  &:hover {
+    background: #e8eaed;
+  }
+  &.selected {
+    font-weight: bold;
+    color: $primaryColor;
+    background: #fff;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.15);
+  }
+  & > input.name-input {
+    outline: none;
+    border: 2px solid $primaryColor;
+  }
+}
+
+.#{$prefix}-scrollbar {
+  position: absolute;
+  border: 1px solid #d9d9d9;
+  box-sizing: border-box;
+  &-v {
+    right: 0;
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
+  &-h {
+    overflow-x: auto;
+    overflow-y: hidden;
+  }
+}
+
+.#{$prefix}-divider {
+  display: block;
+  &.vertical {
+    width: 1px;
+    height: 100%;
+    background-color: #f1f3f4;
+    margin: 0 4px;
+  }
+  &.horizontal {
+    height: 1px;
+    background-color: #f1f3f4;
+    margin: 0 4px;
+  }
+}
+.hidden-backdrop {
+  opacity: 0;
+}
+
+.#{$prefix}-resizer {
+  position: absolute;
+  &-header {
+    background-color: fade-out($primaryColor, 0.5);
+  }
+  &-col {
+    top: 0;
+    cursor: col-resize;
+    height: 100%;
+    &-line {
+      width: 0;
+      border-left: 1px dashed $primaryColor;
+    }
+  }
+  &-row {
+    left: 0;
+    cursor: row-resize;
+    width: 100%;
+    &-line {
+      height: 0;
+      border-top: 1px dashed $primaryColor;
+    }
+  }
+}
+
+.#{$prefix}-rich-text-input {
+  display: block;
+  position: absolute;
+  z-index: 9999999;
+  left: 0;
+  top: 0;
+  &.silencer {
+    opacity: 0;
+    width: 0 !important;
+    height: 0 !important;
+    overflow: hidden;
+  }
+  &-area {
+    font-family: Arial;
+    border: 2px solid $primaryColor;
+    box-sizing: content-box;
+    min-height: 100%;
+    min-width: 100%;
+    background: #ffffff;
+    outline: none;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
+  }
+}
+
+.#{$prefix}-contextmenu {
+  position: absolute;
+  display: flex;
+  &-tree {
+    width: $contextMenuWidth;
+    height: fit-content;
+    background: #ffffff;
+    box-shadow: 0 2px 4px 0 rgba(70, 70, 70, 0.2), 0 0 8px 0 rgba(0, 0, 0, 0.1);
+  }
+}
+
+.#{$prefix}-frozen-backdrop {
+  position: fixed;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  background: transparent;
+}
+
+.#{$prefix}-dropdown {
+  &-control {
+    width: 100%;
+    height: 100%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    &.is-open {
+      background: #f1f3f4;
+    }
+    & > .triangle {
+      margin-left: 3px;
+      display: inline-block;
+      width: 0;
+      height: 0;
+      border: 3px solid;
+      border-color: #333333 transparent transparent;
+      transform: translateY(25%);
+    }
+  }
+  &-content {
+    background: #fff;
+    box-shadow: 1px 2px 5px 2px rgba(51, 51, 51, 0.15);
+  }
+  &:hover {
+    background: #f1f3f4;
+  }
+  &-option {
+    cursor: pointer;
+    width: 30px;
+    height: 30px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    &:hover {
+      background: #f1f3f4;
+    }
+  }
+}
+
+.#{$prefix}-overlay-container {
+  position: fixed;
+  z-index: 1000;
+  pointer-events: none;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  opacity: 1;
+
+  .#{$prefix}-overlay-backdrop {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    pointer-events: auto;
+    opacity: 1;
+  }
+
+  .#{$prefix}-overlay-positioned-bounding-box {
+    position: absolute;
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    min-width: 1px;
+    min-height: 1px;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  .#{$prefix}-overlay-pane {
+    pointer-events: auto;
+    position: absolute;
+    box-sizing: border-box;
+    z-index: 1000;
+    display: flex;
+    max-width: 100%;
+    max-height: 100%;
+  }
+}
+
+.color-item {
+  width: 16px;
+  height: 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  display: block;
+  &:hover {
+    box-shadow: 1px 2px 5px 2px rgba(51, 51, 51, 0.5);
+  }
+}
+
+.border-dropdown {
+  display: flex;
+  & > .left-section {
+    display: grid;
+    grid-template-columns: repeat(5, 20%);
+    border-right: 1px solid #f1f3f4;
+  }
+  & > .right-section {
+    display: grid;
+    grid-template-columns: 100%;
+  }
+}
