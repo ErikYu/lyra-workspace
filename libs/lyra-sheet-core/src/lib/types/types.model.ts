@@ -12,6 +12,7 @@ export interface CellData {
   style?: CellStyle;
   richText?: Array<RichTextLine>;
   _preFormat?: 'text' | 'number';
+  _calcRect?: { width?: number; height?: number };
 }
 
 type RowIndex = number;

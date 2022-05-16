@@ -74,10 +74,12 @@ export class ResizerService {
   }
 
   hideColResizer(): ResizerService {
-    this._colResizer$.next(null);
-    this.colIndex = null;
-    this.deltaX = 0;
-    this.startX = 0;
+    if (this._colResizer$.value !== null) {
+      this._colResizer$.next(null);
+      this.colIndex = null;
+      this.deltaX = 0;
+      this.startX = 0;
+    }
     return this;
   }
 
@@ -87,10 +89,12 @@ export class ResizerService {
   }
 
   hideRowResizer(): ResizerService {
-    this._rowResizer$.next(null);
-    this.colIndex = null;
-    this.deltaY = 0;
-    this.startY = 0;
+    if (this._rowResizer$.value !== null) {
+      this._rowResizer$.next(null);
+      this.colIndex = null;
+      this.deltaY = 0;
+      this.startY = 0;
+    }
     return this;
   }
 }

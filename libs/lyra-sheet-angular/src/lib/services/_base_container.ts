@@ -42,6 +42,7 @@ import {
   AlignController,
   ValignController,
   FormulaController,
+  TextWrapController,
 } from '@lyra-sheet/core';
 
 @Injectable()
@@ -66,6 +67,7 @@ export class BaseContainer {
   alignController: AlignController;
   valignController: ValignController;
   formulaController: FormulaController;
+  textWrapController: TextWrapController;
 
   autofillService: AutofillService;
   canvasService: CanvasService;
@@ -113,6 +115,7 @@ export class BaseContainer {
     this.alignController = this.resolve(AlignController);
     this.valignController = this.resolve(ValignController);
     this.formulaController = this.resolve(FormulaController);
+    this.textWrapController = this.resolve(TextWrapController);
 
     this.autofillService = this.resolve(AutofillService);
     this.canvasService = this.resolve(CanvasService);

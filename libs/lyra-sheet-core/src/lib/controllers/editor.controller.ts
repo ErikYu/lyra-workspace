@@ -343,6 +343,8 @@ export class EditorController {
       },
       [0, []] as [number, number[]],
     );
+    // cache the calculated height
+    cellData._calcRect = { ...cellData._calcRect, height: allLinesHeight };
 
     let offsetTop: number;
     if (height > allLinesHeight) {

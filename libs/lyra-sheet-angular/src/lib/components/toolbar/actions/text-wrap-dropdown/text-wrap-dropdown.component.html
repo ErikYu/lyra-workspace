@@ -1,5 +1,9 @@
 <lyra-sheet-dropdown [dropdown]="dropdown" [(isOpen)]="open">
-  <i class="lyra-sheet-toolbar-icon icon-text-{{ selectorTextWrapType }}"></i>
+  <i
+    class="lyra-sheet-toolbar-icon icon-text-{{
+      controller.currentWrap$ | async
+    }}"
+  ></i>
 </lyra-sheet-dropdown>
 
 <ng-template #dropdown>

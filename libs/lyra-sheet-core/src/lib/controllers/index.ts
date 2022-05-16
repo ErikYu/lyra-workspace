@@ -13,6 +13,7 @@ export * from './actions/merge.controller';
 export * from './actions/align.controller';
 export * from './actions/valign.controller';
 export * from './actions/formula.controller';
+export * from './actions/text-wrap.controller';
 export * from './editor.controller';
 export * from './root.controller';
 export * from './context-menu.controller';

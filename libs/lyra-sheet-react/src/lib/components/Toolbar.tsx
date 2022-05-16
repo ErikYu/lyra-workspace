@@ -23,6 +23,7 @@ import { LyraSheetMergeDropdown } from './actions/MergeDropdown';
 import { LyraSheetAlignDropdown } from './actions/AlignDropdown';
 import { LyraSheetValignDropdown } from './actions/ValignDropdown';
 import { LyraSheetFormulaDropdown } from './actions/FormulaDropdown';
+import { LyraSheetTextWrapDropdown } from './actions/TextWrapDropdown';
 
 export function LyraSheetToolbar() {
   const decimalController = useLyraSheetCore(DecimalController);
@@ -87,6 +88,7 @@ export function LyraSheetToolbar() {
       <LyraSheetDivider direction={'vertical'}></LyraSheetDivider>
       <LyraSheetAlignDropdown></LyraSheetAlignDropdown>
       <LyraSheetValignDropdown></LyraSheetValignDropdown>
+      <LyraSheetTextWrapDropdown></LyraSheetTextWrapDropdown>
       <LyraSheetDivider direction={'vertical'}></LyraSheetDivider>
       <LyraSheetFormulaDropdown></LyraSheetFormulaDropdown>
     </div>

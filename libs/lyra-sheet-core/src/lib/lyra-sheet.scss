@@ -145,6 +145,8 @@ $contextMenuWidth: 200px;
         border: 2px solid $primaryColor;
         box-sizing: border-box;
         background-color: fade-out($primaryColor, 0.9);
+        transition: top 50ms linear, left 50ms linear, width 50ms linear,
+          height 50ms linear;
       }
       & > .lyra-sheet-autofill {
         position: absolute;
@@ -160,6 +162,7 @@ $contextMenuWidth: 200px;
         cursor: crosshair;
         border: 1px solid #ffffff;
         box-sizing: border-box;
+        transition: top 50ms linear, left 50ms linear;
       }
     }
   }

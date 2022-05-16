@@ -23,6 +23,7 @@ import type { SelectorFactory } from './selector.factory';
 import { ScrollingService } from './scrolling.service';
 import { RenderProxyService } from './render-proxy.service';
 import { Rect } from '../types';
+import { MIN_ROW_HEIGHT } from '../constants';
 
 export type SheetServiceFactory = (d: Sheet) => SheetService;
 
@@ -168,6 +169,17 @@ export class SheetService implements Sheet {
 
   getRow(ri: number): TRow | undefined {
     return this.sheet.data.rows[ri];
+  }
+
+  getCol(ci: number): CellData[] {
+    const res: CellData[] = [];
+    for (const ri of Object.keys(this.sheet.data.rows)) {
+      const cellData = this.getCell(+ri, ci);
+      if (cellData) {
+        res.push(cellData);
+      }
+    }
+    return res;
   }
 
   applyMergeTo(cellRange: CellRange): void {
@@ -419,6 +431,24 @@ export class SheetService implements Sheet {
       this.sheet.data.rows[rowIndex] = { height: oldHeight + delta, cells: {} };
     } else {
       row.height = oldHeight + delta;
+    }
+  }
+
+  adaptiveRowHeight(rowIndex: number) {
+    const row = this.getRow(rowIndex);
+    if (row) {
+      row.height = Math.max(
+        ...Object.values(row.cells).map((i) => i._calcRect!.height!),
+        MIN_ROW_HEIGHT,
+      );
+    }
+  }
+
+  adaptiveColumnWidth(colIndex: number) {
+    const cols = this.getCol(colIndex);
+    if (cols.length > 0) {
+      // const tmp = Math.max(...cols.map((i) => i._calcRect!.width!));
+      // todo
     }
   }
 

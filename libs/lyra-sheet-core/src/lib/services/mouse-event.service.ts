@@ -3,7 +3,6 @@ import { filter, map, pairwise, tap } from 'rxjs/operators';
 import { ConfigService } from './config.service';
 import { ViewRangeService } from './view-range.service';
 import { DataService } from './data.service';
-// import { SelectorsService } from './selectors.service';
 import { ResizerService } from './resizer.service';
 import { CONTEXTMENU_WIDTH, ResizerThickness } from '../constants';
 import { HistoryService } from './history.service';
@@ -29,7 +28,6 @@ export class MouseEventService {
     private configService: ConfigService,
     private viewRangeService: ViewRangeService,
     private dataService: DataService,
-    // private selectorRangeService: SelectorsService,
     private resizerService: ResizerService,
     private historyService: HistoryService,
     private textInputService: TextInputService,
@@ -130,9 +128,28 @@ export class MouseEventService {
             }
           }
         } else if (mouseDownEvent.detail === 2 && mouseDownEvent.which === 1) {
-          // double click -> activate cell edit
-          this.textInputService.show(false);
-          this.textInputService.focus('last');
+          if (this.dataService.selectedSheet.selectors.length > 0) {
+            const lastSelector = this.dataService.selectedSheet.last;
+            if (lastSelector.range.isSingleCell) {
+              // double click -> activate cell edit
+              this.textInputService.show(false);
+              this.textInputService.focus('last');
+            } else {
+              // double click on row / col index, auto resize
+              const { sri, eri, sci, eci } = lastSelector.range;
+              if (sri === eri) {
+                this.historyService.stacked(() => {
+                  this.dataService.selectedSheet.adaptiveRowHeight(sri);
+                });
+                this.dataService.rerender();
+              } else if (sci === eci) {
+                this.historyService.stacked(() => {
+                  this.dataService.selectedSheet.adaptiveColumnWidth(sci);
+                });
+                this.dataService.rerender();
+              }
+            }
+          }
         }
       });
 
