@@ -68,10 +68,14 @@ export class DataService {
     this.sheets = val.sheets.map((s) => this.sheetServiceFactory(s));
     const selectedSheet = this.sheets.find((s) => s.selected)!;
     const selectedIndex = this.sheets.findIndex((s) => s.selected)!;
-    this.selectedSheet$ = new BehaviorSubject([selectedSheet, selectedIndex]);
-    this.selectorChanged$ = this.selectedSheet$.pipe(
-      switchMap(([s]) => s.selectorChanged.pipe(startWith([]))),
-    );
+    if (this.selectedSheet$) {
+      this.selectedSheet$.next([selectedSheet, selectedIndex])
+    } else {
+      this.selectedSheet$ = new BehaviorSubject([selectedSheet, selectedIndex]);
+      this.selectorChanged$ = this.selectedSheet$.pipe(
+        switchMap(([s]) => s.selectorChanged.pipe(startWith([]))),
+      );
+    }
   }
 
   selectSheet(index: number): void {
