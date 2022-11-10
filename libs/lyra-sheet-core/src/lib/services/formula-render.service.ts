@@ -93,7 +93,11 @@ export class FormulaRenderService {
   }
 
   convPlainText(plainText: string): string {
-    const src = plainText.substring(1);
+    let src = plainText;
+    if (src.startsWith('=')) {
+      src = src.substring(1);
+    }
+
     const stack = this.infix2suffix(src);
     if (stack.length > 0) {
       return this.evalSuffixExpr(stack);
