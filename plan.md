@@ -260,7 +260,7 @@
 - Modify: `libs/lyra-sheet-react/src/lib/LyraSheet.tsx`
 - Modify: `libs/lyra-sheet-react/src/lib/LyraSheet.spec.tsx`
 
-- [ ] **Step 1: Replace the module-level shared container with an instance provider**
+- [x] **Step 1: Replace the module-level shared container with an instance provider**
 
   Refactor `container-context.ts` so each `LyraSheet` instance owns a child container:
 
@@ -289,7 +289,7 @@
   }
   ```
 
-- [ ] **Step 2: Move initialization out of render**
+- [x] **Step 2: Move initialization out of render**
 
   In `LyraSheet.tsx`, change props and lifecycle:
 
@@ -303,11 +303,11 @@
 
   Use `useMemo` to create one container per component instance and `useLayoutEffect` or `useEffect` to call `setConfig`, `loadData`, `historyService.init`, and `viewRangeService.init`.
 
-- [ ] **Step 3: Subscribe to data changes**
+- [x] **Step 3: Subscribe to data changes**
 
   In `LyraSheet.tsx`, subscribe to `dataService.dataChanged$` and call `onDataChange` when present. Return an unsubscribe cleanup from the effect.
 
-- [ ] **Step 4: Preserve existing UI composition**
+- [x] **Step 4: Preserve existing UI composition**
 
   Keep this rendered structure:
 
@@ -321,11 +321,11 @@
 
   Wrap it in `LyraSheetContainerProvider` with the instance container.
 
-- [ ] **Step 5: Add React tests**
+- [x] **Step 5: Add React tests**
 
   Update `libs/lyra-sheet-react/src/lib/LyraSheet.spec.tsx` to render with minimal `data` and `config`. Assert that rendering does not throw and that two rendered instances do not share the same container state.
 
-- [ ] **Step 6: Run React tests and lint**
+- [x] **Step 6: Run React tests and lint**
 
   Run:
 
@@ -336,7 +336,9 @@
 
   Expected: Both pass.
 
-- [ ] **Step 7: Commit React wrapper fix**
+  Result recorded on this pass: the first `yarn test-react-lib` run failed as expected because `createLyraSheetContainer` and `onDataChange` were not implemented. After the wrapper fix, `yarn test-react-lib` passed with 1 suite and 3 tests. `yarn lint-react-lib` exited 0 with 34 existing warnings. `yarn build-react-lib` also passed, with existing Browserslist/Rollup/Nx Cloud warnings.
+
+- [x] **Step 7: Commit React wrapper fix**
 
   ```bash
   git add libs/lyra-sheet-react/src/lib/container-context.ts libs/lyra-sheet-react/src/lib/LyraSheet.tsx libs/lyra-sheet-react/src/lib/LyraSheet.spec.tsx
