@@ -962,7 +962,7 @@ Use unit tests only. Do not add or repair Cypress E2E as part of this plan. Test
 
 ## Final Verification
 
-- [ ] Run unit tests and builds:
+- [x] Run unit tests and builds:
 
   ```bash
   yarn test-core
@@ -973,7 +973,9 @@ Use unit tests only. Do not add or repair Cypress E2E as part of this plan. Test
   yarn build-react-lib
   ```
 
-- [ ] Skip Cypress E2E unless explicitly reintroduced later.
+  Result recorded on this pass: `yarn test-core`, `yarn test-vanilla-lib`, `yarn test-react-lib`, `yarn build-core-lib`, `yarn build-vanilla-lib`, and `yarn build-react-lib` all exited 0. `yarn build-ng-lib` was also run and exited 0. Nx Cloud reported remote 502 warnings, but local targets succeeded.
+
+- [x] Skip Cypress E2E unless explicitly reintroduced later.
 
 - [ ] Manually open demos:
 
