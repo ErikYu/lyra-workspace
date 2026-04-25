@@ -75,6 +75,8 @@ export const formulaNames = formulas.map((i) => i.key);
 
 @scoped(Lifecycle.ContainerScoped)
 export class FormulaRenderService {
+  private evaluatingCells = new Set<string>();
+
   constructor(private dataService: DataService) {}
 
   conv(lines: RichTextLine[]): RichTextLine[] {
@@ -311,7 +313,15 @@ export class FormulaRenderService {
       return ret * Number(expr);
     }
     const [x, y] = xyFromLabel(expr);
+    if (this.evaluatingCells.has(expr)) {
+      throw Error(`Circular formula reference: ${expr}`);
+    }
+    this.evaluatingCells.add(expr);
     const text = this.dataService.selectedSheet.getCellPlainText(y, x) || '';
-    return ret * +this.convPlainText(text);
+    try {
+      return ret * +this.convPlainText(text);
+    } finally {
+      this.evaluatingCells.delete(expr);
+    }
   }
 }

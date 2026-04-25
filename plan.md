@@ -497,43 +497,26 @@
 
 ---
 
-## Task 6: Add Product-Level E2E Coverage
+## Task 6: Skip E2E Coverage
 
 **Files:**
-- Modify: `apps/demo-ng-e2e/src/integration/app.spec.ts`
-- Modify: `apps/demo-react-e2e/src/integration/app.spec.ts`
+- No code changes.
 
-- [ ] **Step 1: Replace welcome-page checks with spreadsheet checks**
+- [x] **Step 1: Remove E2E from the revival scope**
 
-  Update both E2E specs to visit the demo and assert that `.lyra-sheet` exists.
+  User decision: skip E2E work for this revival pass. Unit tests are enough for now.
 
-- [ ] **Step 2: Add cell editing coverage**
+- [x] **Step 2: Revert uncommitted E2E edits**
 
-  In both specs, double-click the first visible cell, type a value, press Enter, and assert the value appears in the sheet.
+  Any attempted changes under `apps/demo-ng-e2e` and `apps/demo-react-e2e` were restored before commit.
 
-- [ ] **Step 3: Add toolbar smoke coverage**
+- [x] **Step 3: Record the E2E verification blocker**
 
-  Select a cell, click bold, type text, and verify the rendered rich text still appears after committing edit.
+  Attempted `yarn e2e-ng && yarn e2e-react` was interrupted by the port prompt for `4200`. Retrying `yarn e2e-ng --watch=false` built the Angular demo but Cypress could not verify `http://localhost:4200/`. Per user instruction, no further E2E debugging is needed.
 
-- [ ] **Step 4: Add Angular persistence coverage**
+- [x] **Step 4: Keep future verification UT-focused**
 
-  In `apps/demo-ng-e2e/src/integration/app.spec.ts`, edit a cell, reload the page, and assert the value is restored from localStorage.
-
-- [ ] **Step 5: Run E2E tests**
-
-  ```bash
-  yarn e2e-ng
-  yarn e2e-react
-  ```
-
-  Expected: Both E2E suites pass locally.
-
-- [ ] **Step 6: Commit E2E coverage**
-
-  ```bash
-  git add apps/demo-ng-e2e/src/integration/app.spec.ts apps/demo-react-e2e/src/integration/app.spec.ts
-  git commit -m "test: cover spreadsheet demo interactions"
-  ```
+  Final verification should use unit tests and builds, not Cypress E2E.
 
 ---
 
@@ -544,7 +527,7 @@
 - Modify: `libs/lyra-sheet-core/src/lib/services/formula-render.service.ts`
 - Test: `libs/lyra-sheet-core/src/lib/services/formula-render.service.spec.ts`
 
-- [ ] **Step 1: Document the current formula scope**
+- [x] **Step 1: Document the current formula scope**
 
   Add a `Formula Support` section to `README.md`:
 
@@ -556,11 +539,11 @@
   It does not yet support dependency graphs, incremental recalculation, circular reference detection, cross-sheet references, named ranges, or Excel-compatible function coverage.
   ```
 
-- [ ] **Step 2: Add explicit tests for unsupported behavior**
+- [x] **Step 2: Add explicit tests for unsupported behavior**
 
   Add tests that lock current behavior for circular references and unknown functions. The expected result should be `#Error` through `conv`.
 
-- [ ] **Step 3: Choose one route**
+- [x] **Step 3: Choose one route**
 
   Choose one of:
 
@@ -568,7 +551,9 @@
   - Replace `FormulaRenderService` internals with a dependency-graph-based engine.
   - Integrate an existing formula engine library after evaluating bundle size and license.
 
-- [ ] **Step 4: Commit formula scope decision**
+  Decision for this pass: keep the current lightweight formula engine and document the unsupported areas as non-goals for now. Added unit coverage for unknown functions and circular references returning `#Error` through `conv()`. Circular references now fail with an explicit `Circular formula reference` error instead of relying on a maximum call stack error.
+
+- [x] **Step 4: Commit formula scope decision**
 
   ```bash
   git add README.md libs/lyra-sheet-core/src/lib/services/formula-render.service.ts libs/lyra-sheet-core/src/lib/services/formula-render.service.spec.ts
@@ -586,8 +571,6 @@
   yarn build-core-lib
   yarn build-ng-lib
   yarn build-react-lib
-  yarn e2e-ng
-  yarn e2e-react
   ```
 
 - [ ] Manually open:
@@ -616,5 +599,5 @@ Use this order:
 2. Task 2 before any meaningful behavior change.
 3. Task 3 because React has a real multi-instance state bug.
 4. Task 4 and Task 5 because clipboard and autofill are high-impact spreadsheet basics.
-5. Task 6 to protect actual user workflows.
+5. Task 6 is skipped by request; keep verification focused on UT and builds.
 6. Task 7 after the project has tests, because formula strategy has the highest rewrite risk.
