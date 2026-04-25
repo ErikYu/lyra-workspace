@@ -55,7 +55,33 @@ export class LyraSheetVanilla {
 
 ### Migration Rule
 
-Do not delete Angular or React at the start. First build the vanilla implementation to feature parity with the current minimal demo path. Then migrate React to prove the wrapper pattern. Angular can either follow later or be kept as a legacy wrapper until the vanilla path is stable.
+Do not delete Angular or React at the start. The existing Angular UI is the primary feature baseline because it is the most complete implementation today. The vanilla implementation must preserve Angular's shipped behavior before any wrapper is replaced or any duplicated UI is deleted. React can still migrate first to prove the wrapper pattern, but React migration must not redefine the product surface down to React's current smaller feature set.
+
+### Feature Preservation Rule
+
+No existing UI capability may be dropped silently. If a feature exists in Angular today, the migration must either:
+
+- implement it in `lyra-sheet-vanilla`,
+- explicitly defer it in this plan with a named follow-up task and keep Angular as the source of truth until then,
+- or intentionally remove it only after a separate product decision.
+
+The default is preservation. "Simplify during migration" is not acceptable unless the removed behavior is named and approved.
+
+### Angular Parity Baseline
+
+The vanilla UI must preserve these Angular-layer capabilities before Angular is replaced:
+
+- Root component accepts `data` and `config`.
+- Root component emits data changes through `dataChange`-equivalent callback.
+- Window/container resize updates sheet size through `ConfigService`.
+- Toolbar includes undo, redo, percent, currency, decimal add/reduce, format, font family, font size, bold, italic, strike, underline, font color, background color, border, merge, horizontal align, vertical align, text wrap, and formula controls.
+- Formula bar mounts to `FormulaBarController` and updates displayed label/value.
+- Editor mounts canvas, mask, row resizer, column resizer, vertical scrollbar, horizontal scrollbar, context menu, tabs, and rich text input.
+- Rich text input supports contenteditable editing and commits back through existing core services.
+- Selection UI, autofill handle, resize handles, and scrollbars remain visible and interactive.
+- Context menu keeps existing insert/delete row/column/cell actions.
+- Tabs preserve sheet list rendering, selection, add sheet, and rename behavior.
+- Existing CSS classes remain stable unless wrappers and demos are updated in the same task.
 
 ### Testing Rule
 
@@ -476,6 +502,8 @@ Use unit tests only. Do not add or repair Cypress E2E as part of this plan. Test
 ## Task 3: Build Vanilla DOM Components
 
 **Files:**
+- Create: `libs/lyra-sheet-vanilla/src/lib/parity/angularParity.ts`
+- Test: `libs/lyra-sheet-vanilla/src/lib/parity/angularParity.spec.ts`
 - Create: `libs/lyra-sheet-vanilla/src/lib/dom/createElement.ts`
 - Create: `libs/lyra-sheet-vanilla/src/lib/dom/renderToolbar.ts`
 - Create: `libs/lyra-sheet-vanilla/src/lib/dom/renderFormulaBar.ts`
@@ -487,7 +515,79 @@ Use unit tests only. Do not add or repair Cypress E2E as part of this plan. Test
 - Modify: `libs/lyra-sheet-vanilla/src/lib/LyraSheetVanilla.ts`
 - Test: `libs/lyra-sheet-vanilla/src/lib/dom/*.spec.ts`
 
-- [ ] **Step 1: Add a small DOM helper**
+- [ ] **Step 1: Create the Angular parity checklist as executable data**
+
+  Create `libs/lyra-sheet-vanilla/src/lib/parity/angularParity.ts`:
+
+  ```ts
+  export const angularParitySelectors = [
+    '.lyra-sheet',
+    '.lyra-sheet-toolbar',
+    '.lyra-sheet-formula-bar',
+    '.lyra-sheet-editor',
+    '.lyra-sheet-rich-text-input',
+    '.lyra-sheet-rich-text-input-area',
+    'canvas',
+    '.lyra-sheet-editor-mask',
+    '.lyra-sheet-resizer-row',
+    '.lyra-sheet-resizer-col',
+    '.lyra-sheet-scrollbar-v',
+    '.lyra-sheet-scrollbar-h',
+    '.lyra-sheet-contextmenu',
+    '.lyra-sheet-tabs',
+  ] as const;
+
+  export const angularParityToolbarActions = [
+    'undo',
+    'redo',
+    'percent',
+    'currency',
+    'decimal-reduce',
+    'decimal-add',
+    'format',
+    'font-family',
+    'font-size',
+    'bold',
+    'italic',
+    'strike',
+    'underline',
+    'font-color',
+    'background-color',
+    'border',
+    'merge',
+    'align',
+    'valign',
+    'text-wrap',
+    'formula',
+  ] as const;
+  ```
+
+- [ ] **Step 2: Test the parity checklist is enforced**
+
+  Create `libs/lyra-sheet-vanilla/src/lib/parity/angularParity.spec.ts`:
+
+  ```ts
+  import {
+    angularParitySelectors,
+    angularParityToolbarActions,
+  } from './angularParity';
+
+  describe('angular parity baseline', () => {
+    it('documents the DOM selectors vanilla must preserve', () => {
+      expect(angularParitySelectors).toContain('.lyra-sheet-toolbar');
+      expect(angularParitySelectors).toContain('.lyra-sheet-contextmenu');
+      expect(angularParitySelectors).toContain('.lyra-sheet-tabs');
+    });
+
+    it('documents the toolbar actions vanilla must preserve', () => {
+      expect(angularParityToolbarActions).toContain('bold');
+      expect(angularParityToolbarActions).toContain('merge');
+      expect(angularParityToolbarActions).toContain('formula');
+    });
+  });
+  ```
+
+- [ ] **Step 3: Add a small DOM helper**
 
   Create `createElement.ts`:
 
@@ -504,17 +604,21 @@ Use unit tests only. Do not add or repair Cypress E2E as part of this plan. Test
   }
   ```
 
-- [ ] **Step 2: Write toolbar render test**
+- [ ] **Step 4: Write toolbar render test**
 
-  Test that `renderToolbar()` creates `.lyra-sheet-toolbar` and at least the existing core actions needed for smoke parity: undo, redo, percent, currency, bold, italic, underline, merge, align, formula.
+  Test that `renderToolbar()` creates `.lyra-sheet-toolbar` and one DOM button/item for every entry in `angularParityToolbarActions`. Each item should expose a stable attribute:
 
-- [ ] **Step 3: Implement toolbar DOM**
+  ```html
+  <button data-lyra-action="bold"></button>
+  ```
 
-  `renderToolbar(container)` should return an element and attach click handlers to the relevant core controllers resolved from the container.
+- [ ] **Step 5: Implement toolbar DOM**
 
-- [ ] **Step 4: Write editor render test**
+  `renderToolbar(container)` should return an element and attach click handlers to the relevant core controllers resolved from the container. Do not omit Angular toolbar actions just because React did not fully expose them.
 
-  Test that `renderEditor()` creates:
+- [ ] **Step 6: Write editor render test**
+
+  Test that `renderEditor()` creates every selector listed in `angularParitySelectors` that belongs to the editor area:
 
   ```text
   .lyra-sheet-editor
@@ -530,11 +634,11 @@ Use unit tests only. Do not add or repair Cypress E2E as part of this plan. Test
   .lyra-sheet-tabs
   ```
 
-- [ ] **Step 5: Implement editor DOM**
+- [ ] **Step 7: Implement editor DOM**
 
-  Split editor rendering into small functions. Keep event/controller wiring minimal in this task; DOM structure parity is enough.
+  Split editor rendering into small functions. Keep event/controller wiring minimal in this task; DOM structure parity is enough. Do not skip context menu, tabs, scrollbars, or resizers.
 
-- [ ] **Step 6: Wire ElementRefService**
+- [ ] **Step 8: Wire ElementRefService**
 
   After creating editor DOM, initialize:
 
@@ -545,7 +649,7 @@ Use unit tests only. Do not add or repair Cypress E2E as part of this plan. Test
   elementRefService.initColResizer(colResizerEl);
   ```
 
-- [ ] **Step 7: Verify and commit**
+- [ ] **Step 9: Verify and commit**
 
   Run:
 
@@ -728,7 +832,11 @@ Use unit tests only. Do not add or repair Cypress E2E as part of this plan. Test
 - Or document deprecation: `libs/lyra-sheet-angular/README.md`
 - Test: `libs/lyra-sheet-angular/src/lib/lyra-sheet.component.spec.ts` if Angular remains active
 
-- [ ] **Step 1: Choose one Angular path**
+- [ ] **Step 1: Reconfirm Angular feature preservation**
+
+  Before choosing an Angular path, compare the current Angular implementation against `angularParitySelectors` and `angularParityToolbarActions`. If the vanilla implementation lacks any Angular capability, Angular must remain legacy-compatible and must not be replaced.
+
+- [ ] **Step 2: Choose one Angular path**
 
   Choose one:
 
@@ -736,23 +844,23 @@ Use unit tests only. Do not add or repair Cypress E2E as part of this plan. Test
   - **Legacy wrapper:** Leave Angular implementation untouched and document that new UI work happens in vanilla + React first.
   - **Deprecation:** Mark Angular package as deprecated in docs, without removing code.
 
-  Recommendation: choose **Legacy wrapper** until vanilla + React are stable. Angular has more old tests and CDK coupling, so migrating it first adds risk.
+  Recommendation: choose **Legacy wrapper** until vanilla + React satisfy the Angular parity baseline. Angular has more old tests, CDK coupling, and the most complete UI behavior, so migrating it too early risks feature loss.
 
-- [ ] **Step 2: If Active wrapper is chosen, write failing Angular wrapper test**
+- [ ] **Step 3: If Active wrapper is chosen, write failing Angular wrapper test**
 
   Mock `LyraSheetVanilla`, mount the component, and assert `mount()` and `destroy()` are called.
 
-- [ ] **Step 3: If Legacy wrapper is chosen, document the status**
+- [ ] **Step 4: If Legacy wrapper is chosen, document the status**
 
   Add to `libs/lyra-sheet-angular/README.md`:
 
   ```markdown
   # @lyra-sheet/angular
 
-  Angular support is currently legacy-compatible. New UI implementation work should target `@lyra-sheet/vanilla` first. Angular can be migrated to the vanilla wrapper after the vanilla and React paths stabilize.
+  Angular support is currently legacy-compatible and remains the feature baseline for UI parity. New UI implementation work should target `@lyra-sheet/vanilla` first, but Angular must not be replaced until the vanilla implementation preserves the Angular toolbar, editor, formula bar, context menu, tabs, resize, scroll, selection, and data-change behavior.
   ```
 
-- [ ] **Step 4: Verify and commit**
+- [ ] **Step 5: Verify and commit**
 
   For Legacy wrapper:
 
@@ -777,24 +885,26 @@ Use unit tests only. Do not add or repair Cypress E2E as part of this plan. Test
 - Modify: `libs/lyra-sheet-react/src/index.ts`
 - Modify: `README.md`
 
-- [ ] **Step 1: Confirm parity checklist**
+- [ ] **Step 1: Confirm Angular parity checklist**
 
-  Before deleting old React UI components, manually verify vanilla/React supports:
+  Before deleting old React UI components or replacing Angular, verify vanilla/React supports every Angular baseline feature:
 
   - Sheet shell renders.
-  - Toolbar buttons dispatch core commands.
+  - All Angular toolbar actions exist and dispatch core commands.
   - Formula bar mounts.
   - Canvas mounts.
   - Rich text input opens and commits text.
   - Selection mask renders.
   - Scrollbars mount.
   - Tabs render.
+  - Context menu renders and exposes insert/delete actions.
+  - Row and column resizers render and remain wired.
   - `onDataChange` fires.
   - Multiple React instances are isolated.
 
 - [ ] **Step 2: Delete old React component tree**
 
-  Remove old duplicated React UI components only after the parity checklist passes.
+  Remove old duplicated React UI components only after the Angular parity checklist passes. If any feature is missing, keep the old UI path or add the missing vanilla behavior first.
 
 - [ ] **Step 3: Keep wrapper tests**
 
@@ -845,11 +955,12 @@ Use unit tests only. Do not add or repair Cypress E2E as part of this plan. Test
 - [ ] Verify manually:
 
   - React demo renders via vanilla implementation.
-  - Angular demo still works or is clearly documented as legacy.
+  - Angular demo still works and remains the feature baseline until vanilla reaches parity.
   - Editing a cell still works.
   - Clipboard paste still works.
   - Autofill still works for copy-fill and numeric series.
   - Formula errors still render as `#Error`.
+  - Vanilla preserves Angular toolbar, formula bar, context menu, tabs, scrollbars, resizers, selection, and data-change behavior before any Angular replacement.
 
 ---
 
@@ -857,8 +968,8 @@ Use unit tests only. Do not add or repair Cypress E2E as part of this plan. Test
 
 1. Build `lyra-sheet-vanilla` as a new package without deleting existing UI.
 2. Move core container and lifecycle ownership into vanilla.
-3. Build DOM structure parity in small tested pieces.
+3. Build DOM structure parity in small tested pieces, using Angular as the feature baseline.
 4. Mount existing core controllers from vanilla.
 5. Migrate React first because its current wrapper is already thinner and was recently improved.
-6. Keep Angular as legacy until vanilla + React are stable.
-7. Delete duplicated React UI only after parity is proven.
+6. Keep Angular as legacy until vanilla + React preserve Angular's implemented UI behavior.
+7. Delete duplicated UI only after Angular parity is proven.
