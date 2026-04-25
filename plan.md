@@ -153,7 +153,7 @@
 - Create: `libs/lyra-sheet-core/src/lib/services/formula-render.service.spec.ts`
 - Create: `libs/lyra-sheet-core/src/lib/services/history.service.spec.ts`
 
-- [ ] **Step 1: Test formulas as they work today**
+- [x] **Step 1: Test formulas as they work today**
 
   Create `libs/lyra-sheet-core/src/lib/services/formula-render.service.spec.ts` with tests for:
 
@@ -175,7 +175,7 @@
 
   Build the service with a real `DataService` instance or a minimal test double that provides `selectedSheet.getCellPlainText`.
 
-- [ ] **Step 2: Test merge invariants**
+- [x] **Step 2: Test merge invariants**
 
   Create `libs/lyra-sheet-core/src/lib/services/merges.service.spec.ts` with tests that prove:
 
@@ -192,7 +192,7 @@
   });
   ```
 
-- [ ] **Step 3: Test sheet structure operations**
+- [x] **Step 3: Test sheet structure operations**
 
   Create `libs/lyra-sheet-core/src/lib/services/sheet.service.spec.ts` with focused tests for:
 
@@ -211,7 +211,7 @@
   });
   ```
 
-- [ ] **Step 4: Test undo and redo behavior**
+- [x] **Step 4: Test undo and redo behavior**
 
   Create `libs/lyra-sheet-core/src/lib/services/history.service.spec.ts` with tests that prove:
 
@@ -232,7 +232,7 @@
   });
   ```
 
-- [ ] **Step 5: Run core tests**
+- [x] **Step 5: Run core tests**
 
   Run:
 
@@ -242,7 +242,9 @@
 
   Expected: All new core tests pass.
 
-- [ ] **Step 6: Commit core tests**
+  Result recorded on this pass: first run failed because core specs needed `reflect-metadata`. After adding the polyfill import, the formula unknown-function test exposed a real bug where `=UNKNOWN(1)` evaluated to `1`; `FormulaRenderService.evalSuffixExpr` now throws when evaluation leaves extra stack values, so `conv()` returns `#Error`. Final `yarn test-core` result: 5 test suites passed, 12 tests passed. The previously empty `line-wrap.service.spec.ts` was restored with a real percent-format test so the core Jest suite no longer fails with "must contain at least one test".
+
+- [x] **Step 6: Commit core tests**
 
   ```bash
   git add libs/lyra-sheet-core/src/lib/services/*.spec.ts

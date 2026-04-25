@@ -290,6 +290,9 @@ export class FormulaRenderService {
         // cellList.pop();
       }
     }
+    if (stack.length !== 1) {
+      throw Error(`Invalid formula expression: ${srcStack.join(' ')}`);
+    }
     return stack[0];
   }
 
