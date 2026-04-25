@@ -4,16 +4,23 @@ import {
   Data,
   DataService,
   DatasheetConfig,
+  EditorController,
   ElementRefService,
+  FormulaBarController,
   HistoryService,
+  RichTextInputController,
+  RootController,
   ViewRangeService,
 } from '@lyra-sheet/core';
-import { Subscription } from 'rxjs';
 import { DependencyContainer } from 'tsyringe';
 import { createVanillaContainer } from './createVanillaContainer';
 import { renderEditor, RenderedEditor } from './dom/renderEditor';
-import { renderFormulaBar } from './dom/renderFormulaBar';
+import {
+  renderFormulaBar,
+  RenderedFormulaBar,
+} from './dom/renderFormulaBar';
 import { renderToolbar } from './dom/renderToolbar';
+import { SubscriptionBag } from './lifecycle/SubscriptionBag';
 
 export interface LyraSheetVanillaOptions {
   data: Data;
@@ -28,9 +35,13 @@ export class LyraSheetVanilla {
   private readonly configService: ConfigService;
   private readonly dataService: DataService;
   private readonly elementRefService: ElementRefService;
+  private readonly editorController: EditorController;
+  private readonly formulaBarController: FormulaBarController;
   private readonly historyService: HistoryService;
+  private readonly richTextInputController: RichTextInputController;
+  private readonly rootController: RootController;
   private readonly viewRangeService: ViewRangeService;
-  private dataChangeSubscription: Subscription | null = null;
+  private readonly lifecycle = new SubscriptionBag();
 
   constructor(options: LyraSheetVanillaOptions) {
     this.options = options;
@@ -38,7 +49,13 @@ export class LyraSheetVanilla {
     this.configService = this.container.resolve(ConfigService);
     this.dataService = this.container.resolve(DataService);
     this.elementRefService = this.container.resolve(ElementRefService);
+    this.editorController = this.container.resolve(EditorController);
+    this.formulaBarController = this.container.resolve(FormulaBarController);
     this.historyService = this.container.resolve(HistoryService);
+    this.richTextInputController = this.container.resolve(
+      RichTextInputController,
+    );
+    this.rootController = this.container.resolve(RootController);
     this.viewRangeService = this.container.resolve(ViewRangeService);
   }
 
@@ -48,13 +65,14 @@ export class LyraSheetVanilla {
     const root = document.createElement('div');
     root.className = 'lyra-sheet';
     root.appendChild(renderToolbar(this.container));
-    root.appendChild(renderFormulaBar());
+    const formulaBar = renderFormulaBar();
+    root.appendChild(formulaBar.root);
     const editor = renderEditor();
     root.appendChild(editor.root);
 
     host.appendChild(root);
     this.rootEl = root;
-    this.initializeCore(root, editor);
+    this.initializeCore(root, formulaBar, editor);
   }
 
   update(options: Partial<LyraSheetVanillaOptions>): void {
@@ -62,8 +80,7 @@ export class LyraSheetVanilla {
   }
 
   destroy(): void {
-    this.dataChangeSubscription?.unsubscribe();
-    this.dataChangeSubscription = null;
+    this.lifecycle.cleanup();
     this.rootEl?.remove();
     this.rootEl = null;
   }
@@ -73,7 +90,11 @@ export class LyraSheetVanilla {
     return this.dataService;
   }
 
-  private initializeCore(root: HTMLDivElement, editor: RenderedEditor): void {
+  private initializeCore(
+    root: HTMLDivElement,
+    formulaBar: RenderedFormulaBar,
+    editor: RenderedEditor,
+  ): void {
     this.configService.setConfig(this.options.config);
     const initialData = cloneDeep(this.options.data);
     this.dataService.loadData(initialData);
@@ -84,8 +105,27 @@ export class LyraSheetVanilla {
     this.elementRefService.initRowResizer(editor.rowResizer);
     this.elementRefService.initColResizer(editor.colResizer);
     this.viewRangeService.init();
-    this.dataChangeSubscription = this.dataService.dataChanged$.subscribe(
-      (data) => this.options.onDataChange?.(data),
+    this.mountControllers(root, formulaBar, editor);
+    this.lifecycle.add(
+      this.dataService.dataChanged$.subscribe((data) =>
+        this.options.onDataChange?.(data),
+      ),
     );
+  }
+
+  private mountControllers(
+    root: HTMLDivElement,
+    formulaBar: RenderedFormulaBar,
+    editor: RenderedEditor,
+  ): void {
+    this.rootController.mount(root);
+    this.formulaBarController.mount(formulaBar.textarea);
+    this.richTextInputController.mount(
+      editor.richTextInput.root,
+      editor.richTextInput.editable,
+    );
+    this.editorController.mountDom(editor.root);
+    this.editorController.onInit();
+    this.editorController.afterViewInit();
   }
 }

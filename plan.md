@@ -691,7 +691,7 @@ Use unit tests only. Do not add or repair Cypress E2E as part of this plan. Test
 - Test: `libs/lyra-sheet-vanilla/src/lib/lifecycle/SubscriptionBag.spec.ts`
 - Test: `libs/lyra-sheet-vanilla/src/lib/LyraSheetVanilla.spec.ts`
 
-- [ ] **Step 1: Add subscription cleanup utility**
+- [x] **Step 1: Add subscription cleanup utility**
 
   Create a tiny `SubscriptionBag` that accepts RxJS subscriptions and DOM cleanup callbacks:
 
@@ -713,11 +713,11 @@ Use unit tests only. Do not add or repair Cypress E2E as part of this plan. Test
   }
   ```
 
-- [ ] **Step 2: Test cleanup**
+- [x] **Step 2: Test cleanup**
 
   Verify cleanup callbacks run once and subscriptions are unsubscribed.
 
-- [ ] **Step 3: Mount existing controllers**
+- [x] **Step 3: Mount existing controllers**
 
   In `LyraSheetVanilla.mount`, after DOM creation and element refs:
 
@@ -729,15 +729,17 @@ Use unit tests only. Do not add or repair Cypress E2E as part of this plan. Test
   editorController.afterViewInit();
   ```
 
-- [ ] **Step 4: Initialize mouse and keyboard pipelines through existing editor controller**
+- [x] **Step 4: Initialize mouse and keyboard pipelines through existing editor controller**
 
   Prefer existing `EditorController.onInit()` instead of manually duplicating `MouseEventService` and `KeyboardEventService` wiring. If a controller assumes Angular/React timing, adapt the vanilla mount order rather than forking behavior.
 
-- [ ] **Step 5: Ensure destroy removes DOM and subscriptions**
+- [x] **Step 5: Ensure destroy removes DOM and subscriptions**
 
   `destroy()` must remove root DOM, unsubscribe data change subscriptions, and clear lifecycle callbacks. It does not need to reset core state; a new `LyraSheetVanilla` instance gets a new child container.
 
-- [ ] **Step 6: Verify and commit**
+  Result recorded on this pass: the first `yarn test-vanilla-lib` run failed as expected because `SubscriptionBag` did not exist. Implementation added `SubscriptionBag`, mounted Root/FormulaBar/RichTextInput/Editor controllers during vanilla mount, initialized mouse/keyboard through `EditorController.afterViewInit()`, and moved data-change subscription cleanup into the lifecycle bag. Destroy removes DOM and prevents later data change callbacks.
+
+- [x] **Step 6: Verify and commit**
 
   Run:
 
@@ -745,6 +747,8 @@ Use unit tests only. Do not add or repair Cypress E2E as part of this plan. Test
   yarn test-vanilla-lib
   yarn build-vanilla-lib
   ```
+
+  Result recorded on this pass: `yarn test-vanilla-lib` passed with 6 suites and 10 tests. `yarn lint-vanilla-lib` passed. `yarn build-vanilla-lib` passed. Nx Cloud reported remote 502 warnings, but local targets succeeded.
 
   Commit:
 

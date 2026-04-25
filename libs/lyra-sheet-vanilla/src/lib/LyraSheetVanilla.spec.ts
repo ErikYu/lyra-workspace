@@ -26,6 +26,16 @@ const config: DatasheetConfig = {
 };
 
 describe('LyraSheetVanilla', () => {
+  beforeEach(() => {
+    jest
+      .spyOn(HTMLCanvasElement.prototype, 'getContext')
+      .mockReturnValue({} as CanvasRenderingContext2D);
+  });
+
+  afterEach(() => {
+    jest.restoreAllMocks();
+  });
+
   it('mounts the spreadsheet shell into a host element', () => {
     const host = document.createElement('div');
     const sheet = new LyraSheetVanilla({ data, config });
@@ -48,5 +58,18 @@ describe('LyraSheetVanilla', () => {
     sheet.getDataServiceForTesting().notifyDataChange();
 
     expect(onDataChange).toHaveBeenCalledWith(data);
+  });
+
+  it('removes DOM and stops data change callbacks after destroy', () => {
+    const host = document.createElement('div');
+    const onDataChange = jest.fn();
+    const sheet = new LyraSheetVanilla({ data, config, onDataChange });
+
+    sheet.mount(host);
+    sheet.destroy();
+    sheet.getDataServiceForTesting().notifyDataChange();
+
+    expect(host.querySelector('.lyra-sheet')).toBeNull();
+    expect(onDataChange).not.toHaveBeenCalled();
   });
 });

@@ -1,5 +1,8 @@
 import { createElement } from './createElement';
-import { renderRichTextInput } from './renderRichTextInput';
+import {
+  renderRichTextInput,
+  RenderedRichTextInput,
+} from './renderRichTextInput';
 import { renderScrollbars } from './renderScrollbars';
 import { renderSelectorLayer } from './renderSelectorLayer';
 import { renderTabs } from './renderTabs';
@@ -10,6 +13,7 @@ export interface RenderedEditor {
   mask: HTMLElement;
   rowResizer: HTMLElement;
   colResizer: HTMLElement;
+  richTextInput: RenderedRichTextInput;
 }
 
 export function renderEditor(): RenderedEditor {
@@ -19,6 +23,7 @@ export function renderEditor(): RenderedEditor {
   const rowResizer = createElement('div', 'lyra-sheet-resizer-row');
   const colResizer = createElement('div', 'lyra-sheet-resizer-col');
   const scrollbars = renderScrollbars();
+  const richTextInput = renderRichTextInput();
 
   root.appendChild(canvas);
   root.appendChild(mask);
@@ -28,7 +33,7 @@ export function renderEditor(): RenderedEditor {
   root.appendChild(scrollbars.horizontal);
   root.appendChild(createElement('div', 'lyra-sheet-contextmenu'));
   root.appendChild(renderTabs());
-  root.appendChild(renderRichTextInput());
+  root.appendChild(richTextInput.root);
 
-  return { root, canvas, mask, rowResizer, colResizer };
+  return { root, canvas, mask, rowResizer, colResizer, richTextInput };
 }
