@@ -1,603 +1,864 @@
-# Lyra Sheet Revival Implementation Plan
+# Lyra Sheet Vanilla UI Migration Plan
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** Bring this canvas-based spreadsheet project back to a maintainable, testable state and then close the biggest gaps between the current prototype and a usable spreadsheet component.
+**Goal:** Move Lyra Sheet toward a framework-agnostic vanilla DOM/Canvas UI layer, so Angular and React become thin wrappers instead of two duplicated UI implementations.
 
-**Architecture:** Keep `libs/lyra-sheet-core` as the framework-agnostic spreadsheet engine, with Angular and React as thin wrappers. First add regression tests around the existing core behavior, then fix wrapper lifecycle/data-flow issues, then implement high-impact spreadsheet features such as clipboard and real autofill. Avoid broad rewrites until the current behavior is pinned by tests.
+**Architecture:** Keep `libs/lyra-sheet-core` as the spreadsheet engine for data, selection, merge, history, formula, clipboard, autofill, and controller logic. Add a new `libs/lyra-sheet-vanilla` package that owns DOM creation, event binding, toolbar/editor/formula bar rendering, lifecycle, and CSS. Then rewrite React and Angular wrappers to mount/destroy the vanilla sheet instance rather than maintaining duplicate UI component trees.
 
-**Tech Stack:** Nx 13, Yarn, TypeScript 4.6, Angular 13, React 18, Jest, Cypress, RxJS, tsyringe, Canvas.
-
----
-
-## Current Assessment
-
-### What Is Already Worth Keeping
-
-- `libs/lyra-sheet-core/src/lib/types/types.model.ts` has a useful sparse data model for sheets, rows, columns, rich text cells, cell styles, merges, and selected sheets.
-- `libs/lyra-sheet-core/src/lib/services/sheet.service.ts` contains the most important engine behavior: selection, styling, borders, merge handling, row/column resize, row/column insertion and deletion, cell insertion and deletion, and rich text write-back.
-- `libs/lyra-sheet-core/src/lib/services/merges.service.ts` contains meaningful merge-range movement and intersection behavior.
-- `libs/lyra-sheet-core/src/lib/services/canvas.service.ts`, `view-range.service.ts`, `scrolling.service.ts`, and `render-proxy.service.ts` provide the basic canvas rendering and viewport infrastructure.
-- `libs/lyra-sheet-angular/src/lib/lyra-sheet.component.ts` is the stronger wrapper because it has per-instance dependency injection, `dataChange`, resize handling, and working multi-instance demo coverage in `apps/demo-ng`.
-
-### What Is Simplified Or Risky
-
-- `libs/lyra-sheet-core/src/lib/services/formula-render.service.ts` is a lightweight formula evaluator, not a full spreadsheet calculation engine. It lacks dependency tracking, recalculation order, circular reference detection, cross-sheet references, and broad function coverage.
-- `libs/lyra-sheet-core/src/lib/services/history.service.ts` uses full JSON snapshots. This is acceptable for early recovery work, but it will become expensive for large sheets.
-- `libs/lyra-sheet-react/src/lib/container-context.ts` creates one module-level child container, so multiple React sheets can share core state unexpectedly.
-- `libs/lyra-sheet-react/src/lib/LyraSheet.tsx` initializes config, data, and history during render, which can reload state repeatedly.
-- `libs/lyra-sheet-core/src/lib/services/autofill.service.ts` only tracks a drag rectangle. It does not write filled cells, infer series, or adjust formulas.
-
-### What Is Missing
-
-- Clipboard support: copy, cut, paste, multi-cell paste, TSV/HTML interop.
-- Real autofill behavior: copy fill, numeric series, date series, formula reference adjustment.
-- Spreadsheet data features: sort, filter, data validation, conditional formatting, freeze panes, find/replace.
-- Production-grade formula engine: dependency graph, incremental recalculation, circular reference handling, cross-sheet references, more functions.
-- Meaningful test coverage: core unit tests, wrapper behavior tests, and spreadsheet-focused E2E tests.
+**Tech Stack:** Nx 13, TypeScript 4.6, vanilla DOM APIs, Canvas, contenteditable, RxJS, tsyringe, Jest unit tests. No E2E requirement for this pass.
 
 ---
 
-## File Structure Plan
+## Design Summary
 
-- Modify: `package.json` to add explicit scripts for all important verification commands.
-- Modify: `README.md` to document project purpose, architecture, local setup, commands, and known limitations.
-- Modify: `nx.json` to remove or rotate the checked-in Nx Cloud token if this repository is shared or public.
-- Test: `libs/lyra-sheet-core/src/lib/services/sheet.service.spec.ts` for core row/column/cell operations.
-- Test: `libs/lyra-sheet-core/src/lib/services/merges.service.spec.ts` for merge movement and intersection invariants.
-- Test: `libs/lyra-sheet-core/src/lib/services/formula-render.service.spec.ts` for current formula behavior and edge cases.
-- Test: `libs/lyra-sheet-core/src/lib/services/history.service.spec.ts` for undo/redo snapshot behavior.
-- Modify: `libs/lyra-sheet-react/src/lib/container-context.ts` to make containers instance-scoped.
-- Modify: `libs/lyra-sheet-react/src/lib/LyraSheet.tsx` to move initialization into effects and expose a data change callback.
-- Test: `libs/lyra-sheet-react/src/lib/LyraSheet.spec.tsx` for rendering, initialization, and data callback behavior.
-- Create: `libs/lyra-sheet-core/src/lib/services/clipboard.service.ts` for copy/paste serialization and application.
-- Test: `libs/lyra-sheet-core/src/lib/services/clipboard.service.spec.ts` for TSV parsing, rectangular paste, and style-preserving copy.
-- Modify: `libs/lyra-sheet-core/src/lib/services/autofill.service.ts` to write filled data instead of only tracking geometry.
-- Test: `libs/lyra-sheet-core/src/lib/services/autofill.service.spec.ts` for copy-fill and simple numeric series.
-- Modify: `apps/demo-ng-e2e/src/integration/app.spec.ts` and `apps/demo-react-e2e/src/integration/app.spec.ts` to cover real spreadsheet interactions.
+### Why Vanilla UI
+
+The spreadsheet UI is closer to a complex DOM/Canvas widget than normal business UI. The expensive parts are canvas rendering, selection masks, keyboard/mouse events, scrollbars, rich text editing, toolbar commands, context menus, and lifecycle cleanup. React or Angular do not add much value inside those internals, but they do double the maintenance cost when every component exists twice.
+
+### Target Shape
+
+```text
+libs/lyra-sheet-core
+  framework-agnostic spreadsheet engine
+
+libs/lyra-sheet-vanilla
+  framework-agnostic DOM/Canvas UI implementation
+
+libs/lyra-sheet-react
+  thin React wrapper around lyra-sheet-vanilla
+
+libs/lyra-sheet-angular
+  thin Angular wrapper around lyra-sheet-vanilla, or deprecated compatibility wrapper
+```
+
+### Public Vanilla API
+
+The vanilla layer should expose one main class and a small typed API:
+
+```ts
+import { Data, DatasheetConfig } from '@lyra-sheet/core';
+
+export interface LyraSheetVanillaOptions {
+  data: Data;
+  config: DatasheetConfig;
+  onDataChange?: (data: Data) => void;
+}
+
+export class LyraSheetVanilla {
+  constructor(options: LyraSheetVanillaOptions);
+  mount(host: HTMLElement): void;
+  update(options: Partial<LyraSheetVanillaOptions>): void;
+  destroy(): void;
+}
+```
+
+### Migration Rule
+
+Do not delete Angular or React at the start. First build the vanilla implementation to feature parity with the current minimal demo path. Then migrate React to prove the wrapper pattern. Angular can either follow later or be kept as a legacy wrapper until the vanilla path is stable.
+
+### Testing Rule
+
+Use unit tests only. Do not add or repair Cypress E2E as part of this plan. Test vanilla DOM behavior with Jest and JSDOM where possible, and test core behavior with existing core unit tests.
 
 ---
 
-## Task 1: Establish A Reliable Baseline
+## Task 1: Add The Vanilla Library Skeleton
 
 **Files:**
-- Modify: `README.md`
+- Create: `libs/lyra-sheet-vanilla/project.json`
+- Create: `libs/lyra-sheet-vanilla/package.json`
+- Create: `libs/lyra-sheet-vanilla/tsconfig.json`
+- Create: `libs/lyra-sheet-vanilla/tsconfig.lib.json`
+- Create: `libs/lyra-sheet-vanilla/tsconfig.spec.json`
+- Create: `libs/lyra-sheet-vanilla/jest.config.js`
+- Create: `libs/lyra-sheet-vanilla/src/index.ts`
+- Create: `libs/lyra-sheet-vanilla/src/lib/LyraSheetVanilla.ts`
+- Create: `libs/lyra-sheet-vanilla/src/lib/LyraSheetVanilla.spec.ts`
+- Modify: `tsconfig.base.json`
 - Modify: `package.json`
-- Review: `nx.json`
 
-- [x] **Step 1: Record the expected local environment**
+- [ ] **Step 1: Add project configuration**
 
-  Update `README.md` with this project summary and setup section:
-
-  ```markdown
-  # Lyra Workspace
-
-  Lyra Sheet is a web-canvas-based spreadsheet component. The framework-agnostic spreadsheet engine lives in `libs/lyra-sheet-core`, while `libs/lyra-sheet-angular` and `libs/lyra-sheet-react` provide Angular and React integrations.
-
-  ## Recommended Environment
-
-  This project uses Nx 13, Angular 13, React 18, and TypeScript 4.6. Prefer Node 16 when reviving or maintaining the project because Angular 13 and ngcc may fail on newer Node versions.
-
-  ## Development
-
-  - Install dependencies: `yarn install`
-  - Start Angular demo: `yarn start-ng`
-  - Start React demo: `yarn start-react`
-  - Build core library: `yarn build-core-lib`
-  - Build Angular library: `yarn build-ng-lib`
-  - Build React library: `yarn build-react-lib`
-  - Run tests: `yarn test`
-  - Run lint checks: `yarn lint`
-  ```
-
-- [x] **Step 2: Add explicit verification scripts**
-
-  In `package.json`, keep existing scripts and add:
+  Create `libs/lyra-sheet-vanilla/project.json`:
 
   ```json
   {
-    "lint-react-lib": "nx lint lyra-sheet-react",
-    "lint-demo-ng": "nx lint demo-ng",
-    "lint-demo-react": "nx lint demo-react",
-    "test-core": "nx test lyra-sheet-core",
-    "test-ng-lib": "nx test lyra-sheet-angular",
-    "test-react-lib": "nx test lyra-sheet-react",
-    "e2e-ng": "nx e2e demo-ng-e2e",
-    "e2e-react": "nx e2e demo-react-e2e",
-    "verify": "yarn lint && yarn lint-react-lib && yarn test-core && yarn test-ng-lib && yarn test-react-lib"
+    "root": "libs/lyra-sheet-vanilla",
+    "sourceRoot": "libs/lyra-sheet-vanilla/src",
+    "projectType": "library",
+    "targets": {
+      "lint": {
+        "executor": "@nrwl/linter:eslint",
+        "outputs": ["{options.outputFile}"],
+        "options": {
+          "lintFilePatterns": ["libs/lyra-sheet-vanilla/**/*.ts"]
+        }
+      },
+      "test": {
+        "executor": "@nrwl/jest:jest",
+        "outputs": ["coverage/libs/lyra-sheet-vanilla"],
+        "options": {
+          "jestConfig": "libs/lyra-sheet-vanilla/jest.config.js",
+          "passWithNoTests": false
+        }
+      },
+      "build": {
+        "executor": "@nrwl/js:tsc",
+        "outputs": ["{options.outputPath}"],
+        "options": {
+          "outputPath": "dist/libs/lyra-sheet-vanilla",
+          "tsConfig": "libs/lyra-sheet-vanilla/tsconfig.lib.json",
+          "packageJson": "libs/lyra-sheet-vanilla/package.json",
+          "main": "libs/lyra-sheet-vanilla/src/index.ts"
+        }
+      }
+    },
+    "tags": []
   }
   ```
 
-- [x] **Step 3: Run baseline commands**
+- [ ] **Step 2: Add package metadata**
 
-  Run:
+  Create `libs/lyra-sheet-vanilla/package.json`:
 
-  ```bash
-  yarn install
-  yarn build-core-lib
-  yarn build-ng-lib
-  yarn build-react-lib
-  yarn verify
-  ```
-
-  Expected: The commands either pass or produce a concrete failure list to record before code changes.
-
-  Baseline result recorded on this pass:
-
-  - `yarn install` passed.
-  - `yarn build-core-lib` passed, with an Nx Cloud 502 warning.
-  - `yarn build-ng-lib` passed, with Nx Cloud 502 plus existing Browserslist/PostCSS warnings.
-  - `yarn build-react-lib` passed, with Nx Cloud 502 plus existing Browserslist/Rollup warnings.
-  - `yarn verify` failed at `yarn test-core` because `libs/lyra-sheet-core/src/lib/services/line-wrap.service.spec.ts` contains no executable tests. `yarn lint-react-lib` completed with existing warnings and no errors before that failure.
-
-- [x] **Step 4: Decide what to do with the Nx Cloud token**
-
-  Inspect `nx.json`. If this repository is public, shared, or no longer uses this Nx Cloud workspace, remove the checked-in `tasksRunnerOptions.default.options.accessToken` or rotate it in Nx Cloud.
-
-  Decision for this pass: token was reviewed and left unchanged because project ownership/publication status is not confirmed. Treat rotation/removal as an owner follow-up before publishing or sharing this repository.
-
-- [x] **Step 5: Commit baseline docs and scripts**
-
-  ```bash
-  git add README.md package.json nx.json
-  git commit -m "chore: document revival workflow"
-  ```
-
----
-
-## Task 2: Add Core Regression Tests Before Refactoring
-
-**Files:**
-- Create: `libs/lyra-sheet-core/src/lib/services/sheet.service.spec.ts`
-- Create: `libs/lyra-sheet-core/src/lib/services/merges.service.spec.ts`
-- Create: `libs/lyra-sheet-core/src/lib/services/formula-render.service.spec.ts`
-- Create: `libs/lyra-sheet-core/src/lib/services/history.service.spec.ts`
-
-- [x] **Step 1: Test formulas as they work today**
-
-  Create `libs/lyra-sheet-core/src/lib/services/formula-render.service.spec.ts` with tests for:
-
-  ```ts
-  describe('FormulaRenderService', () => {
-    it('evaluates arithmetic expressions', () => {
-      expect(service.convPlainText('=1+2*3')).toBe('7');
-    });
-
-    it('evaluates SUM over literal arguments', () => {
-      expect(service.convPlainText('=SUM(1,2,3)')).toBe(6);
-    });
-
-    it('returns #Error through conv when evaluation throws', () => {
-      expect(service.conv([[{ text: '=UNKNOWN(1)', style: {} }]])[0][0].text).toBe('#Error');
-    });
-  });
-  ```
-
-  Build the service with a real `DataService` instance or a minimal test double that provides `selectedSheet.getCellPlainText`.
-
-- [x] **Step 2: Test merge invariants**
-
-  Create `libs/lyra-sheet-core/src/lib/services/merges.service.spec.ts` with tests that prove:
-
-  ```ts
-  it('moves merges down when rows are inserted above the merge', () => {
-    const merges = new MergesService([{ sri: 2, eri: 3, sci: 1, eci: 2 }], cellRangeFactory);
-    merges.insertRows(1, 2);
-    expect(merges.merges).toEqual([{ sri: 4, eri: 5, sci: 1, eci: 2 }]);
-  });
-
-  it('detects a merge hit for a cell inside the range', () => {
-    const hit = merges.getHitMerge(2, 1);
-    expect(hit).toEqual({ sri: 2, eri: 3, sci: 1, eci: 2 });
-  });
-  ```
-
-- [x] **Step 3: Test sheet structure operations**
-
-  Create `libs/lyra-sheet-core/src/lib/services/sheet.service.spec.ts` with focused tests for:
-
-  ```ts
-  it('applies rich text to a cell', () => {
-    sheet.applyRichTextToCell(1, 1, [[{ text: 'hello' }]]);
-    expect(sheet.getCellPlainText(1, 1)).toBe('hello');
-  });
-
-  it('clears selected cell text without removing cell style', () => {
-    sheet.applyRichTextToCell(1, 1, [[{ text: 'hello' }]]);
-    sheet.applyBgColorTo({ sri: 1, eri: 1, sci: 1, eci: 1 }, '#fff');
-    sheet.clearText();
-    expect(sheet.getCellPlainText(1, 1)).toBe('');
-    expect(sheet.getCell(1, 1).style?.bgColor).toBe('#fff');
-  });
-  ```
-
-- [x] **Step 4: Test undo and redo behavior**
-
-  Create `libs/lyra-sheet-core/src/lib/services/history.service.spec.ts` with tests that prove:
-
-  ```ts
-  it('restores the previous data snapshot on undo', () => {
-    history.init(initialData);
-    history.stacked(nextData);
-    history.undo();
-    expect(dataService.snapshot()).toEqual(initialData);
-  });
-
-  it('restores the next data snapshot on redo', () => {
-    history.init(initialData);
-    history.stacked(nextData);
-    history.undo();
-    history.redo();
-    expect(dataService.snapshot()).toEqual(nextData);
-  });
-  ```
-
-- [x] **Step 5: Run core tests**
-
-  Run:
-
-  ```bash
-  yarn test-core
-  ```
-
-  Expected: All new core tests pass.
-
-  Result recorded on this pass: first run failed because core specs needed `reflect-metadata`. After adding the polyfill import, the formula unknown-function test exposed a real bug where `=UNKNOWN(1)` evaluated to `1`; `FormulaRenderService.evalSuffixExpr` now throws when evaluation leaves extra stack values, so `conv()` returns `#Error`. Final `yarn test-core` result: 5 test suites passed, 12 tests passed. The previously empty `line-wrap.service.spec.ts` was restored with a real percent-format test so the core Jest suite no longer fails with "must contain at least one test".
-
-- [x] **Step 6: Commit core tests**
-
-  ```bash
-  git add libs/lyra-sheet-core/src/lib/services/*.spec.ts
-  git commit -m "test: cover core spreadsheet services"
-  ```
-
----
-
-## Task 3: Fix React Wrapper Lifecycle And Data Flow
-
-**Files:**
-- Modify: `libs/lyra-sheet-react/src/lib/container-context.ts`
-- Modify: `libs/lyra-sheet-react/src/lib/LyraSheet.tsx`
-- Modify: `libs/lyra-sheet-react/src/lib/LyraSheet.spec.tsx`
-
-- [x] **Step 1: Replace the module-level shared container with an instance provider**
-
-  Refactor `container-context.ts` so each `LyraSheet` instance owns a child container:
-
-  ```ts
-  import React, { createContext, useContext } from 'react';
-  import { createCore } from '@lyra-sheet/core';
-  import { container, DependencyContainer } from 'tsyringe';
-  import InjectionToken from 'tsyringe/dist/typings/providers/injection-token';
-
-  createCore();
-
-  const LyraSheetContainerContext = createContext<DependencyContainer | null>(null);
-
-  export const LyraSheetContainerProvider = LyraSheetContainerContext.Provider;
-
-  export function createLyraSheetContainer(): DependencyContainer {
-    return container.createChildContainer();
-  }
-
-  export function useLyraSheetCore<T>(injectionToken: InjectionToken<T>): T {
-    const scopedContainer = useContext(LyraSheetContainerContext);
-    if (!scopedContainer) {
-      throw new Error('useLyraSheetCore must be used inside LyraSheetContainerProvider');
+  ```json
+  {
+    "name": "@lyra-sheet/vanilla",
+    "version": "0.0.1",
+    "dependencies": {
+      "tslib": "^2.0.0"
+    },
+    "peerDependencies": {
+      "@lyra-sheet/core": "0.0.1"
     }
-    return scopedContainer.resolve(injectionToken);
   }
   ```
 
-- [x] **Step 2: Move initialization out of render**
+- [ ] **Step 3: Add TypeScript configs**
 
-  In `LyraSheet.tsx`, change props and lifecycle:
+  Create `libs/lyra-sheet-vanilla/tsconfig.json`:
+
+  ```json
+  {
+    "extends": "../../tsconfig.base.json",
+    "compilerOptions": {
+      "types": []
+    },
+    "include": [],
+    "files": [],
+    "references": [
+      { "path": "./tsconfig.lib.json" },
+      { "path": "./tsconfig.spec.json" }
+    ]
+  }
+  ```
+
+  Create `libs/lyra-sheet-vanilla/tsconfig.lib.json`:
+
+  ```json
+  {
+    "extends": "./tsconfig.json",
+    "compilerOptions": {
+      "outDir": "../../dist/out-tsc",
+      "declaration": true,
+      "types": []
+    },
+    "include": ["src/**/*.ts"],
+    "exclude": ["**/*.spec.ts"]
+  }
+  ```
+
+  Create `libs/lyra-sheet-vanilla/tsconfig.spec.json`:
+
+  ```json
+  {
+    "extends": "./tsconfig.json",
+    "compilerOptions": {
+      "outDir": "../../dist/out-tsc",
+      "module": "commonjs",
+      "types": ["jest", "node"]
+    },
+    "include": ["src/**/*.spec.ts", "src/**/*.d.ts"]
+  }
+  ```
+
+- [ ] **Step 4: Add Jest config**
+
+  Create `libs/lyra-sheet-vanilla/jest.config.js`:
+
+  ```js
+  module.exports = {
+    displayName: 'lyra-sheet-vanilla',
+    preset: '../../jest.preset.js',
+    globals: {
+      'ts-jest': {
+        tsconfig: '<rootDir>/tsconfig.spec.json',
+      },
+    },
+    testEnvironment: 'jsdom',
+    transform: {
+      '^.+\\.[tj]sx?$': 'ts-jest',
+    },
+    moduleFileExtensions: ['ts', 'js'],
+    coverageDirectory: '../../coverage/libs/lyra-sheet-vanilla',
+  };
+  ```
+
+- [ ] **Step 5: Export the public API**
+
+  Create `libs/lyra-sheet-vanilla/src/index.ts`:
 
   ```ts
-  export interface LyraSheetReactProps {
+  export * from './lib/LyraSheetVanilla';
+  ```
+
+- [ ] **Step 6: Add a minimal failing mount test**
+
+  Create `libs/lyra-sheet-vanilla/src/lib/LyraSheetVanilla.spec.ts`:
+
+  ```ts
+  import 'reflect-metadata';
+  import { LyraSheetVanilla } from './LyraSheetVanilla';
+  import { Data, DatasheetConfig } from '@lyra-sheet/core';
+
+  const data: Data = {
+    sheets: [
+      {
+        name: 'Sheet1',
+        selected: true,
+        data: {
+          merges: [],
+          rows: {},
+          rowCount: 10,
+          cols: {},
+          colCount: 5,
+        },
+      },
+    ],
+  };
+
+  const config: DatasheetConfig = {
+    width: () => 800,
+    height: () => 400,
+    row: { height: 25, count: 10, indexHeight: 25 },
+    col: { width: 100, count: 5, indexWidth: 60 },
+  };
+
+  describe('LyraSheetVanilla', () => {
+    it('mounts the spreadsheet shell into a host element', () => {
+      const host = document.createElement('div');
+      const sheet = new LyraSheetVanilla({ data, config });
+
+      sheet.mount(host);
+
+      expect(host.querySelector('.lyra-sheet')).toBeTruthy();
+      expect(host.querySelector('.lyra-sheet-toolbar')).toBeTruthy();
+      expect(host.querySelector('.lyra-sheet-formula-bar')).toBeTruthy();
+      expect(host.querySelector('.lyra-sheet-editor')).toBeTruthy();
+      expect(host.querySelector('canvas')).toBeTruthy();
+    });
+  });
+  ```
+
+- [ ] **Step 7: Run the test and verify it fails**
+
+  Run:
+
+  ```bash
+  yarn nx test lyra-sheet-vanilla
+  ```
+
+  Expected: fail because `LyraSheetVanilla` does not exist or does not mount DOM yet.
+
+- [ ] **Step 8: Implement the minimal class**
+
+  Create `libs/lyra-sheet-vanilla/src/lib/LyraSheetVanilla.ts`:
+
+  ```ts
+  import { Data, DatasheetConfig } from '@lyra-sheet/core';
+
+  export interface LyraSheetVanillaOptions {
     data: Data;
     config: DatasheetConfig;
     onDataChange?: (data: Data) => void;
   }
+
+  export class LyraSheetVanilla {
+    private rootEl: HTMLDivElement | null = null;
+
+    constructor(private options: LyraSheetVanillaOptions) {}
+
+    mount(host: HTMLElement): void {
+      this.destroy();
+      const root = document.createElement('div');
+      root.className = 'lyra-sheet';
+      root.appendChild(this.createToolbar());
+      root.appendChild(this.createFormulaBar());
+      root.appendChild(this.createEditor());
+      host.appendChild(root);
+      this.rootEl = root;
+    }
+
+    update(options: Partial<LyraSheetVanillaOptions>): void {
+      this.options = { ...this.options, ...options };
+    }
+
+    destroy(): void {
+      this.rootEl?.remove();
+      this.rootEl = null;
+    }
+
+    private createToolbar(): HTMLElement {
+      const el = document.createElement('div');
+      el.className = 'lyra-sheet-toolbar';
+      return el;
+    }
+
+    private createFormulaBar(): HTMLElement {
+      const el = document.createElement('div');
+      el.className = 'lyra-sheet-formula-bar';
+      return el;
+    }
+
+    private createEditor(): HTMLElement {
+      const el = document.createElement('div');
+      el.className = 'lyra-sheet-editor';
+      el.appendChild(document.createElement('canvas'));
+      return el;
+    }
+  }
   ```
 
-  Use `useMemo` to create one container per component instance and `useLayoutEffect` or `useEffect` to call `setConfig`, `loadData`, `historyService.init`, and `viewRangeService.init`.
+- [ ] **Step 9: Register path and scripts**
 
-- [x] **Step 3: Subscribe to data changes**
+  Add to `tsconfig.base.json` paths:
 
-  In `LyraSheet.tsx`, subscribe to `dataService.dataChanged$` and call `onDataChange` when present. Return an unsubscribe cleanup from the effect.
+  ```json
+  "@lyra-sheet/vanilla": ["libs/lyra-sheet-vanilla/src/index.ts"]
+  ```
 
-- [x] **Step 4: Preserve existing UI composition**
+  Add scripts to `package.json`:
 
-  Keep this rendered structure:
+  ```json
+  "build-vanilla-lib": "nx build lyra-sheet-vanilla --verbose",
+  "lint-vanilla-lib": "nx lint lyra-sheet-vanilla",
+  "test-vanilla-lib": "nx test lyra-sheet-vanilla"
+  ```
+
+- [ ] **Step 10: Verify and commit**
+
+  Run:
+
+  ```bash
+  yarn test-vanilla-lib
+  yarn lint-vanilla-lib
+  yarn build-vanilla-lib
+  ```
+
+  Expected: all pass.
+
+  Commit:
+
+  ```bash
+  git add libs/lyra-sheet-vanilla tsconfig.base.json package.json plan.md
+  git commit -m "feat: add vanilla sheet shell"
+  ```
+
+---
+
+## Task 2: Move Core Container Wiring Into Vanilla
+
+**Files:**
+- Modify: `libs/lyra-sheet-vanilla/src/lib/LyraSheetVanilla.ts`
+- Create: `libs/lyra-sheet-vanilla/src/lib/createVanillaContainer.ts`
+- Test: `libs/lyra-sheet-vanilla/src/lib/createVanillaContainer.spec.ts`
+- Test: `libs/lyra-sheet-vanilla/src/lib/LyraSheetVanilla.spec.ts`
+
+- [ ] **Step 1: Write a failing container isolation test**
+
+  Create `libs/lyra-sheet-vanilla/src/lib/createVanillaContainer.spec.ts`:
+
+  ```ts
+  import 'reflect-metadata';
+  import { DataService } from '@lyra-sheet/core';
+  import { createVanillaContainer } from './createVanillaContainer';
+
+  describe('createVanillaContainer', () => {
+    it('creates isolated DataService instances', () => {
+      const first = createVanillaContainer().resolve(DataService);
+      const second = createVanillaContainer().resolve(DataService);
+
+      expect(first).not.toBe(second);
+    });
+  });
+  ```
+
+- [ ] **Step 2: Implement container creation**
+
+  Create `libs/lyra-sheet-vanilla/src/lib/createVanillaContainer.ts`:
+
+  ```ts
+  import { createCore } from '@lyra-sheet/core';
+  import { container, DependencyContainer } from 'tsyringe';
+
+  createCore();
+
+  export function createVanillaContainer(): DependencyContainer {
+    return container.createChildContainer();
+  }
+  ```
+
+- [ ] **Step 3: Wire options into core services on mount**
+
+  In `LyraSheetVanilla`, create a container in the constructor and resolve:
+
+  ```ts
+  ConfigService;
+  DataService;
+  ElementRefService;
+  HistoryService;
+  ViewRangeService;
+  ```
+
+  During `mount(host)`, call:
+
+  ```ts
+  configService.setConfig(options.config);
+  dataService.loadData(cloneDeep(options.data));
+  historyService.init(cloneDeep(options.data));
+  elementRefService.initRoot(root);
+  elementRefService.initCanvas(canvas);
+  viewRangeService.init();
+  ```
+
+- [ ] **Step 4: Subscribe to data changes**
+
+  Add a subscription to `dataService.dataChanged$` and call `options.onDataChange?.(data)`. Store the subscription and unsubscribe in `destroy()`.
+
+- [ ] **Step 5: Test data change callback**
+
+  Extend `LyraSheetVanilla.spec.ts`:
+
+  ```ts
+  it('notifies consumers when core data changes', () => {
+    const host = document.createElement('div');
+    const onDataChange = jest.fn();
+    const sheet = new LyraSheetVanilla({ data, config, onDataChange });
+
+    sheet.mount(host);
+    sheet.dataService.notifyDataChange();
+
+    expect(onDataChange).toHaveBeenCalledWith(data);
+  });
+  ```
+
+  If exposing `dataService` publicly feels wrong, add a package-private `getDataServiceForTesting()` method and mark it as test-only in a comment.
+
+- [ ] **Step 6: Verify and commit**
+
+  Run:
+
+  ```bash
+  yarn test-vanilla-lib
+  yarn build-vanilla-lib
+  ```
+
+  Commit:
+
+  ```bash
+  git add libs/lyra-sheet-vanilla plan.md
+  git commit -m "feat: wire vanilla sheet core container"
+  ```
+
+---
+
+## Task 3: Build Vanilla DOM Components
+
+**Files:**
+- Create: `libs/lyra-sheet-vanilla/src/lib/dom/createElement.ts`
+- Create: `libs/lyra-sheet-vanilla/src/lib/dom/renderToolbar.ts`
+- Create: `libs/lyra-sheet-vanilla/src/lib/dom/renderFormulaBar.ts`
+- Create: `libs/lyra-sheet-vanilla/src/lib/dom/renderEditor.ts`
+- Create: `libs/lyra-sheet-vanilla/src/lib/dom/renderRichTextInput.ts`
+- Create: `libs/lyra-sheet-vanilla/src/lib/dom/renderSelectorLayer.ts`
+- Create: `libs/lyra-sheet-vanilla/src/lib/dom/renderScrollbars.ts`
+- Create: `libs/lyra-sheet-vanilla/src/lib/dom/renderTabs.ts`
+- Modify: `libs/lyra-sheet-vanilla/src/lib/LyraSheetVanilla.ts`
+- Test: `libs/lyra-sheet-vanilla/src/lib/dom/*.spec.ts`
+
+- [ ] **Step 1: Add a small DOM helper**
+
+  Create `createElement.ts`:
+
+  ```ts
+  export function createElement<K extends keyof HTMLElementTagNameMap>(
+    tagName: K,
+    className?: string,
+  ): HTMLElementTagNameMap[K] {
+    const el = document.createElement(tagName);
+    if (className) {
+      el.className = className;
+    }
+    return el;
+  }
+  ```
+
+- [ ] **Step 2: Write toolbar render test**
+
+  Test that `renderToolbar()` creates `.lyra-sheet-toolbar` and at least the existing core actions needed for smoke parity: undo, redo, percent, currency, bold, italic, underline, merge, align, formula.
+
+- [ ] **Step 3: Implement toolbar DOM**
+
+  `renderToolbar(container)` should return an element and attach click handlers to the relevant core controllers resolved from the container.
+
+- [ ] **Step 4: Write editor render test**
+
+  Test that `renderEditor()` creates:
+
+  ```text
+  .lyra-sheet-editor
+  .lyra-sheet-rich-text-input
+  .lyra-sheet-rich-text-input-area[contenteditable="true"]
+  canvas
+  .lyra-sheet-editor-mask
+  .lyra-sheet-resizer-row
+  .lyra-sheet-resizer-col
+  .lyra-sheet-scrollbar-v
+  .lyra-sheet-scrollbar-h
+  .lyra-sheet-contextmenu
+  .lyra-sheet-tabs
+  ```
+
+- [ ] **Step 5: Implement editor DOM**
+
+  Split editor rendering into small functions. Keep event/controller wiring minimal in this task; DOM structure parity is enough.
+
+- [ ] **Step 6: Wire ElementRefService**
+
+  After creating editor DOM, initialize:
+
+  ```ts
+  elementRefService.initMask(maskEl);
+  elementRefService.initCanvas(canvasEl);
+  elementRefService.initRowResizer(rowResizerEl);
+  elementRefService.initColResizer(colResizerEl);
+  ```
+
+- [ ] **Step 7: Verify and commit**
+
+  Run:
+
+  ```bash
+  yarn test-vanilla-lib
+  yarn lint-vanilla-lib
+  ```
+
+  Commit:
+
+  ```bash
+  git add libs/lyra-sheet-vanilla plan.md
+  git commit -m "feat: render vanilla sheet dom"
+  ```
+
+---
+
+## Task 4: Port Controller Mounting And Lifecycle Cleanup
+
+**Files:**
+- Modify: `libs/lyra-sheet-vanilla/src/lib/LyraSheetVanilla.ts`
+- Create: `libs/lyra-sheet-vanilla/src/lib/lifecycle/SubscriptionBag.ts`
+- Test: `libs/lyra-sheet-vanilla/src/lib/lifecycle/SubscriptionBag.spec.ts`
+- Test: `libs/lyra-sheet-vanilla/src/lib/LyraSheetVanilla.spec.ts`
+
+- [ ] **Step 1: Add subscription cleanup utility**
+
+  Create a tiny `SubscriptionBag` that accepts RxJS subscriptions and DOM cleanup callbacks:
+
+  ```ts
+  export class SubscriptionBag {
+    private cleanups: Array<() => void> = [];
+
+    add(cleanup: { unsubscribe: () => void } | (() => void)): void {
+      this.cleanups.push(
+        typeof cleanup === 'function' ? cleanup : () => cleanup.unsubscribe(),
+      );
+    }
+
+    cleanup(): void {
+      for (const cleanup of this.cleanups.splice(0)) {
+        cleanup();
+      }
+    }
+  }
+  ```
+
+- [ ] **Step 2: Test cleanup**
+
+  Verify cleanup callbacks run once and subscriptions are unsubscribed.
+
+- [ ] **Step 3: Mount existing controllers**
+
+  In `LyraSheetVanilla.mount`, after DOM creation and element refs:
+
+  ```ts
+  editorController.mountDom(editorEl);
+  richTextInputController.mount(richTextHostEl, richTextEditableEl);
+  formulaBarController.mount(formulaTextareaEl);
+  editorController.onInit();
+  editorController.afterViewInit();
+  ```
+
+- [ ] **Step 4: Initialize mouse and keyboard pipelines through existing editor controller**
+
+  Prefer existing `EditorController.onInit()` instead of manually duplicating `MouseEventService` and `KeyboardEventService` wiring. If a controller assumes Angular/React timing, adapt the vanilla mount order rather than forking behavior.
+
+- [ ] **Step 5: Ensure destroy removes DOM and subscriptions**
+
+  `destroy()` must remove root DOM, unsubscribe data change subscriptions, and clear lifecycle callbacks. It does not need to reset core state; a new `LyraSheetVanilla` instance gets a new child container.
+
+- [ ] **Step 6: Verify and commit**
+
+  Run:
+
+  ```bash
+  yarn test-vanilla-lib
+  yarn build-vanilla-lib
+  ```
+
+  Commit:
+
+  ```bash
+  git add libs/lyra-sheet-vanilla plan.md
+  git commit -m "feat: mount vanilla sheet controllers"
+  ```
+
+---
+
+## Task 5: Migrate React Wrapper To Vanilla
+
+**Files:**
+- Modify: `libs/lyra-sheet-react/src/lib/LyraSheet.tsx`
+- Modify: `libs/lyra-sheet-react/src/lib/LyraSheet.spec.tsx`
+- Modify: `libs/lyra-sheet-react/project.json`
+- Modify: `libs/lyra-sheet-react/package.json`
+- Optionally deprecate: `libs/lyra-sheet-react/src/lib/components/**`
+
+- [ ] **Step 1: Write failing React wrapper test**
+
+  Update `LyraSheet.spec.tsx` so it expects the wrapper to render only a host element and instantiate `LyraSheetVanilla`. Mock `@lyra-sheet/vanilla`:
+
+  ```ts
+  const mount = jest.fn();
+  const update = jest.fn();
+  const destroy = jest.fn();
+
+  jest.mock('@lyra-sheet/vanilla', () => ({
+    LyraSheetVanilla: jest.fn().mockImplementation(() => ({ mount, update, destroy })),
+  }));
+  ```
+
+  Test:
+
+  ```ts
+  it('mounts vanilla sheet on a host element', () => {
+    render(<LyraSheet data={data} config={config} />);
+    expect(mount).toHaveBeenCalledWith(expect.any(HTMLDivElement));
+  });
+  ```
+
+- [ ] **Step 2: Replace React internals**
+
+  Implement `LyraSheet.tsx` as a thin wrapper:
 
   ```tsx
-  <div className="lyra-sheet" ref={rootRef}>
-    <LyraSheetToolbar />
-    <LyraSheetFormulaBar />
-    <LyraSheetEditor />
-  </div>
+  export function LyraSheet({ data, config, onDataChange }: LyraSheetReactProps) {
+    const hostRef = useRef<HTMLDivElement>(null);
+    const sheetRef = useRef<LyraSheetVanilla | null>(null);
+
+    useLayoutEffect(() => {
+      if (!hostRef.current) return;
+      sheetRef.current = new LyraSheetVanilla({ data, config, onDataChange });
+      sheetRef.current.mount(hostRef.current);
+      return () => {
+        sheetRef.current?.destroy();
+        sheetRef.current = null;
+      };
+    }, []);
+
+    useLayoutEffect(() => {
+      sheetRef.current?.update({ data, config, onDataChange });
+    }, [data, config, onDataChange]);
+
+    return <div ref={hostRef} />;
+  }
   ```
 
-  Wrap it in `LyraSheetContainerProvider` with the instance container.
+- [ ] **Step 3: Remove direct core/container usage from React wrapper**
 
-- [x] **Step 5: Add React tests**
+  `libs/lyra-sheet-react/src/lib/container-context.ts` should no longer be used by the public wrapper. Keep it temporarily only if old internal components remain during migration, but do not export it as part of the new path.
 
-  Update `libs/lyra-sheet-react/src/lib/LyraSheet.spec.tsx` to render with minimal `data` and `config`. Assert that rendering does not throw and that two rendered instances do not share the same container state.
+- [ ] **Step 4: Update build dependencies**
 
-- [x] **Step 6: Run React tests and lint**
+  Ensure React library build includes `@lyra-sheet/vanilla` as a dependency or external according to the current Rollup setup.
+
+- [ ] **Step 5: Verify and commit**
 
   Run:
 
   ```bash
   yarn test-react-lib
-  yarn lint-react-lib
+  yarn build-react-lib
   ```
 
-  Expected: Both pass.
-
-  Result recorded on this pass: the first `yarn test-react-lib` run failed as expected because `createLyraSheetContainer` and `onDataChange` were not implemented. After the wrapper fix, `yarn test-react-lib` passed with 1 suite and 3 tests. `yarn lint-react-lib` exited 0 with 34 existing warnings. `yarn build-react-lib` also passed, with existing Browserslist/Rollup/Nx Cloud warnings.
-
-- [x] **Step 7: Commit React wrapper fix**
+  Commit:
 
   ```bash
-  git add libs/lyra-sheet-react/src/lib/container-context.ts libs/lyra-sheet-react/src/lib/LyraSheet.tsx libs/lyra-sheet-react/src/lib/LyraSheet.spec.tsx
-  git commit -m "fix: isolate react sheet instances"
+  git add libs/lyra-sheet-react libs/lyra-sheet-vanilla plan.md
+  git commit -m "refactor: wrap vanilla sheet in react"
   ```
 
 ---
 
-## Task 4: Implement Clipboard Support
-
-**Files:**
-- Create: `libs/lyra-sheet-core/src/lib/services/clipboard.service.ts`
-- Modify: `libs/lyra-sheet-core/src/lib/services/index.ts`
-- Modify: `libs/lyra-sheet-core/src/lib/services/keyboard-event.service.ts`
-- Test: `libs/lyra-sheet-core/src/lib/services/clipboard.service.spec.ts`
-
-- [x] **Step 1: Define clipboard service responsibilities**
-
-  `ClipboardService` should support:
-
-  - Serializing the current selected range to TSV for system clipboard copy.
-  - Parsing pasted TSV into a rectangular matrix.
-  - Applying the matrix starting at the active selected cell.
-  - Recording paste changes through `HistoryService`.
-
-- [x] **Step 2: Write TSV parsing tests**
-
-  Create `clipboard.service.spec.ts` with:
-
-  ```ts
-  it('parses TSV into a rectangular matrix', () => {
-    expect(service.parseTsv('a\tb\nc\td')).toEqual([
-      ['a', 'b'],
-      ['c', 'd'],
-    ]);
-  });
-  ```
-
-- [x] **Step 3: Write paste application tests**
-
-  Add:
-
-  ```ts
-  it('pastes a TSV matrix starting at the active cell', () => {
-    service.pasteTsv('a\tb\nc\td');
-    expect(sheet.getCellPlainText(1, 1)).toBe('a');
-    expect(sheet.getCellPlainText(1, 2)).toBe('b');
-    expect(sheet.getCellPlainText(2, 1)).toBe('c');
-    expect(sheet.getCellPlainText(2, 2)).toBe('d');
-  });
-  ```
-
-- [x] **Step 4: Implement `parseTsv`**
-
-  Add a pure method:
-
-  ```ts
-  parseTsv(text: string): string[][] {
-    return text.replace(/\r\n/g, '\n').replace(/\r/g, '\n').split('\n').map((row) => row.split('\t'));
-  }
-  ```
-
-- [x] **Step 5: Implement `pasteTsv`**
-
-  Use `DataService.selectedSheet`, the last selector, and `SheetService.applyRichTextToCell` to write each pasted cell as `[[{ text: value }]]`.
-
-- [x] **Step 6: Wire keyboard paste**
-
-  In `KeyboardEventService`, intercept paste events only when the rich text editor is not actively editing. Read `event.clipboardData?.getData('text/plain')`, call `ClipboardService.pasteTsv`, prevent default, and request render.
-
-- [x] **Step 7: Run tests**
-
-  ```bash
-  yarn test-core
-  ```
-
-  Expected: Clipboard tests and prior core tests pass.
-
-  Result recorded on this pass: the first `yarn test-core` run failed as expected because `ClipboardService` did not exist. After implementation, `yarn test-core` passed with 6 suites and 14 tests. `yarn lint-core` exited 0 with 11 existing warnings, and `yarn build-core-lib` passed with the existing Nx Cloud warning.
-
-- [x] **Step 8: Commit clipboard support**
-
-  ```bash
-  git add libs/lyra-sheet-core/src/lib/services/clipboard.service.ts libs/lyra-sheet-core/src/lib/services/index.ts libs/lyra-sheet-core/src/lib/services/keyboard-event.service.ts libs/lyra-sheet-core/src/lib/services/clipboard.service.spec.ts
-  git commit -m "feat: add spreadsheet clipboard paste"
-  ```
-
----
-
-## Task 5: Turn Autofill From Geometry Into Behavior
-
-**Files:**
-- Modify: `libs/lyra-sheet-core/src/lib/services/autofill.service.ts`
-- Test: `libs/lyra-sheet-core/src/lib/services/autofill.service.spec.ts`
-
-- [x] **Step 1: Define first supported autofill scope**
-
-  Support only these cases first:
-
-  - Single source cell copied into the target range.
-  - Single numeric source cell extended as a constant.
-  - Two numeric source cells extended as a simple arithmetic series.
-
-- [x] **Step 2: Test copy-fill**
-
-  Create `autofill.service.spec.ts` with:
-
-  ```ts
-  it('copies a single source cell into the autofill range', () => {
-    sheet.applyRichTextToCell(1, 1, [[{ text: 'hello' }]]);
-    service.applyAutofill(sourceSelector, { sri: 2, eri: 3, sci: 1, eci: 1 });
-    expect(sheet.getCellPlainText(2, 1)).toBe('hello');
-    expect(sheet.getCellPlainText(3, 1)).toBe('hello');
-  });
-  ```
-
-- [x] **Step 3: Test numeric series**
-
-  Add:
-
-  ```ts
-  it('extends a two-cell numeric series downward', () => {
-    sheet.applyRichTextToCell(1, 1, [[{ text: '1' }]]);
-    sheet.applyRichTextToCell(2, 1, [[{ text: '3' }]]);
-    service.applyAutofill(sourceSelector, { sri: 3, eri: 5, sci: 1, eci: 1 });
-    expect(sheet.getCellPlainText(3, 1)).toBe('5');
-    expect(sheet.getCellPlainText(4, 1)).toBe('7');
-    expect(sheet.getCellPlainText(5, 1)).toBe('9');
-  });
-  ```
-
-- [x] **Step 4: Implement `applyAutofill`**
-
-  Add a public method that receives the source selector and target range, computes the fill values, writes cells through `SheetService.applyRichTextToCell`, records history, and requests render.
-
-- [x] **Step 5: Call `applyAutofill` from drag completion**
-
-  In `hideAutofill`, replace the debug `console.log` calls with a call to `applyAutofill` when `this.rect` is not null.
-
-- [x] **Step 6: Run tests**
-
-  ```bash
-  yarn test-core
-  ```
-
-  Expected: Autofill tests and prior core tests pass.
-
-  Result recorded on this pass: the first `yarn test-core` run failed as expected because `AutofillService` had no `applyAutofill` method and accepted no dependencies. After implementation, `yarn test-core` passed with 7 suites and 16 tests. `yarn lint-core` exited 0 with 11 existing warnings, and `yarn build-core-lib` passed with the existing Nx Cloud warning.
-
-- [x] **Step 7: Commit autofill behavior**
-
-  ```bash
-  git add libs/lyra-sheet-core/src/lib/services/autofill.service.ts libs/lyra-sheet-core/src/lib/services/autofill.service.spec.ts
-  git commit -m "feat: apply basic autofill values"
-  ```
-
----
-
-## Task 6: Skip E2E Coverage
-
-**Files:**
-- No code changes.
-
-- [x] **Step 1: Remove E2E from the revival scope**
-
-  User decision: skip E2E work for this revival pass. Unit tests are enough for now.
-
-- [x] **Step 2: Revert uncommitted E2E edits**
-
-  Any attempted changes under `apps/demo-ng-e2e` and `apps/demo-react-e2e` were restored before commit.
-
-- [x] **Step 3: Record the E2E verification blocker**
-
-  Attempted `yarn e2e-ng && yarn e2e-react` was interrupted by the port prompt for `4200`. Retrying `yarn e2e-ng --watch=false` built the Angular demo but Cypress could not verify `http://localhost:4200/`. Per user instruction, no further E2E debugging is needed.
-
-- [x] **Step 4: Keep future verification UT-focused**
-
-  Final verification should use unit tests and builds, not Cypress E2E.
-
----
-
-## Task 7: Decide The Formula Strategy
+## Task 6: Decide Angular Wrapper Strategy
 
 **Files:**
 - Modify: `README.md`
-- Modify: `libs/lyra-sheet-core/src/lib/services/formula-render.service.ts`
-- Test: `libs/lyra-sheet-core/src/lib/services/formula-render.service.spec.ts`
+- Either modify: `libs/lyra-sheet-angular/src/lib/lyra-sheet.component.ts`
+- Or document deprecation: `libs/lyra-sheet-angular/README.md`
+- Test: `libs/lyra-sheet-angular/src/lib/lyra-sheet.component.spec.ts` if Angular remains active
 
-- [x] **Step 1: Document the current formula scope**
+- [ ] **Step 1: Choose one Angular path**
 
-  Add a `Formula Support` section to `README.md`:
+  Choose one:
+
+  - **Active wrapper:** Rewrite Angular `LyraSheetComponent` to instantiate `LyraSheetVanilla` in `ngAfterViewInit`, call `update()` in `ngOnChanges`, and call `destroy()` in `ngOnDestroy`.
+  - **Legacy wrapper:** Leave Angular implementation untouched and document that new UI work happens in vanilla + React first.
+  - **Deprecation:** Mark Angular package as deprecated in docs, without removing code.
+
+  Recommendation: choose **Legacy wrapper** until vanilla + React are stable. Angular has more old tests and CDK coupling, so migrating it first adds risk.
+
+- [ ] **Step 2: If Active wrapper is chosen, write failing Angular wrapper test**
+
+  Mock `LyraSheetVanilla`, mount the component, and assert `mount()` and `destroy()` are called.
+
+- [ ] **Step 3: If Legacy wrapper is chosen, document the status**
+
+  Add to `libs/lyra-sheet-angular/README.md`:
 
   ```markdown
-  ## Formula Support
+  # @lyra-sheet/angular
 
-  The current formula engine is lightweight. It supports basic arithmetic, same-sheet A1 references, ranges such as `A1:B2`, and the functions `SUM`, `AVERAGE`, `MAX`, `MIN`, `IF`, `AND`, and `OR`.
-
-  It does not yet support dependency graphs, incremental recalculation, circular reference detection, cross-sheet references, named ranges, or Excel-compatible function coverage.
+  Angular support is currently legacy-compatible. New UI implementation work should target `@lyra-sheet/vanilla` first. Angular can be migrated to the vanilla wrapper after the vanilla and React paths stabilize.
   ```
 
-- [x] **Step 2: Add explicit tests for unsupported behavior**
+- [ ] **Step 4: Verify and commit**
 
-  Add tests that lock current behavior for circular references and unknown functions. The expected result should be `#Error` through `conv`.
-
-- [x] **Step 3: Choose one route**
-
-  Choose one of:
-
-  - Keep lightweight formulas and document them as a non-goal for now.
-  - Replace `FormulaRenderService` internals with a dependency-graph-based engine.
-  - Integrate an existing formula engine library after evaluating bundle size and license.
-
-  Decision for this pass: keep the current lightweight formula engine and document the unsupported areas as non-goals for now. Added unit coverage for unknown functions and circular references returning `#Error` through `conv()`. Circular references now fail with an explicit `Circular formula reference` error instead of relying on a maximum call stack error.
-
-- [x] **Step 4: Commit formula scope decision**
+  For Legacy wrapper:
 
   ```bash
-  git add README.md libs/lyra-sheet-core/src/lib/services/formula-render.service.ts libs/lyra-sheet-core/src/lib/services/formula-render.service.spec.ts
-  git commit -m "docs: clarify formula engine scope"
+  yarn build-ng-lib
+  ```
+
+  Commit:
+
+  ```bash
+  git add README.md libs/lyra-sheet-angular/README.md plan.md
+  git commit -m "docs: define angular wrapper strategy"
+  ```
+
+---
+
+## Task 7: Remove Duplicated UI Code After Parity
+
+**Files:**
+- Delete or archive: `libs/lyra-sheet-react/src/lib/components/**`
+- Delete or archive: React icon imports only used by old components
+- Modify: `libs/lyra-sheet-react/src/index.ts`
+- Modify: `README.md`
+
+- [ ] **Step 1: Confirm parity checklist**
+
+  Before deleting old React UI components, manually verify vanilla/React supports:
+
+  - Sheet shell renders.
+  - Toolbar buttons dispatch core commands.
+  - Formula bar mounts.
+  - Canvas mounts.
+  - Rich text input opens and commits text.
+  - Selection mask renders.
+  - Scrollbars mount.
+  - Tabs render.
+  - `onDataChange` fires.
+  - Multiple React instances are isolated.
+
+- [ ] **Step 2: Delete old React component tree**
+
+  Remove old duplicated React UI components only after the parity checklist passes.
+
+- [ ] **Step 3: Keep wrapper tests**
+
+  React package tests should prove wrapper lifecycle, not duplicate vanilla DOM behavior.
+
+- [ ] **Step 4: Verify and commit**
+
+  Run:
+
+  ```bash
+  yarn test-vanilla-lib
+  yarn test-react-lib
+  yarn build-vanilla-lib
+  yarn build-react-lib
+  ```
+
+  Commit:
+
+  ```bash
+  git add libs/lyra-sheet-react README.md plan.md
+  git commit -m "refactor: remove duplicated react sheet ui"
   ```
 
 ---
 
 ## Final Verification
 
-- [ ] Run:
+- [ ] Run unit tests and builds:
 
   ```bash
-  yarn verify
+  yarn test-core
+  yarn test-vanilla-lib
+  yarn test-react-lib
   yarn build-core-lib
-  yarn build-ng-lib
+  yarn build-vanilla-lib
   yarn build-react-lib
   ```
 
-- [ ] Manually open:
+- [ ] Skip Cypress E2E unless explicitly reintroduced later.
+
+- [ ] Manually open demos:
 
   ```bash
-  yarn start-ng
   yarn start-react
+  yarn start-ng
   ```
 
 - [ ] Verify manually:
 
-  - A cell can be edited and committed.
-  - Undo and redo work.
-  - A merged cell still renders and selects correctly.
-  - Clipboard paste works for a 2x2 TSV block.
-  - Autofill works for copy-fill and a numeric series.
-  - Two React `LyraSheet` instances do not share state.
+  - React demo renders via vanilla implementation.
+  - Angular demo still works or is clearly documented as legacy.
+  - Editing a cell still works.
+  - Clipboard paste still works.
+  - Autofill still works for copy-fill and numeric series.
+  - Formula errors still render as `#Error`.
 
 ---
 
 ## Execution Recommendation
 
-Use this order:
-
-1. Task 1 to make the project runnable and understandable.
-2. Task 2 before any meaningful behavior change.
-3. Task 3 because React has a real multi-instance state bug.
-4. Task 4 and Task 5 because clipboard and autofill are high-impact spreadsheet basics.
-5. Task 6 is skipped by request; keep verification focused on UT and builds.
-6. Task 7 after the project has tests, because formula strategy has the highest rewrite risk.
+1. Build `lyra-sheet-vanilla` as a new package without deleting existing UI.
+2. Move core container and lifecycle ownership into vanilla.
+3. Build DOM structure parity in small tested pieces.
+4. Mount existing core controllers from vanilla.
+5. Migrate React first because its current wrapper is already thinner and was recently improved.
+6. Keep Angular as legacy until vanilla + React are stable.
+7. Delete duplicated React UI only after parity is proven.
