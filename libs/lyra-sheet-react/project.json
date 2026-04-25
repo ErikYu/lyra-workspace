@@ -12,7 +12,7 @@
         "tsConfig": "libs/lyra-sheet-react/tsconfig.lib.json",
         "project": "libs/lyra-sheet-react/package.json",
         "entryFile": "libs/lyra-sheet-react/src/index.ts",
-        "external": ["react/jsx-runtime"],
+        "external": ["react/jsx-runtime", "@lyra-sheet/vanilla"],
         "rollupConfig": [
           "@nrwl/react/plugins/bundle-rollup",
           "./libs/lyra-sheet-react/bundle-rollup.cjs"

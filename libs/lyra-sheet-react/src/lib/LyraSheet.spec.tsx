@@ -1,24 +1,21 @@
 import 'reflect-metadata';
 import { render } from '@testing-library/react';
-import React, { useEffect } from 'react';
-import { Data, DataService, DatasheetConfig } from '@lyra-sheet/core';
+import React from 'react';
+import { Data, DatasheetConfig } from '@lyra-sheet/core';
+import { LyraSheetVanilla } from '@lyra-sheet/vanilla';
 
 import LyraSheetReact from './LyraSheet';
-import {
-  createLyraSheetContainer,
-  useLyraSheetCore,
-} from './container-context';
 
-jest.mock('./components/Toolbar', () => ({
-  LyraSheetToolbar: () => <div data-testid="toolbar" />,
-}));
+const mockMount = jest.fn();
+const mockUpdate = jest.fn();
+const mockDestroy = jest.fn();
 
-jest.mock('./components/FormulaBar', () => ({
-  LyraSheetFormulaBar: () => <div data-testid="formula-bar" />,
-}));
-
-jest.mock('./components/Editor', () => ({
-  LyraSheetEditor: () => <div data-testid="editor" />,
+jest.mock('@lyra-sheet/vanilla', () => ({
+  LyraSheetVanilla: jest.fn().mockImplementation(() => ({
+    mount: mockMount,
+    update: mockUpdate,
+    destroy: mockDestroy,
+  })),
 }));
 
 const data: Data = {
@@ -52,20 +49,11 @@ const config: DatasheetConfig = {
   },
 };
 
-function NotifyDataChangeOnMount() {
-  const dataService = useLyraSheetCore(DataService);
-
-  useEffect(() => {
-    dataService.notifyDataChange();
-  }, [dataService]);
-
-  return null;
-}
-
 describe('LyraSheetReact', () => {
   let consoleErrorSpy: jest.SpyInstance;
 
   beforeEach(() => {
+    jest.clearAllMocks();
     consoleErrorSpy = jest
       .spyOn(console, 'error')
       .mockImplementation((message?: unknown, ...optionalParams: unknown[]) => {
@@ -83,30 +71,48 @@ describe('LyraSheetReact', () => {
     consoleErrorSpy.mockRestore();
   });
 
-  it('creates an isolated container per sheet instance', () => {
-    expect(createLyraSheetContainer()).not.toBe(createLyraSheetContainer());
+  it('mounts vanilla sheet on a host element', () => {
+    render(<LyraSheetReact data={data} config={config} />);
+
+    expect(LyraSheetVanilla).toHaveBeenCalledWith({
+      data,
+      config,
+      onDataChange: undefined,
+    });
+    expect(mockMount).toHaveBeenCalledWith(expect.any(HTMLDivElement));
   });
 
-  it('renders the sheet shell successfully', () => {
-    const { container, getByTestId } = render(
-      <LyraSheetReact data={data} config={config} />,
-    );
-
-    expect(container.querySelector('.lyra-sheet')).toBeTruthy();
-    expect(getByTestId('toolbar')).toBeTruthy();
-    expect(getByTestId('formula-bar')).toBeTruthy();
-    expect(getByTestId('editor')).toBeTruthy();
-  });
-
-  it('notifies consumers when core data changes', () => {
+  it('updates vanilla sheet when props change', () => {
     const onDataChange = jest.fn();
-
-    render(
-      <LyraSheetReact data={data} config={config} onDataChange={onDataChange}>
-        <NotifyDataChangeOnMount />
-      </LyraSheetReact>,
+    const nextData = { sheets: [{ ...data.sheets[0], name: 'Next' }] };
+    const { rerender } = render(
+      <LyraSheetReact
+        data={data}
+        config={config}
+        onDataChange={onDataChange}
+      />,
     );
 
-    expect(onDataChange).toHaveBeenCalledWith(data);
+    rerender(
+      <LyraSheetReact
+        data={nextData}
+        config={config}
+        onDataChange={onDataChange}
+      />,
+    );
+
+    expect(mockUpdate).toHaveBeenLastCalledWith({
+      data: nextData,
+      config,
+      onDataChange,
+    });
+  });
+
+  it('destroys vanilla sheet on unmount', () => {
+    const { unmount } = render(<LyraSheetReact data={data} config={config} />);
+
+    unmount();
+
+    expect(mockDestroy).toHaveBeenCalledTimes(1);
   });
 });

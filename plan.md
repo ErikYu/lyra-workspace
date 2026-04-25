@@ -768,7 +768,7 @@ Use unit tests only. Do not add or repair Cypress E2E as part of this plan. Test
 - Modify: `libs/lyra-sheet-react/package.json`
 - Optionally deprecate: `libs/lyra-sheet-react/src/lib/components/**`
 
-- [ ] **Step 1: Write failing React wrapper test**
+- [x] **Step 1: Write failing React wrapper test**
 
   Update `LyraSheet.spec.tsx` so it expects the wrapper to render only a host element and instantiate `LyraSheetVanilla`. Mock `@lyra-sheet/vanilla`:
 
@@ -791,7 +791,7 @@ Use unit tests only. Do not add or repair Cypress E2E as part of this plan. Test
   });
   ```
 
-- [ ] **Step 2: Replace React internals**
+- [x] **Step 2: Replace React internals**
 
   Implement `LyraSheet.tsx` as a thin wrapper:
 
@@ -818,15 +818,17 @@ Use unit tests only. Do not add or repair Cypress E2E as part of this plan. Test
   }
   ```
 
-- [ ] **Step 3: Remove direct core/container usage from React wrapper**
+- [x] **Step 3: Remove direct core/container usage from React wrapper**
 
   `libs/lyra-sheet-react/src/lib/container-context.ts` should no longer be used by the public wrapper. Keep it temporarily only if old internal components remain during migration, but do not export it as part of the new path.
 
-- [ ] **Step 4: Update build dependencies**
+- [x] **Step 4: Update build dependencies**
 
   Ensure React library build includes `@lyra-sheet/vanilla` as a dependency or external according to the current Rollup setup.
 
-- [ ] **Step 5: Verify and commit**
+  Result recorded on this pass: the first `yarn test-react-lib` run failed because the old React component tree still loaded core/container code and SVG components. After migration, `LyraSheet.tsx` is a thin host wrapper around `LyraSheetVanilla`, direct core/container usage was removed from the public wrapper, `@lyra-sheet/vanilla` was added as a React peer dependency, and Rollup externalizes it.
+
+- [x] **Step 5: Verify and commit**
 
   Run:
 
@@ -834,6 +836,8 @@ Use unit tests only. Do not add or repair Cypress E2E as part of this plan. Test
   yarn test-react-lib
   yarn build-react-lib
   ```
+
+  Result recorded on this pass: `yarn test-react-lib` passed with 1 suite and 3 tests. `yarn lint-react-lib` exited 0 with 34 existing warnings in the old React component tree. `yarn build-react-lib` passed. `yarn test-vanilla-lib` also passed with 6 suites and 10 tests. Nx Cloud reported remote 502 warnings, but local targets succeeded.
 
   Commit:
 
