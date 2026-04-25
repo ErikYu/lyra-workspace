@@ -5,6 +5,7 @@ import { TextInputService } from './text-input.service';
 import { DataService } from './data.service';
 import { Lifecycle, scoped } from 'tsyringe';
 import { ElementRefService } from './element-ref.service';
+import { ClipboardService } from './clipboard.service';
 
 @scoped(Lifecycle.ContainerScoped)
 export class KeyboardEventService {
@@ -14,6 +15,7 @@ export class KeyboardEventService {
     private textInputService: TextInputService,
     private elementRef: ElementRefService,
     private dataService: DataService,
+    private clipboardService: ClipboardService,
   ) {}
   init(): void {
     fromEvent<KeyboardEvent>(this.elementRef.rootEl, 'keydown')
@@ -43,7 +45,24 @@ export class KeyboardEventService {
       )
       .subscribe();
 
+    this.pastePipeLine();
     this.tabEnterDirPipeLine();
+  }
+
+  private pastePipeLine(): void {
+    fromEvent<ClipboardEvent>(this.elementRef.rootEl, 'paste')
+      .pipe(
+        filter(() => !this.textInputService.isEditing),
+        tap((evt) => {
+          const text = evt.clipboardData?.getData('text/plain');
+          if (!text) {
+            return;
+          }
+          evt.preventDefault();
+          this.clipboardService.pasteTsv(text);
+        }),
+      )
+      .subscribe();
   }
 
   private tabEnterDirPipeLine(): void {

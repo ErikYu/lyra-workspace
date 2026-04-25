@@ -355,7 +355,7 @@
 - Modify: `libs/lyra-sheet-core/src/lib/services/keyboard-event.service.ts`
 - Test: `libs/lyra-sheet-core/src/lib/services/clipboard.service.spec.ts`
 
-- [ ] **Step 1: Define clipboard service responsibilities**
+- [x] **Step 1: Define clipboard service responsibilities**
 
   `ClipboardService` should support:
 
@@ -364,7 +364,7 @@
   - Applying the matrix starting at the active selected cell.
   - Recording paste changes through `HistoryService`.
 
-- [ ] **Step 2: Write TSV parsing tests**
+- [x] **Step 2: Write TSV parsing tests**
 
   Create `clipboard.service.spec.ts` with:
 
@@ -377,7 +377,7 @@
   });
   ```
 
-- [ ] **Step 3: Write paste application tests**
+- [x] **Step 3: Write paste application tests**
 
   Add:
 
@@ -391,7 +391,7 @@
   });
   ```
 
-- [ ] **Step 4: Implement `parseTsv`**
+- [x] **Step 4: Implement `parseTsv`**
 
   Add a pure method:
 
@@ -401,15 +401,15 @@
   }
   ```
 
-- [ ] **Step 5: Implement `pasteTsv`**
+- [x] **Step 5: Implement `pasteTsv`**
 
   Use `DataService.selectedSheet`, the last selector, and `SheetService.applyRichTextToCell` to write each pasted cell as `[[{ text: value }]]`.
 
-- [ ] **Step 6: Wire keyboard paste**
+- [x] **Step 6: Wire keyboard paste**
 
   In `KeyboardEventService`, intercept paste events only when the rich text editor is not actively editing. Read `event.clipboardData?.getData('text/plain')`, call `ClipboardService.pasteTsv`, prevent default, and request render.
 
-- [ ] **Step 7: Run tests**
+- [x] **Step 7: Run tests**
 
   ```bash
   yarn test-core
@@ -417,7 +417,9 @@
 
   Expected: Clipboard tests and prior core tests pass.
 
-- [ ] **Step 8: Commit clipboard support**
+  Result recorded on this pass: the first `yarn test-core` run failed as expected because `ClipboardService` did not exist. After implementation, `yarn test-core` passed with 6 suites and 14 tests. `yarn lint-core` exited 0 with 11 existing warnings, and `yarn build-core-lib` passed with the existing Nx Cloud warning.
+
+- [x] **Step 8: Commit clipboard support**
 
   ```bash
   git add libs/lyra-sheet-core/src/lib/services/clipboard.service.ts libs/lyra-sheet-core/src/lib/services/index.ts libs/lyra-sheet-core/src/lib/services/keyboard-event.service.ts libs/lyra-sheet-core/src/lib/services/clipboard.service.spec.ts

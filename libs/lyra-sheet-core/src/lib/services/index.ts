@@ -2,6 +2,7 @@ export * from './autofill.service';
 export * from './canvas.service';
 export * from './cell-range.factory';
 export * from './char-size.service';
+export * from './clipboard.service';
 export * from './config.service';
 export * from './contextmenu.service';
 export * from './data.service';
