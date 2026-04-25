@@ -1,0 +1,10 @@
+{
+  "name": "@lyra-sheet/vanilla",
+  "version": "0.0.1",
+  "dependencies": {
+    "tslib": "^2.0.0"
+  },
+  "peerDependencies": {
+    "@lyra-sheet/core": "0.0.1"
+  }
+}

@@ -98,13 +98,15 @@ Use unit tests only. Do not add or repair Cypress E2E as part of this plan. Test
 - Create: `libs/lyra-sheet-vanilla/tsconfig.lib.json`
 - Create: `libs/lyra-sheet-vanilla/tsconfig.spec.json`
 - Create: `libs/lyra-sheet-vanilla/jest.config.js`
+- Create: `libs/lyra-sheet-vanilla/.eslintrc.json`
 - Create: `libs/lyra-sheet-vanilla/src/index.ts`
 - Create: `libs/lyra-sheet-vanilla/src/lib/LyraSheetVanilla.ts`
 - Create: `libs/lyra-sheet-vanilla/src/lib/LyraSheetVanilla.spec.ts`
+- Modify: `angular.json`
 - Modify: `tsconfig.base.json`
 - Modify: `package.json`
 
-- [ ] **Step 1: Add project configuration**
+- [x] **Step 1: Add project configuration**
 
   Create `libs/lyra-sheet-vanilla/project.json`:
 
@@ -144,7 +146,7 @@ Use unit tests only. Do not add or repair Cypress E2E as part of this plan. Test
   }
   ```
 
-- [ ] **Step 2: Add package metadata**
+- [x] **Step 2: Add package metadata**
 
   Create `libs/lyra-sheet-vanilla/package.json`:
 
@@ -161,7 +163,7 @@ Use unit tests only. Do not add or repair Cypress E2E as part of this plan. Test
   }
   ```
 
-- [ ] **Step 3: Add TypeScript configs**
+- [x] **Step 3: Add TypeScript configs**
 
   Create `libs/lyra-sheet-vanilla/tsconfig.json`:
 
@@ -209,7 +211,7 @@ Use unit tests only. Do not add or repair Cypress E2E as part of this plan. Test
   }
   ```
 
-- [ ] **Step 4: Add Jest config**
+- [x] **Step 4: Add Jest config**
 
   Create `libs/lyra-sheet-vanilla/jest.config.js`:
 
@@ -231,7 +233,7 @@ Use unit tests only. Do not add or repair Cypress E2E as part of this plan. Test
   };
   ```
 
-- [ ] **Step 5: Export the public API**
+- [x] **Step 5: Export the public API**
 
   Create `libs/lyra-sheet-vanilla/src/index.ts`:
 
@@ -239,7 +241,7 @@ Use unit tests only. Do not add or repair Cypress E2E as part of this plan. Test
   export * from './lib/LyraSheetVanilla';
   ```
 
-- [ ] **Step 6: Add a minimal failing mount test**
+- [x] **Step 6: Add a minimal failing mount test**
 
   Create `libs/lyra-sheet-vanilla/src/lib/LyraSheetVanilla.spec.ts`:
 
@@ -287,7 +289,7 @@ Use unit tests only. Do not add or repair Cypress E2E as part of this plan. Test
   });
   ```
 
-- [ ] **Step 7: Run the test and verify it fails**
+- [x] **Step 7: Run the test and verify it fails**
 
   Run:
 
@@ -297,7 +299,9 @@ Use unit tests only. Do not add or repair Cypress E2E as part of this plan. Test
 
   Expected: fail because `LyraSheetVanilla` does not exist or does not mount DOM yet.
 
-- [ ] **Step 8: Implement the minimal class**
+  Result recorded on this pass: the first run failed because Nx did not yet discover `lyra-sheet-vanilla`; this repo registers projects through `angular.json`, so the project was added there. The second run failed for the intended TDD reason: `Cannot find module './LyraSheetVanilla'`.
+
+- [x] **Step 8: Implement the minimal class**
 
   Create `libs/lyra-sheet-vanilla/src/lib/LyraSheetVanilla.ts`:
 
@@ -356,7 +360,7 @@ Use unit tests only. Do not add or repair Cypress E2E as part of this plan. Test
   }
   ```
 
-- [ ] **Step 9: Register path and scripts**
+- [x] **Step 9: Register path and scripts**
 
   Add to `tsconfig.base.json` paths:
 
@@ -372,7 +376,7 @@ Use unit tests only. Do not add or repair Cypress E2E as part of this plan. Test
   "test-vanilla-lib": "nx test lyra-sheet-vanilla"
   ```
 
-- [ ] **Step 10: Verify and commit**
+- [x] **Step 10: Verify and commit**
 
   Run:
 
@@ -383,6 +387,8 @@ Use unit tests only. Do not add or repair Cypress E2E as part of this plan. Test
   ```
 
   Expected: all pass.
+
+  Result recorded on this pass: `yarn test-vanilla-lib && yarn lint-vanilla-lib && yarn build-vanilla-lib` exited 0. The test suite passed with 1 suite and 1 test. Lint passed after adding a package-level `.eslintrc.json` because the root config ignores all files unless packages opt in with `ignorePatterns: ["!**/*"]`. Build passed. Nx Cloud reported remote 502 warnings, but local targets succeeded.
 
   Commit:
 

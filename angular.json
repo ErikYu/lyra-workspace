@@ -7,6 +7,7 @@
     "demo-react-e2e": "apps/demo-react-e2e",
     "lyra-sheet-angular": "libs/lyra-sheet-angular",
     "lyra-sheet-core": "libs/lyra-sheet-core",
-    "lyra-sheet-react": "libs/lyra-sheet-react"
+    "lyra-sheet-react": "libs/lyra-sheet-react",
+    "lyra-sheet-vanilla": "libs/lyra-sheet-vanilla"
   }
 }
