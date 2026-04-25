@@ -930,6 +930,8 @@ Use unit tests only. Do not add or repair Cypress E2E as part of this plan. Test
   - `onDataChange` fires.
   - Multiple React instances are isolated.
 
+  Result recorded on this pass: checklist does not pass yet. Vanilla/React now render through the vanilla shell and preserve isolated instances/data-change wiring, but toolbar actions are not all wired to core commands yet, rich text commit behavior is not fully proven, and context menu/tabs behavior is still only represented by DOM parity. Do not delete the old React component tree in this pass.
+
 - [ ] **Step 2: Delete old React component tree**
 
   Remove old duplicated React UI components only after the Angular parity checklist passes. If any feature is missing, keep the old UI path or add the missing vanilla behavior first.
