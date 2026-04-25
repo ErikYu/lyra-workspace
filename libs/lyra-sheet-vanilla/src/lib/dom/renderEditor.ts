@@ -1,0 +1,34 @@
+import { createElement } from './createElement';
+import { renderRichTextInput } from './renderRichTextInput';
+import { renderScrollbars } from './renderScrollbars';
+import { renderSelectorLayer } from './renderSelectorLayer';
+import { renderTabs } from './renderTabs';
+
+export interface RenderedEditor {
+  root: HTMLElement;
+  canvas: HTMLCanvasElement;
+  mask: HTMLElement;
+  rowResizer: HTMLElement;
+  colResizer: HTMLElement;
+}
+
+export function renderEditor(): RenderedEditor {
+  const root = createElement('div', 'lyra-sheet-editor');
+  const canvas = createElement('canvas');
+  const mask = renderSelectorLayer();
+  const rowResizer = createElement('div', 'lyra-sheet-resizer-row');
+  const colResizer = createElement('div', 'lyra-sheet-resizer-col');
+  const scrollbars = renderScrollbars();
+
+  root.appendChild(canvas);
+  root.appendChild(mask);
+  root.appendChild(rowResizer);
+  root.appendChild(colResizer);
+  root.appendChild(scrollbars.vertical);
+  root.appendChild(scrollbars.horizontal);
+  root.appendChild(createElement('div', 'lyra-sheet-contextmenu'));
+  root.appendChild(renderTabs());
+  root.appendChild(renderRichTextInput());
+
+  return { root, canvas, mask, rowResizer, colResizer };
+}

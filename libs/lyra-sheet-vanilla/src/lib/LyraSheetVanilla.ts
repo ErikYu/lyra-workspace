@@ -11,6 +11,9 @@ import {
 import { Subscription } from 'rxjs';
 import { DependencyContainer } from 'tsyringe';
 import { createVanillaContainer } from './createVanillaContainer';
+import { renderEditor, RenderedEditor } from './dom/renderEditor';
+import { renderFormulaBar } from './dom/renderFormulaBar';
+import { renderToolbar } from './dom/renderToolbar';
 
 export interface LyraSheetVanillaOptions {
   data: Data;
@@ -44,14 +47,14 @@ export class LyraSheetVanilla {
 
     const root = document.createElement('div');
     root.className = 'lyra-sheet';
-    root.appendChild(this.createToolbar());
-    root.appendChild(this.createFormulaBar());
-    const { editor, canvas } = this.createEditor();
-    root.appendChild(editor);
+    root.appendChild(renderToolbar(this.container));
+    root.appendChild(renderFormulaBar());
+    const editor = renderEditor();
+    root.appendChild(editor.root);
 
     host.appendChild(root);
     this.rootEl = root;
-    this.initializeCore(root, canvas);
+    this.initializeCore(root, editor);
   }
 
   update(options: Partial<LyraSheetVanillaOptions>): void {
@@ -70,33 +73,16 @@ export class LyraSheetVanilla {
     return this.dataService;
   }
 
-  private createToolbar(): HTMLElement {
-    const el = document.createElement('div');
-    el.className = 'lyra-sheet-toolbar';
-    return el;
-  }
-
-  private createFormulaBar(): HTMLElement {
-    const el = document.createElement('div');
-    el.className = 'lyra-sheet-formula-bar';
-    return el;
-  }
-
-  private createEditor(): { editor: HTMLElement; canvas: HTMLCanvasElement } {
-    const el = document.createElement('div');
-    el.className = 'lyra-sheet-editor';
-    const canvas = document.createElement('canvas');
-    el.appendChild(canvas);
-    return { editor: el, canvas };
-  }
-
-  private initializeCore(root: HTMLDivElement, canvas: HTMLCanvasElement): void {
+  private initializeCore(root: HTMLDivElement, editor: RenderedEditor): void {
     this.configService.setConfig(this.options.config);
     const initialData = cloneDeep(this.options.data);
     this.dataService.loadData(initialData);
     this.historyService.init(cloneDeep(this.options.data));
     this.elementRefService.initRoot(root);
-    this.elementRefService.initCanvas(canvas);
+    this.elementRefService.initMask(editor.mask);
+    this.elementRefService.initCanvas(editor.canvas);
+    this.elementRefService.initRowResizer(editor.rowResizer);
+    this.elementRefService.initColResizer(editor.colResizer);
     this.viewRangeService.init();
     this.dataChangeSubscription = this.dataService.dataChanged$.subscribe(
       (data) => this.options.onDataChange?.(data),

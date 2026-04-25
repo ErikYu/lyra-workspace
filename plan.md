@@ -527,7 +527,7 @@ Use unit tests only. Do not add or repair Cypress E2E as part of this plan. Test
 - Modify: `libs/lyra-sheet-vanilla/src/lib/LyraSheetVanilla.ts`
 - Test: `libs/lyra-sheet-vanilla/src/lib/dom/*.spec.ts`
 
-- [ ] **Step 1: Create the Angular parity checklist as executable data**
+- [x] **Step 1: Create the Angular parity checklist as executable data**
 
   Create `libs/lyra-sheet-vanilla/src/lib/parity/angularParity.ts`:
 
@@ -574,7 +574,7 @@ Use unit tests only. Do not add or repair Cypress E2E as part of this plan. Test
   ] as const;
   ```
 
-- [ ] **Step 2: Test the parity checklist is enforced**
+- [x] **Step 2: Test the parity checklist is enforced**
 
   Create `libs/lyra-sheet-vanilla/src/lib/parity/angularParity.spec.ts`:
 
@@ -599,7 +599,7 @@ Use unit tests only. Do not add or repair Cypress E2E as part of this plan. Test
   });
   ```
 
-- [ ] **Step 3: Add a small DOM helper**
+- [x] **Step 3: Add a small DOM helper**
 
   Create `createElement.ts`:
 
@@ -616,7 +616,7 @@ Use unit tests only. Do not add or repair Cypress E2E as part of this plan. Test
   }
   ```
 
-- [ ] **Step 4: Write toolbar render test**
+- [x] **Step 4: Write toolbar render test**
 
   Test that `renderToolbar()` creates `.lyra-sheet-toolbar` and one DOM button/item for every entry in `angularParityToolbarActions`. Each item should expose a stable attribute:
 
@@ -624,11 +624,11 @@ Use unit tests only. Do not add or repair Cypress E2E as part of this plan. Test
   <button data-lyra-action="bold"></button>
   ```
 
-- [ ] **Step 5: Implement toolbar DOM**
+- [x] **Step 5: Implement toolbar DOM**
 
   `renderToolbar(container)` should return an element and attach click handlers to the relevant core controllers resolved from the container. Do not omit Angular toolbar actions just because React did not fully expose them.
 
-- [ ] **Step 6: Write editor render test**
+- [x] **Step 6: Write editor render test**
 
   Test that `renderEditor()` creates every selector listed in `angularParitySelectors` that belongs to the editor area:
 
@@ -646,11 +646,11 @@ Use unit tests only. Do not add or repair Cypress E2E as part of this plan. Test
   .lyra-sheet-tabs
   ```
 
-- [ ] **Step 7: Implement editor DOM**
+- [x] **Step 7: Implement editor DOM**
 
   Split editor rendering into small functions. Keep event/controller wiring minimal in this task; DOM structure parity is enough. Do not skip context menu, tabs, scrollbars, or resizers.
 
-- [ ] **Step 8: Wire ElementRefService**
+- [x] **Step 8: Wire ElementRefService**
 
   After creating editor DOM, initialize:
 
@@ -661,7 +661,9 @@ Use unit tests only. Do not add or repair Cypress E2E as part of this plan. Test
   elementRefService.initColResizer(colResizerEl);
   ```
 
-- [ ] **Step 9: Verify and commit**
+  Result recorded on this pass: the first `yarn test-vanilla-lib` run failed as expected because `angularParity`, `renderToolbar`, and `renderEditor` modules did not exist. Implementation added executable Angular parity data, toolbar buttons for every parity action, editor DOM for canvas/mask/resizers/scrollbars/context menu/tabs/rich text input, and ElementRefService wiring for mask/canvas/row/column resizers.
+
+- [x] **Step 9: Verify and commit**
 
   Run:
 
@@ -669,6 +671,8 @@ Use unit tests only. Do not add or repair Cypress E2E as part of this plan. Test
   yarn test-vanilla-lib
   yarn lint-vanilla-lib
   ```
+
+  Result recorded on this pass: `yarn test-vanilla-lib` passed with 5 suites and 7 tests. `yarn lint-vanilla-lib` passed. `yarn build-vanilla-lib` also passed as an extra type/build check. Nx Cloud reported remote 502 warnings, but local targets succeeded.
 
   Commit:
 
