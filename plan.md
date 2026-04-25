@@ -856,11 +856,11 @@ Use unit tests only. Do not add or repair Cypress E2E as part of this plan. Test
 - Or document deprecation: `libs/lyra-sheet-angular/README.md`
 - Test: `libs/lyra-sheet-angular/src/lib/lyra-sheet.component.spec.ts` if Angular remains active
 
-- [ ] **Step 1: Reconfirm Angular feature preservation**
+- [x] **Step 1: Reconfirm Angular feature preservation**
 
   Before choosing an Angular path, compare the current Angular implementation against `angularParitySelectors` and `angularParityToolbarActions`. If the vanilla implementation lacks any Angular capability, Angular must remain legacy-compatible and must not be replaced.
 
-- [ ] **Step 2: Choose one Angular path**
+- [x] **Step 2: Choose one Angular path**
 
   Choose one:
 
@@ -870,11 +870,13 @@ Use unit tests only. Do not add or repair Cypress E2E as part of this plan. Test
 
   Recommendation: choose **Legacy wrapper** until vanilla + React satisfy the Angular parity baseline. Angular has more old tests, CDK coupling, and the most complete UI behavior, so migrating it too early risks feature loss.
 
-- [ ] **Step 3: If Active wrapper is chosen, write failing Angular wrapper test**
+- [x] **Step 3: If Active wrapper is chosen, write failing Angular wrapper test**
 
   Mock `LyraSheetVanilla`, mount the component, and assert `mount()` and `destroy()` are called.
 
-- [ ] **Step 4: If Legacy wrapper is chosen, document the status**
+  Result recorded on this pass: Active wrapper was not chosen. The current Angular toolbar and editor templates still cover the full parity baseline, while vanilla has only established the shared DOM/controller shell. Angular remains the legacy-compatible feature baseline.
+
+- [x] **Step 4: If Legacy wrapper is chosen, document the status**
 
   Add to `libs/lyra-sheet-angular/README.md`:
 
@@ -884,13 +886,15 @@ Use unit tests only. Do not add or repair Cypress E2E as part of this plan. Test
   Angular support is currently legacy-compatible and remains the feature baseline for UI parity. New UI implementation work should target `@lyra-sheet/vanilla` first, but Angular must not be replaced until the vanilla implementation preserves the Angular toolbar, editor, formula bar, context menu, tabs, resize, scroll, selection, and data-change behavior.
   ```
 
-- [ ] **Step 5: Verify and commit**
+- [x] **Step 5: Verify and commit**
 
   For Legacy wrapper:
 
   ```bash
   yarn build-ng-lib
   ```
+
+  Result recorded on this pass: `yarn build-ng-lib` passed. Nx Cloud reported a remote 502 warning, but the local Angular package build succeeded.
 
   Commit:
 
