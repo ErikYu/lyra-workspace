@@ -38,4 +38,15 @@ describe('LyraSheetVanilla', () => {
     expect(host.querySelector('.lyra-sheet-editor')).toBeTruthy();
     expect(host.querySelector('canvas')).toBeTruthy();
   });
+
+  it('notifies consumers when core data changes', () => {
+    const host = document.createElement('div');
+    const onDataChange = jest.fn();
+    const sheet = new LyraSheetVanilla({ data, config, onDataChange });
+
+    sheet.mount(host);
+    sheet.getDataServiceForTesting().notifyDataChange();
+
+    expect(onDataChange).toHaveBeenCalledWith(data);
+  });
 });

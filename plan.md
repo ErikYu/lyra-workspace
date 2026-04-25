@@ -406,8 +406,10 @@ Use unit tests only. Do not add or repair Cypress E2E as part of this plan. Test
 - Create: `libs/lyra-sheet-vanilla/src/lib/createVanillaContainer.ts`
 - Test: `libs/lyra-sheet-vanilla/src/lib/createVanillaContainer.spec.ts`
 - Test: `libs/lyra-sheet-vanilla/src/lib/LyraSheetVanilla.spec.ts`
+- Modify: `libs/lyra-sheet-vanilla/src/index.ts`
+- Modify: `libs/lyra-sheet-vanilla/tsconfig.json`
 
-- [ ] **Step 1: Write a failing container isolation test**
+- [x] **Step 1: Write a failing container isolation test**
 
   Create `libs/lyra-sheet-vanilla/src/lib/createVanillaContainer.spec.ts`:
 
@@ -426,7 +428,7 @@ Use unit tests only. Do not add or repair Cypress E2E as part of this plan. Test
   });
   ```
 
-- [ ] **Step 2: Implement container creation**
+- [x] **Step 2: Implement container creation**
 
   Create `libs/lyra-sheet-vanilla/src/lib/createVanillaContainer.ts`:
 
@@ -441,7 +443,7 @@ Use unit tests only. Do not add or repair Cypress E2E as part of this plan. Test
   }
   ```
 
-- [ ] **Step 3: Wire options into core services on mount**
+- [x] **Step 3: Wire options into core services on mount**
 
   In `LyraSheetVanilla`, create a container in the constructor and resolve:
 
@@ -464,11 +466,11 @@ Use unit tests only. Do not add or repair Cypress E2E as part of this plan. Test
   viewRangeService.init();
   ```
 
-- [ ] **Step 4: Subscribe to data changes**
+- [x] **Step 4: Subscribe to data changes**
 
   Add a subscription to `dataService.dataChanged$` and call `options.onDataChange?.(data)`. Store the subscription and unsubscribe in `destroy()`.
 
-- [ ] **Step 5: Test data change callback**
+- [x] **Step 5: Test data change callback**
 
   Extend `LyraSheetVanilla.spec.ts`:
 
@@ -487,7 +489,9 @@ Use unit tests only. Do not add or repair Cypress E2E as part of this plan. Test
 
   If exposing `dataService` publicly feels wrong, add a package-private `getDataServiceForTesting()` method and mark it as test-only in a comment.
 
-- [ ] **Step 6: Verify and commit**
+  Result recorded on this pass: the first `yarn test-vanilla-lib` run failed as expected because `createVanillaContainer` and `getDataServiceForTesting()` did not exist. Implementation creates a tsyringe child container, resolves core services, initializes config/data/history/root/canvas/view range on mount, and subscribes to `dataChanged$`. `tsconfig.json` also now mirrors core decorator/esModuleInterop settings so vanilla tests can compile core's `dayjs` import.
+
+- [x] **Step 6: Verify and commit**
 
   Run:
 
@@ -495,6 +499,8 @@ Use unit tests only. Do not add or repair Cypress E2E as part of this plan. Test
   yarn test-vanilla-lib
   yarn build-vanilla-lib
   ```
+
+  Result recorded on this pass: `yarn test-vanilla-lib` passed with 2 suites and 3 tests. `yarn lint-vanilla-lib` passed. `yarn build-vanilla-lib` passed. Nx Cloud reported remote 502/timeout warnings, but local targets succeeded.
 
   Commit:
 
