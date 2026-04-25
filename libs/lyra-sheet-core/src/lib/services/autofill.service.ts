@@ -1,7 +1,10 @@
 import { Selector } from './selector.factory';
-import { Rect } from '../types';
+import { Rect, RichTextLine } from '../types';
 import { Observable, Subject } from 'rxjs';
 import { Lifecycle, scoped } from 'tsyringe';
+import { DataService } from './data.service';
+import { HistoryService } from './history.service';
+import { cloneDeep } from '../utils';
 
 @scoped(Lifecycle.ContainerScoped)
 export class AutofillService {
@@ -13,6 +16,11 @@ export class AutofillService {
 
   // autofill rect
   public rect: Rect | null = null;
+
+  constructor(
+    private dataService: DataService,
+    private historyService: HistoryService,
+  ) {}
 
   get autofillChanged$(): Observable<Rect | null> {
     return this._autofillChanged$.asObservable();
@@ -55,11 +63,84 @@ export class AutofillService {
 
   hideAutofill(): void {
     if (this.isAutoFilling) {
-      console.log(this.preBuiltSelector.range);
-      console.log(this.rect);
+      if (this.rect) {
+        this.applyAutofill(this.preBuiltSelector, this.rect);
+      }
       this.rect = null;
       this._autofillChanged$.next(this.rect);
       this.isAutoFilling = false;
     }
+  }
+
+  applyAutofill(sourceSelector: Selector, targetRange: Rect): void {
+    const selectedSheet = this.dataService.selectedSheet;
+    const sourceRange = sourceSelector.range;
+    const series = this.buildVerticalNumericSeries(sourceRange, targetRange);
+
+    this.historyService.stacked(
+      () => {
+        for (let ri = targetRange.sri; ri <= targetRange.eri; ri += 1) {
+          for (let ci = targetRange.sci; ci <= targetRange.eci; ci += 1) {
+            const richText = series
+              ? [[{ text: `${series.first + series.step * (ri - sourceRange.sri)}` }]]
+              : this.getCopiedRichText(sourceRange, ri, ci);
+            selectedSheet.applyRichTextToCell(ri, ci, richText);
+          }
+        }
+      },
+      {
+        si: this.dataService.selectedIndex,
+        ri: targetRange.sri,
+        ci: targetRange.sci,
+      },
+    );
+    this.dataService.rerender();
+  }
+
+  private buildVerticalNumericSeries(
+    sourceRange: Rect,
+    targetRange: Rect,
+  ): { first: number; step: number } | null {
+    const sourceHeight = sourceRange.eri - sourceRange.sri + 1;
+    const sourceWidth = sourceRange.eci - sourceRange.sci + 1;
+    const targetWidth = targetRange.eci - targetRange.sci + 1;
+    if (sourceHeight < 2 || sourceWidth !== 1 || targetWidth !== 1) {
+      return null;
+    }
+
+    const first = Number(
+      this.dataService.selectedSheet.getCellPlainText(
+        sourceRange.sri,
+        sourceRange.sci,
+      ),
+    );
+    const second = Number(
+      this.dataService.selectedSheet.getCellPlainText(
+        sourceRange.sri + 1,
+        sourceRange.sci,
+      ),
+    );
+    if (Number.isNaN(first) || Number.isNaN(second)) {
+      return null;
+    }
+
+    return { first, step: second - first };
+  }
+
+  private getCopiedRichText(
+    sourceRange: Rect,
+    targetRowIndex: number,
+    targetColIndex: number,
+  ): RichTextLine[] {
+    const sourceHeight = sourceRange.eri - sourceRange.sri + 1;
+    const sourceWidth = sourceRange.eci - sourceRange.sci + 1;
+    const sourceRowIndex =
+      sourceRange.sri + ((targetRowIndex - sourceRange.sri) % sourceHeight);
+    const sourceColIndex =
+      sourceRange.sci + ((targetColIndex - sourceRange.sci) % sourceWidth);
+    return cloneDeep(
+      this.dataService.selectedSheet.getCell(sourceRowIndex, sourceColIndex)
+        ?.richText || [[]],
+    );
   }
 }

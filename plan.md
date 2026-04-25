@@ -434,7 +434,7 @@
 - Modify: `libs/lyra-sheet-core/src/lib/services/autofill.service.ts`
 - Test: `libs/lyra-sheet-core/src/lib/services/autofill.service.spec.ts`
 
-- [ ] **Step 1: Define first supported autofill scope**
+- [x] **Step 1: Define first supported autofill scope**
 
   Support only these cases first:
 
@@ -442,7 +442,7 @@
   - Single numeric source cell extended as a constant.
   - Two numeric source cells extended as a simple arithmetic series.
 
-- [ ] **Step 2: Test copy-fill**
+- [x] **Step 2: Test copy-fill**
 
   Create `autofill.service.spec.ts` with:
 
@@ -455,7 +455,7 @@
   });
   ```
 
-- [ ] **Step 3: Test numeric series**
+- [x] **Step 3: Test numeric series**
 
   Add:
 
@@ -470,15 +470,15 @@
   });
   ```
 
-- [ ] **Step 4: Implement `applyAutofill`**
+- [x] **Step 4: Implement `applyAutofill`**
 
   Add a public method that receives the source selector and target range, computes the fill values, writes cells through `SheetService.applyRichTextToCell`, records history, and requests render.
 
-- [ ] **Step 5: Call `applyAutofill` from drag completion**
+- [x] **Step 5: Call `applyAutofill` from drag completion**
 
   In `hideAutofill`, replace the debug `console.log` calls with a call to `applyAutofill` when `this.rect` is not null.
 
-- [ ] **Step 6: Run tests**
+- [x] **Step 6: Run tests**
 
   ```bash
   yarn test-core
@@ -486,7 +486,9 @@
 
   Expected: Autofill tests and prior core tests pass.
 
-- [ ] **Step 7: Commit autofill behavior**
+  Result recorded on this pass: the first `yarn test-core` run failed as expected because `AutofillService` had no `applyAutofill` method and accepted no dependencies. After implementation, `yarn test-core` passed with 7 suites and 16 tests. `yarn lint-core` exited 0 with 11 existing warnings, and `yarn build-core-lib` passed with the existing Nx Cloud warning.
+
+- [x] **Step 7: Commit autofill behavior**
 
   ```bash
   git add libs/lyra-sheet-core/src/lib/services/autofill.service.ts libs/lyra-sheet-core/src/lib/services/autofill.service.spec.ts
