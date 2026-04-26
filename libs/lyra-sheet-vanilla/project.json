@@ -1,25 +1,27 @@
 {
-  "root": "libs/lyra-sheet-vanilla",
+  "name": "lyra-sheet-vanilla",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/lyra-sheet-vanilla/src",
   "projectType": "library",
+  "tags": [],
   "targets": {
     "lint": {
-      "executor": "@nrwl/linter:eslint",
+      "executor": "@nx/eslint:lint",
       "outputs": ["{options.outputFile}"],
       "options": {
         "lintFilePatterns": ["libs/lyra-sheet-vanilla/**/*.ts"]
       }
     },
     "test": {
-      "executor": "@nrwl/jest:jest",
-      "outputs": ["coverage/libs/lyra-sheet-vanilla"],
+      "executor": "@nx/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/libs/lyra-sheet-vanilla"],
       "options": {
         "jestConfig": "libs/lyra-sheet-vanilla/jest.config.js",
         "passWithNoTests": false
       }
     },
     "build": {
-      "executor": "@nrwl/js:tsc",
+      "executor": "@nx/js:tsc",
       "outputs": ["{options.outputPath}"],
       "options": {
         "outputPath": "dist/libs/lyra-sheet-vanilla",
@@ -28,6 +30,5 @@
         "main": "libs/lyra-sheet-vanilla/src/index.ts"
       }
     }
-  },
-  "tags": []
+  }
 }

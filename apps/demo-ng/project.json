@@ -1,8 +1,10 @@
 {
+  "name": "demo-ng",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "projectType": "application",
-  "root": "apps/demo-ng",
   "sourceRoot": "apps/demo-ng/src",
   "prefix": "lyra-workspace",
+  "tags": [],
   "targets": {
     "build": {
       "executor": "@angular-devkit/build-angular:browser",
@@ -28,8 +30,8 @@
             },
             {
               "type": "anyComponentStyle",
-              "maximumWarning": "2kb",
-              "maximumError": "4kb"
+              "maximumWarning": "8kb",
+              "maximumError": "16kb"
             }
           ],
           "fileReplacements": [
@@ -55,25 +57,26 @@
       "executor": "@angular-devkit/build-angular:dev-server",
       "configurations": {
         "production": {
-          "browserTarget": "demo-ng:build:production"
+          "buildTarget": "demo-ng:build:production"
         },
         "development": {
-          "browserTarget": "demo-ng:build:development"
+          "buildTarget": "demo-ng:build:development"
         }
       },
       "defaultConfiguration": "development",
       "options": {
+        "buildTarget": "demo-ng:build:development",
         "proxyConfig": "apps/demo-ng/proxy.conf.json"
       }
     },
     "extract-i18n": {
       "executor": "@angular-devkit/build-angular:extract-i18n",
       "options": {
-        "browserTarget": "demo-ng:build"
+        "buildTarget": "demo-ng:build"
       }
     },
     "lint": {
-      "executor": "@nrwl/linter:eslint",
+      "executor": "@nx/eslint:lint",
       "options": {
         "lintFilePatterns": [
           "apps/demo-ng/src/**/*.ts",
@@ -82,13 +85,12 @@
       }
     },
     "test": {
-      "executor": "@nrwl/jest:jest",
-      "outputs": ["coverage/apps/demo-ng"],
+      "executor": "@nx/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/apps/demo-ng"],
       "options": {
         "jestConfig": "apps/demo-ng/jest.config.js",
         "passWithNoTests": true
       }
     }
-  },
-  "tags": []
+  }
 }

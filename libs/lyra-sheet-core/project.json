@@ -1,25 +1,27 @@
 {
-  "root": "libs/lyra-sheet-core",
+  "name": "lyra-sheet-core",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/lyra-sheet-core/src",
   "projectType": "library",
+  "tags": [],
   "targets": {
     "lint": {
-      "executor": "@nrwl/linter:eslint",
+      "executor": "@nx/eslint:lint",
       "outputs": ["{options.outputFile}"],
       "options": {
         "lintFilePatterns": ["libs/lyra-sheet-core/**/*.ts"]
       }
     },
     "test": {
-      "executor": "@nrwl/jest:jest",
-      "outputs": ["coverage/libs/lyra-sheet-core"],
+      "executor": "@nx/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/libs/lyra-sheet-core"],
       "options": {
         "jestConfig": "libs/lyra-sheet-core/jest.config.js",
         "passWithNoTests": true
       }
     },
     "build": {
-      "executor": "@nrwl/js:tsc",
+      "executor": "@nx/js:tsc",
       "outputs": ["{options.outputPath}"],
       "options": {
         "outputPath": "dist/libs/lyra-sheet-core",
@@ -29,6 +31,5 @@
         "assets": ["libs/lyra-sheet-core/*.md"]
       }
     }
-  },
-  "tags": []
+  }
 }
