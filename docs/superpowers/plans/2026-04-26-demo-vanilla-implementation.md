@@ -31,7 +31,7 @@
 - Modify: `angular.json`
 - Modify: `package.json`
 
-- [ ] **Step 1: Write failing demo data test**
+- [x] **Step 1: Write failing demo data test**
 
   Create `apps/demo-vanilla/src/app/createDemoData.spec.ts`:
 
@@ -67,7 +67,7 @@
   });
   ```
 
-- [ ] **Step 2: Run test and verify red**
+- [x] **Step 2: Run test and verify red**
 
   Run:
 
@@ -77,7 +77,9 @@
 
   Expected: fail because `demo-vanilla` is not registered or `createDemoData` does not exist.
 
-- [ ] **Step 3: Add Nx app configuration**
+  Result recorded on this pass: first run failed because Jest/Babel config was not present yet. After adding the app Babel/TS/Jest config and project registration, the test failed for the intended reason: `Cannot find module './createDemoData'`.
+
+- [x] **Step 3: Add Nx app configuration**
 
   Add `apps/demo-vanilla/project.json` using the same Web executor shape as `apps/demo-react`, but without React webpack config:
 
@@ -147,7 +149,7 @@
   }
   ```
 
-- [ ] **Step 4: Add TypeScript, Babel, Jest, and lint config**
+- [x] **Step 4: Add TypeScript, Babel, Jest, and lint config**
 
   Use `apps/demo-react` as the working pattern:
 
@@ -158,7 +160,7 @@
   - `tsconfig.spec.json` includes `src/**/*.spec.ts`.
   - `jest.config.js` uses `babel-jest`, `jsdom`, and app coverage directory.
 
-- [ ] **Step 5: Register project and scripts**
+- [x] **Step 5: Register project and scripts**
 
   Add to `angular.json`:
 
@@ -175,7 +177,7 @@
   "lint-demo-vanilla": "nx lint demo-vanilla"
   ```
 
-- [ ] **Step 6: Implement demo data helpers**
+- [x] **Step 6: Implement demo data helpers**
 
   Create `apps/demo-vanilla/src/app/createDemoData.ts`:
 
@@ -233,7 +235,7 @@
   }
   ```
 
-- [ ] **Step 7: Implement vanilla app entry**
+- [x] **Step 7: Implement vanilla app entry**
 
   Create `apps/demo-vanilla/src/main.ts`:
 
@@ -256,7 +258,7 @@
   sheet.mount(root);
   ```
 
-- [ ] **Step 8: Add HTML, polyfills, and styles**
+- [x] **Step 8: Add HTML, polyfills, and styles**
 
   Create:
 
@@ -264,7 +266,7 @@
   - `polyfills.ts` importing `core-js/stable`, `regenerator-runtime/runtime`, and `reflect-metadata`.
   - `styles.scss` importing `../../../libs/lyra-sheet-core/src/lib/lyra-sheet` and setting body margin/padding to `0`.
 
-- [ ] **Step 9: Verify and commit**
+- [x] **Step 9: Verify and commit**
 
   Run:
 
@@ -275,6 +277,8 @@
   yarn test-vanilla-lib
   yarn build-vanilla-lib
   ```
+
+  Result recorded on this pass: `yarn test-demo-vanilla` passed with 1 suite and 2 tests. `yarn lint-demo-vanilla` passed. The first `yarn build-demo-vanilla` failed because the assets glob had no tracked file; adding `apps/demo-vanilla/src/assets/.gitkeep` fixed it. Final `yarn build-demo-vanilla`, `yarn test-vanilla-lib`, and `yarn build-vanilla-lib` all exited 0. Nx Cloud reported remote 502 warnings, but local targets succeeded.
 
   Commit:
 

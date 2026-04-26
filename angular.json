@@ -5,6 +5,7 @@
     "demo-ng-e2e": "apps/demo-ng-e2e",
     "demo-react": "apps/demo-react",
     "demo-react-e2e": "apps/demo-react-e2e",
+    "demo-vanilla": "apps/demo-vanilla",
     "lyra-sheet-angular": "libs/lyra-sheet-angular",
     "lyra-sheet-core": "libs/lyra-sheet-core",
     "lyra-sheet-react": "libs/lyra-sheet-react",
