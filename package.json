@@ -4,7 +4,6 @@
   "license": "MIT",
   "scripts": {
     "ng": "nx",
-    "postinstall": "node ./decorate-angular-cli.js",
     "start-ng": "nx serve demo-ng --port 12138",
     "start-react": "nx serve demo-react --port 12139",
     "start-vanilla": "nx serve demo-vanilla --port 12140",

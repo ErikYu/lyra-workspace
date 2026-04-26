@@ -4,7 +4,10 @@
   },
   "namedInputs": {
     "default": ["{projectRoot}/**/*", "sharedGlobals"],
-    "sharedGlobals": ["{workspaceRoot}/package.json", "{workspaceRoot}/.eslintrc.json"],
+    "sharedGlobals": [
+      "{workspaceRoot}/package.json",
+      "{workspaceRoot}/.eslintrc.json"
+    ],
     "production": [
       "default",
       "!{projectRoot}/**/?(*.)+(spec|test).[jt]s?(x)?(.snap)",
@@ -60,5 +63,6 @@
   },
   "defaultProject": "demo-ng",
   "nxCloudAccessToken": "OGIxYThmYWMtNjY2OS00MjQ3LWExOWUtMDAyZjYwMjdhZWFhfHJlYWQtd3JpdGU=",
-  "defaultBase": "main"
+  "defaultBase": "main",
+  "analytics": false
 }
