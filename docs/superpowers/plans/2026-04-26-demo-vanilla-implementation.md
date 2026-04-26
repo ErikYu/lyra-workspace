@@ -406,6 +406,24 @@
   git commit -m "feat: bind vanilla toolbar actions"
   ```
 
+### Task 4.1: Render Toolbar Icons And Labels
+
+**Files:**
+- Modify: `libs/lyra-sheet-vanilla/src/lib/dom/renderToolbar.ts`
+- Test: `libs/lyra-sheet-vanilla/src/lib/dom/renderToolbar.spec.ts`
+
+- [x] **Step 1: Write failing toolbar visual test**
+
+  Result recorded on this pass: `yarn test-vanilla-lib` failed because the vanilla toolbar had no `.lyra-sheet-divider.vertical` elements and no `.lyra-sheet-toolbar-icon` elements.
+
+- [x] **Step 2: Implement visible toolbar items**
+
+  Result recorded on this pass: `renderToolbar` now follows the Angular/React toolbar grouping order, renders seven vertical dividers, assigns `.lyra-sheet-toolbar-item`, keeps stable `data-lyra-action` values, and adds visible SVG/text labels for every toolbar action.
+
+- [x] **Step 3: Verify and commit**
+
+  Result recorded on this pass: `yarn test-vanilla-lib` passed with 8 suites and 22 tests. `yarn build-demo-vanilla` and `yarn build-vanilla-lib` passed. The build reported existing Browserslist, bundle-size, and Nx Cloud 502 warnings, but local targets succeeded.
+
 ---
 
 ## Phase 4: Menus, Tabs, Scrollbars, Resizers
