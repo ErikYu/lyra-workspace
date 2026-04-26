@@ -130,7 +130,11 @@ export class MouseEventService {
         } else if (mouseDownEvent.detail === 2 && mouseDownEvent.which === 1) {
           if (this.dataService.selectedSheet.selectors.length > 0) {
             const lastSelector = this.dataService.selectedSheet.last;
-            if (lastSelector.range.isSingleCell) {
+            if (
+              this.dataService.selectedSheet.isDoubleClickCellEditRange(
+                lastSelector.range,
+              )
+            ) {
               // double click -> activate cell edit
               this.textInputService.show(false);
               this.textInputService.focus('last');

@@ -65,6 +65,21 @@ describe('SheetService', () => {
     expect(service.getCell(1, 1)?.style?.background).toBe('#fff');
   });
 
+  it('treats a full merged region as a double-click cell edit range', () => {
+    const service = createSheetService();
+    const merged = cellRangeFactory(1, 2, 1, 2);
+
+    service.applyMergeTo(merged);
+
+    expect(service.isDoubleClickCellEditRange(cellRangeFactory(1, 1, 1, 1))).toBe(
+      true,
+    );
+    expect(service.isDoubleClickCellEditRange(merged)).toBe(true);
+    expect(service.isDoubleClickCellEditRange(cellRangeFactory(1, 2, 1, 1))).toBe(
+      false,
+    );
+  });
+
   it('moves row data down when inserting rows above it', () => {
     const service = createSheetService({
       data: {

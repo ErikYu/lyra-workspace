@@ -204,6 +204,18 @@ export class SheetService implements Sheet {
     return this.merges.getHitMerge(ri, ci);
   }
 
+  /**
+   * True when a double-click on the sheet mask should open in-cell editing:
+   * a single cell, or a selection that exactly matches one merged region.
+   */
+  isDoubleClickCellEditRange(range: CellRange): boolean {
+    if (range.isSingleCell) {
+      return true;
+    }
+    const mergeRange = this.getHitMerge(range.sri, range.sci);
+    return mergeRange !== null && mergeRange.equals(range);
+  }
+
   applyBgColorTo(cellRange: CellRange, color: string): void {
     cellRange.forEachCell(this, ({ ri, ci }) => {
       this.setCellStyle(ri, ci, { background: color });
