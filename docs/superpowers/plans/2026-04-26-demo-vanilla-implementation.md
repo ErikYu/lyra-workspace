@@ -376,15 +376,19 @@
 - Modify: `libs/lyra-sheet-vanilla/src/lib/dom/renderToolbar.ts`
 - Modify: `libs/lyra-sheet-vanilla/src/lib/LyraSheetVanilla.ts`
 
-- [ ] **Step 1: Write failing toolbar command tests**
+- [x] **Step 1: Write failing toolbar command tests**
 
   Use fake controller objects or a container test double to verify button clicks call the expected methods for at least `undo`, `redo`, `percent`, `currency`, `decimal-add`, `decimal-reduce`, `bold`, `italic`, `strike`, `underline`, and `merge`.
 
-- [ ] **Step 2: Implement command binding helper**
+  Result recorded on this pass: `yarn test-vanilla-lib` failed as expected because `./bindToolbarActions` did not exist. After adding the helper, one red pass exposed the need for `reflect-metadata` in the new spec.
+
+- [x] **Step 2: Implement command binding helper**
 
   Resolve existing core controllers from the vanilla container and map stable `data-lyra-action` values to controller methods. Keep dropdown-heavy actions visually present if a complete menu is not implemented in this task, but do not silently mark them as functionally complete.
 
-- [ ] **Step 3: Verify and commit**
+  Result recorded on this pass: `bindToolbarActions` now maps undo/redo to `HistoryService`, percent/currency to Angular-equivalent selected-sheet format updates, decimal actions to `DecimalController`, text style toggles to font controllers, and merge to `MergeController`. `LyraSheetVanilla` binds the toolbar listener into `SubscriptionBag` cleanup.
+
+- [x] **Step 3: Verify and commit**
 
   Run:
 
@@ -392,6 +396,8 @@
   yarn test-vanilla-lib
   yarn build-demo-vanilla
   ```
+
+  Result recorded on this pass: `yarn test-vanilla-lib` passed with 8 suites and 19 tests. `yarn build-demo-vanilla` passed. The build reported existing Browserslist and bundle-size warnings plus Nx Cloud 502 warnings, but local targets succeeded.
 
   Commit:
 

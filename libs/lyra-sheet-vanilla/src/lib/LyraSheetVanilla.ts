@@ -21,6 +21,7 @@ import {
 } from './dom/renderFormulaBar';
 import { renderToolbar } from './dom/renderToolbar';
 import { SubscriptionBag } from './lifecycle/SubscriptionBag';
+import { bindToolbarActions } from './toolbar/bindToolbarActions';
 
 export interface LyraSheetVanillaOptions {
   data: Data;
@@ -64,7 +65,9 @@ export class LyraSheetVanilla {
 
     const root = document.createElement('div');
     root.className = 'lyra-sheet';
-    root.appendChild(renderToolbar(this.container));
+    const toolbar = renderToolbar(this.container);
+    this.lifecycle.add(bindToolbarActions(toolbar, this.container));
+    root.appendChild(toolbar);
     const formulaBar = renderFormulaBar();
     root.appendChild(formulaBar.root);
     const editor = renderEditor();
