@@ -8,7 +8,7 @@ export function renderToolbar(container?: DependencyContainer): HTMLElement {
   angularParityToolbarActions.forEach((action) => {
     const button = createElement('button');
     button.type = 'button';
-    button.dataset.lyraAction = action;
+    button.dataset['lyraAction'] = action;
     button.addEventListener('click', () => {
       toolbar.dispatchEvent(
         new CustomEvent('lyra-toolbar-action', {
