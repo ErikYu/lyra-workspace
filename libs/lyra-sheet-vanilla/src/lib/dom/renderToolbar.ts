@@ -69,6 +69,87 @@ const toolbarIconLabels: Partial<Record<AngularParityToolbarAction, string>> = {
   formula: 'Fx',
 };
 
+const dropdownOptions: Partial<
+  Record<AngularParityToolbarAction, Array<{ label: string; value: string }>>
+> = {
+  format: [
+    { label: 'Auto', value: '' },
+    { label: 'Plain text', value: 'text' },
+    { label: 'Number', value: 'number' },
+    { label: 'Percent', value: 'percent' },
+    { label: 'Scientific', value: 'scientific' },
+    { label: 'Accounting', value: 'accounting' },
+    { label: 'Financial', value: 'financial' },
+    { label: 'Currency', value: 'currency' },
+    { label: 'Currency(rounded)', value: 'currency_rounded' },
+    { label: 'Date', value: 'date' },
+    { label: 'Time', value: 'time' },
+    { label: 'Datetime', value: 'datetime' },
+  ],
+  'font-family': [
+    { label: 'Arial', value: 'Arial' },
+    { label: 'Georgia', value: 'Georgia' },
+    { label: 'Helvetica', value: 'Helvetica' },
+  ],
+  'font-size': [
+    { label: '8', value: '8:11' },
+    { label: '9', value: '9:12' },
+    { label: '10', value: '10:13' },
+    { label: '10.5', value: '10.5:14' },
+    { label: '11', value: '11:15' },
+    { label: '12', value: '12:16' },
+    { label: '14', value: '14:18.7' },
+    { label: '15', value: '15:20' },
+    { label: '16', value: '16:21.3' },
+    { label: '18', value: '18:24' },
+    { label: '22', value: '22:30' },
+    { label: '24', value: '24:32' },
+    { label: '26', value: '26:35' },
+    { label: '36', value: '36:48' },
+    { label: '42', value: '42:56' },
+  ],
+  'font-color': [
+    { label: 'Black', value: '#000000' },
+    { label: 'Red', value: '#ff0000' },
+    { label: 'Blue', value: '#1890ff' },
+  ],
+  'background-color': [
+    { label: 'White', value: '#ffffff' },
+    { label: 'Yellow', value: '#fff2cc' },
+    { label: 'Blue', value: '#d9eaff' },
+  ],
+  border: [
+    { label: 'All borders', value: 'all' },
+    { label: 'Inner borders', value: 'inner' },
+    { label: 'Outer borders', value: 'outer' },
+    { label: 'Clear borders', value: 'clear' },
+  ],
+  align: [
+    { label: 'Left', value: 'left' },
+    { label: 'Center', value: 'center' },
+    { label: 'Right', value: 'right' },
+  ],
+  valign: [
+    { label: 'Bottom', value: 'bottom' },
+    { label: 'Middle', value: 'center' },
+    { label: 'Top', value: 'top' },
+  ],
+  'text-wrap': [
+    { label: 'Overflow', value: 'overflow' },
+    { label: 'Wrap', value: 'wrap' },
+    { label: 'Clip', value: 'clip' },
+  ],
+  formula: [
+    { label: 'SUM', value: 'SUM' },
+    { label: 'AVERAGE', value: 'AVERAGE' },
+    { label: 'MAX', value: 'MAX' },
+    { label: 'MIN', value: 'MIN' },
+    { label: 'IF', value: 'IF' },
+    { label: 'AND', value: 'AND' },
+    { label: 'OR', value: 'OR' },
+  ],
+};
+
 export function renderToolbar(container?: DependencyContainer): HTMLElement {
   const toolbar = createElement('div', 'lyra-sheet-toolbar');
 
@@ -109,6 +190,11 @@ function createToolbarItem(
   } else {
     item.appendChild(createIcon(toolbarIconLabels[action] || action));
   }
+  const dropdown = createDropdown(action);
+  if (dropdown) {
+    item.classList.add('lyra-sheet-dropdown');
+    item.appendChild(dropdown);
+  }
 
   return item;
 }
@@ -148,6 +234,24 @@ function createIcon(label: string): SVGSVGElement {
   svg.appendChild(text);
 
   return svg;
+}
+
+function createDropdown(action: AngularParityToolbarAction): HTMLElement | null {
+  const options = dropdownOptions[action];
+  if (!options) {
+    return null;
+  }
+
+  const menu = createElement('div', 'lyra-sheet-dropdown-menu');
+  menu.hidden = true;
+  options.forEach((option) => {
+    const item = createElement('div', 'lyra-sheet-dropdown-option');
+    item.dataset['lyraDropdownValue'] = option.value;
+    item.textContent = option.label;
+    menu.appendChild(item);
+  });
+
+  return menu;
 }
 
 function assertToolbarLayoutComplete(): void {

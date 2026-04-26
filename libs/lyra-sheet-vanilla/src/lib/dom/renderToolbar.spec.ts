@@ -53,4 +53,31 @@ describe('renderToolbar', () => {
       ).toContain(label);
     });
   });
+
+  it('renders dropdown menus for actions that use dropdown UI', () => {
+    const toolbar = renderToolbar();
+
+    [
+      'format',
+      'font-family',
+      'font-size',
+      'font-color',
+      'background-color',
+      'border',
+      'align',
+      'valign',
+      'text-wrap',
+      'formula',
+    ].forEach((action) => {
+      const menu = toolbar.querySelector(
+        `[data-lyra-action="${action}"] .lyra-sheet-dropdown-menu`,
+      ) as HTMLElement;
+
+      expect(menu).toBeTruthy();
+      expect(menu.hidden).toBe(true);
+      expect(menu.querySelectorAll('[data-lyra-dropdown-value]').length).toBeGreaterThan(
+        0,
+      );
+    });
+  });
 });

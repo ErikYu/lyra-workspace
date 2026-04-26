@@ -424,6 +424,28 @@
 
   Result recorded on this pass: `yarn test-vanilla-lib` passed with 8 suites and 22 tests. `yarn build-demo-vanilla` and `yarn build-vanilla-lib` passed. The build reported existing Browserslist, bundle-size, and Nx Cloud 502 warnings, but local targets succeeded.
 
+### Task 4.2: Add Toolbar Dropdown Menus
+
+**Files:**
+- Modify: `libs/lyra-sheet-vanilla/src/lib/dom/renderToolbar.ts`
+- Modify: `libs/lyra-sheet-vanilla/src/lib/LyraSheetVanilla.ts`
+- Modify: `libs/lyra-sheet-core/src/lib/lyra-sheet.scss`
+- Create: `libs/lyra-sheet-vanilla/src/lib/toolbar/bindToolbarDropdowns.ts`
+- Test: `libs/lyra-sheet-vanilla/src/lib/dom/renderToolbar.spec.ts`
+- Test: `libs/lyra-sheet-vanilla/src/lib/toolbar/bindToolbarDropdowns.spec.ts`
+
+- [x] **Step 1: Write failing dropdown render and behavior tests**
+
+  Result recorded on this pass: `yarn test-vanilla-lib` failed because dropdown actions had no `.lyra-sheet-dropdown-menu` DOM, and `./bindToolbarDropdowns` did not exist.
+
+- [x] **Step 2: Render dropdown menus and bind controller actions**
+
+  Result recorded on this pass: dropdown actions now render hidden option menus and `bindToolbarDropdowns` opens one menu at a time, closes on document click, and dispatches option selections to existing core controllers for format, font family, font size, font color, background color, border, align, valign, text wrap, and formula.
+
+- [x] **Step 3: Verify and commit**
+
+  Result recorded on this pass: `yarn test-vanilla-lib` passed with 9 suites and 26 tests. `yarn build-demo-vanilla` and `yarn build-vanilla-lib` passed. The build reported existing Browserslist, bundle-size, and Nx Cloud 502 warnings, but local targets succeeded.
+
 ---
 
 ## Phase 4: Menus, Tabs, Scrollbars, Resizers

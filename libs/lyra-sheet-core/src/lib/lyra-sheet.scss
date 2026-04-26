@@ -21,6 +21,7 @@ $contextMenuWidth: 200px;
   border-bottom: 0.5px solid #f1f3f4;
   box-sizing: border-box;
   &-item {
+    position: relative;
     cursor: pointer;
     height: $toolbarHeight;
     box-sizing: border-box;
@@ -35,6 +36,29 @@ $contextMenuWidth: 200px;
     }
     &.activated {
       background-color: fade-out($primaryColor, 0.9);
+    }
+  }
+  .lyra-sheet-dropdown-menu {
+    position: absolute;
+    top: $toolbarHeight;
+    left: 0;
+    z-index: 2;
+    min-width: 120px;
+    max-height: 280px;
+    overflow-y: auto;
+    background: #ffffff;
+    border: 1px solid #e8eaed;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  }
+  .lyra-sheet-dropdown-option {
+    cursor: pointer;
+    min-height: 30px;
+    display: flex;
+    align-items: center;
+    padding: 0 8px;
+    white-space: nowrap;
+    &:hover {
+      background: #f1f3f4;
     }
   }
   &-icon {
