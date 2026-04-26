@@ -363,7 +363,17 @@ export class LyraSheetVanilla {
       const item = document.createElement('div');
       item.className = 'lyra-sheet-dropdown-bar';
       item.dataset['lyraContextMenuItem'] = 'true';
-      item.textContent = menu.label;
+      const content = document.createElement('div');
+      content.className = 'lyra-sheet-toolbar-dropdown-bar-content';
+      const label = document.createElement('span');
+      label.textContent = menu.label;
+      const desc = document.createElement('span');
+      desc.className = 'lyra-sheet-toolbar-dropdown-bar-desc';
+      desc.dataset['lyraContextMenuDesc'] = 'true';
+      desc.textContent = menu.children ? '>' : menu.desc || ' ';
+      content.appendChild(label);
+      content.appendChild(desc);
+      item.appendChild(content);
       if (menu.children) {
         item.addEventListener('mouseenter', (evt) =>
           this.contextMenuController.showSubMenus(evt, menu.children),

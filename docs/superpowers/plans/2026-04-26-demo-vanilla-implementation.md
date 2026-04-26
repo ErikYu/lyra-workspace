@@ -517,6 +517,33 @@
 
   Result recorded on this pass: `yarn test-vanilla-lib` passed with 9 suites and 27 tests. `yarn build-demo-vanilla` and `yarn build-vanilla-lib` passed. The build reported existing Browserslist, bundle-size, and Nx Cloud 502 warnings, but local targets succeeded.
 
+### Task 5.2: Polish Toolbar And Context Menu Styling
+
+**Files:**
+- Create: `libs/lyra-sheet-vanilla/src/lib/icons/*.svg`
+- Create: `libs/lyra-sheet-vanilla/src/lib/icons/toolbarIconSvg.ts`
+- Modify: `libs/lyra-sheet-vanilla/src/lib/dom/renderToolbar.ts`
+- Modify: `libs/lyra-sheet-vanilla/src/lib/LyraSheetVanilla.ts`
+- Modify: `libs/lyra-sheet-core/src/lib/lyra-sheet.scss`
+- Test: `libs/lyra-sheet-vanilla/src/lib/dom/renderToolbar.spec.ts`
+- Test: `libs/lyra-sheet-vanilla/src/lib/LyraSheetVanilla.spec.ts`
+
+- [x] **Step 1: Write failing icon and menu structure tests**
+
+  Result recorded on this pass: `yarn test-vanilla-lib --runTestsByPath libs/lyra-sheet-vanilla/src/lib/dom/renderToolbar.spec.ts` failed because copied vanilla SVG assets were missing. The focused toolbar/context menu test run then failed because dropdown caret and context menu content/desc structure were missing.
+
+- [x] **Step 2: Copy Angular icons into vanilla and render real SVGs**
+
+  Result recorded on this pass: copied the 34 SVG files from `libs/lyra-sheet-angular/src/icons` into `libs/lyra-sheet-vanilla/src/lib/icons`, generated `toolbarIconSvg.ts`, and changed the vanilla toolbar to render real SVG paths for icon actions instead of placeholder text.
+
+- [x] **Step 3: Apply Google Sheets-like toolbar and context menu styling**
+
+  Result recorded on this pass: added compact rounded toolbar items, dropdown carets, lighter Google Sheets-like toolbar background, dropdown shadows, context menu rounded border/shadow, divider spacing, and context menu label/description structure.
+
+- [x] **Step 4: Verify and commit**
+
+  Result recorded on this pass: `yarn test-vanilla-lib` passed with 9 suites and 28 tests. `yarn build-vanilla-lib` and `yarn build-demo-vanilla` passed. The builds reported existing Browserslist, deprecation, and Nx Cloud 502 warnings, but local targets succeeded.
+
 ### Task 6: Port Scrollbars And Resizers
 
 **Files:**

@@ -3,6 +3,7 @@ import {
   AngularParityToolbarAction,
   angularParityToolbarActions,
 } from '../parity/angularParity';
+import { toolbarIconSvg } from '../icons/toolbarIconSvg';
 import { createElement } from './createElement';
 
 type ToolbarItem =
@@ -188,11 +189,12 @@ function createToolbarItem(
   if (label) {
     item.appendChild(createTextLabel(action, label));
   } else {
-    item.appendChild(createIcon(toolbarIconLabels[action] || action));
+    item.appendChild(createIcon(action, toolbarIconLabels[action] || action));
   }
   const dropdown = createDropdown(action);
   if (dropdown) {
     item.classList.add('lyra-sheet-dropdown');
+    item.appendChild(createElement('span', 'lyra-sheet-toolbar-caret'));
     item.appendChild(dropdown);
   }
 
@@ -204,6 +206,7 @@ function createTextLabel(
   label: string,
 ): HTMLElement {
   const root = createElement('div');
+  root.classList.add('lyra-sheet-toolbar-label');
   root.textContent = label;
 
   if (action === 'font-color') {
@@ -217,7 +220,24 @@ function createTextLabel(
   return root;
 }
 
-function createIcon(label: string): SVGSVGElement {
+function createIcon(
+  action: AngularParityToolbarAction,
+  fallbackLabel: string,
+): SVGSVGElement {
+  const svgMarkup = toolbarIconSvg[action];
+  if (svgMarkup) {
+    const wrapper = document.createElement('div');
+    wrapper.innerHTML = svgMarkup.replace(/<\?xml.*?\?>/, '').trim();
+    const svg = wrapper.firstElementChild as SVGSVGElement;
+    svg.classList.add('lyra-sheet-toolbar-icon');
+    svg.setAttribute('aria-hidden', 'true');
+    return svg;
+  }
+
+  return createPlaceholderIcon(fallbackLabel);
+}
+
+function createPlaceholderIcon(label: string): SVGSVGElement {
   const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
   svg.classList.add('lyra-sheet-toolbar-icon');
   svg.setAttribute('viewBox', '0 0 24 24');

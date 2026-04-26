@@ -238,6 +238,14 @@ describe('LyraSheetVanilla', () => {
 
     expect(menu.style.display).toBe('flex');
     expect(items).toContain('Insert row');
+    expect(
+      menu.querySelector(
+        '[data-lyra-context-menu-item] .lyra-sheet-toolbar-dropdown-bar-content',
+      ),
+    ).toBeTruthy();
+    expect(
+      menu.querySelector('[data-lyra-context-menu-desc]')?.textContent,
+    ).toBeTruthy();
 
     menu
       .querySelector('[data-lyra-context-menu-item]')!

@@ -1,3 +1,5 @@
+import { existsSync } from 'fs';
+import { join } from 'path';
 import { angularParityToolbarActions } from '../parity/angularParity';
 import { renderToolbar } from './renderToolbar';
 
@@ -78,6 +80,28 @@ describe('renderToolbar', () => {
       expect(menu.querySelectorAll('[data-lyra-dropdown-value]').length).toBeGreaterThan(
         0,
       );
+      expect(
+        toolbar.querySelector(
+          `[data-lyra-action="${action}"] .lyra-sheet-toolbar-caret`,
+        ),
+      ).toBeTruthy();
     });
+  });
+
+  it('uses copied vanilla svg icon assets instead of placeholder text icons', () => {
+    const toolbar = renderToolbar();
+    const undoIcon = toolbar.querySelector(
+      '[data-lyra-action="undo"] .lyra-sheet-toolbar-icon',
+    ) as SVGSVGElement;
+    const boldIcon = toolbar.querySelector(
+      '[data-lyra-action="bold"] .lyra-sheet-toolbar-icon',
+    ) as SVGSVGElement;
+
+    expect(existsSync(join(__dirname, '../icons/undo.svg'))).toBe(true);
+    expect(existsSync(join(__dirname, '../icons/text-bold.svg'))).toBe(true);
+    expect(undoIcon.querySelector('path')).toBeTruthy();
+    expect(boldIcon.querySelector('path')).toBeTruthy();
+    expect(undoIcon.textContent).not.toContain('Undo');
+    expect(boldIcon.textContent).not.toBe('B');
   });
 });
