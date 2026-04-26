@@ -49,6 +49,32 @@ const dataWithRichText: Data = {
   ],
 };
 
+const dataWithTwoSheets: Data = {
+  sheets: [
+    {
+      name: 'Sheet1',
+      selected: true,
+      data: {
+        merges: [],
+        rows: {},
+        rowCount: 10,
+        cols: {},
+        colCount: 5,
+      },
+    },
+    {
+      name: 'Sheet2',
+      data: {
+        merges: [],
+        rows: {},
+        rowCount: 10,
+        cols: {},
+        colCount: 5,
+      },
+    },
+  ],
+};
+
 describe('LyraSheetVanilla', () => {
   beforeEach(() => {
     jest
@@ -154,4 +180,77 @@ describe('LyraSheetVanilla', () => {
 
     expect(richTextInput.innerHTML).toBe('<div>456</div>');
   });
+
+  it('renders tabs and supports selecting, adding, and renaming sheets', () => {
+    const host = document.createElement('div');
+    const sheet = new LyraSheetVanilla({ data: dataWithTwoSheets, config });
+
+    sheet.mount(host);
+
+    expect(tabNames(host)).toEqual(['Sheet1', 'Sheet2']);
+    expect(
+      host.querySelector('[data-lyra-sheet-index="0"]')?.classList,
+    ).toContain('selected');
+
+    host
+      .querySelector('[data-lyra-sheet-index="1"]')!
+      .dispatchEvent(new MouseEvent('click', { bubbles: true }));
+
+    expect(sheet.getDataServiceForTesting().selectedIndex).toBe(1);
+    expect(
+      host.querySelector('[data-lyra-sheet-index="1"]')?.classList,
+    ).toContain('selected');
+
+    host
+      .querySelector('[data-lyra-add-sheet]')!
+      .dispatchEvent(new MouseEvent('click', { bubbles: true }));
+
+    expect(tabNames(host)).toEqual(['Sheet1', 'Sheet2', 'Unnamed Sheet (2)']);
+
+    const firstTab = host.querySelector('[data-lyra-sheet-index="0"]')!;
+    firstTab.dispatchEvent(new MouseEvent('dblclick', { bubbles: true }));
+    const input = host.querySelector(
+      '[data-lyra-sheet-index="0"] .name-input',
+    ) as HTMLInputElement;
+    input.value = 'Renamed';
+    input.dispatchEvent(new Event('blur', { bubbles: true }));
+
+    expect(tabNames(host)).toEqual(['Renamed', 'Sheet2', 'Unnamed Sheet (2)']);
+  });
+
+  it('renders context menu items and runs their actions', () => {
+    const host = document.createElement('div');
+    const sheet = new LyraSheetVanilla({ data, config });
+
+    sheet.mount(host);
+    sheet.getDataServiceForTesting().selectedSheet.selectCell(1, 1);
+    const mask = host.querySelector('.lyra-sheet-editor-mask')!;
+    const event = new MouseEvent('contextmenu', { bubbles: true });
+    Object.defineProperty(event, 'offsetX', { value: 10 });
+    Object.defineProperty(event, 'offsetY', { value: 20 });
+
+    mask.dispatchEvent(event);
+
+    const menu = host.querySelector('.lyra-sheet-contextmenu') as HTMLElement;
+    const items = Array.from(
+      menu.querySelectorAll('[data-lyra-context-menu-item]'),
+    ).map((item) => item.textContent?.trim());
+
+    expect(menu.style.display).toBe('flex');
+    expect(items).toContain('Insert row');
+
+    menu
+      .querySelector('[data-lyra-context-menu-item]')!
+      .dispatchEvent(new MouseEvent('click', { bubbles: true }));
+
+    expect(sheet.getDataServiceForTesting().selectedSheet.getRowCount()).toBe(
+      11,
+    );
+  });
 });
+
+function tabNames(host: HTMLElement): string[] {
+  return Array.from(host.querySelectorAll('[data-lyra-sheet-index]')).map(
+    (tab) => tab.textContent || '',
+  );
+}

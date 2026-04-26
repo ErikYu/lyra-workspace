@@ -416,19 +416,25 @@
 - Create/modify vanilla context menu and tabs DOM/binding files
 - Test: vanilla context menu and tabs tests
 
-- [ ] **Step 1: Write failing tests for context menu actions**
+- [x] **Step 1: Write failing tests for context menu actions**
 
   Cover insert/delete row/column/cell actions by asserting UI events call the same core services used by Angular.
 
-- [ ] **Step 2: Write failing tests for tabs behavior**
+  Result recorded on this pass: `yarn test-vanilla-lib` failed because `.lyra-sheet-contextmenu` remained hidden and had no `[data-lyra-context-menu-item]` entries after a mask `contextmenu` event.
+
+- [x] **Step 2: Write failing tests for tabs behavior**
 
   Cover sheet list rendering, selecting a sheet, adding a sheet, and rename wiring.
 
-- [ ] **Step 3: Implement context menu and tabs adapters**
+  Result recorded on this pass: `yarn test-vanilla-lib` failed because `.lyra-sheet-tabs` rendered no sheet tabs.
+
+- [x] **Step 3: Implement context menu and tabs adapters**
 
   Keep rendering and binding code in `libs/lyra-sheet-vanilla`, not in `apps/demo-vanilla`.
 
-- [ ] **Step 4: Verify and commit**
+  Result recorded on this pass: `renderEditor` now returns context menu and tabs refs. `LyraSheetVanilla` mounts `ContextMenuController` and `TabsController`, renders menu streams into DOM action rows, renders sheet tabs from `DataService.sheets`, and wires select/add/rename behaviors to the core `TabsController`.
+
+- [x] **Step 4: Verify and commit**
 
   Run:
 
@@ -436,6 +442,8 @@
   yarn test-vanilla-lib
   yarn build-demo-vanilla
   ```
+
+  Result recorded on this pass: `yarn test-vanilla-lib` passed with 8 suites and 21 tests. `yarn build-demo-vanilla` passed. The build reported existing Browserslist and bundle-size warnings plus Nx Cloud 502 warnings, but local targets succeeded.
 
   Commit:
 

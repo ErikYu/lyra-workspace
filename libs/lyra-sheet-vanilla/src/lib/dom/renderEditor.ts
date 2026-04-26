@@ -13,6 +13,8 @@ export interface RenderedEditor {
   mask: HTMLElement;
   rowResizer: HTMLElement;
   colResizer: HTMLElement;
+  contextMenu: HTMLElement;
+  tabs: HTMLElement;
   richTextInput: RenderedRichTextInput;
 }
 
@@ -24,6 +26,8 @@ export function renderEditor(): RenderedEditor {
   const colResizer = createElement('div', 'lyra-sheet-resizer-col');
   const scrollbars = renderScrollbars();
   const richTextInput = renderRichTextInput();
+  const contextMenu = createElement('div', 'lyra-sheet-contextmenu');
+  const tabs = renderTabs();
 
   root.appendChild(canvas);
   root.appendChild(mask);
@@ -31,9 +35,18 @@ export function renderEditor(): RenderedEditor {
   root.appendChild(colResizer);
   root.appendChild(scrollbars.vertical);
   root.appendChild(scrollbars.horizontal);
-  root.appendChild(createElement('div', 'lyra-sheet-contextmenu'));
-  root.appendChild(renderTabs());
+  root.appendChild(contextMenu);
+  root.appendChild(tabs);
   root.appendChild(richTextInput.root);
 
-  return { root, canvas, mask, rowResizer, colResizer, richTextInput };
+  return {
+    root,
+    canvas,
+    mask,
+    rowResizer,
+    colResizer,
+    contextMenu,
+    tabs,
+    richTextInput,
+  };
 }

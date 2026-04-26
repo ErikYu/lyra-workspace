@@ -1,6 +1,8 @@
 import {
   cloneDeep,
   ConfigService,
+  ContextMenuController,
+  ContextMenus,
   Data,
   DataService,
   DatasheetConfig,
@@ -10,6 +12,7 @@ import {
   HistoryService,
   RichTextInputController,
   RootController,
+  TabsController,
   ViewRangeService,
 } from '@lyra-sheet/core';
 import { DependencyContainer } from 'tsyringe';
@@ -41,6 +44,8 @@ export class LyraSheetVanilla {
   private readonly historyService: HistoryService;
   private readonly richTextInputController: RichTextInputController;
   private readonly rootController: RootController;
+  private readonly contextMenuController: ContextMenuController;
+  private readonly tabsController: TabsController;
   private readonly viewRangeService: ViewRangeService;
   private readonly lifecycle = new SubscriptionBag();
 
@@ -57,6 +62,8 @@ export class LyraSheetVanilla {
       RichTextInputController,
     );
     this.rootController = this.container.resolve(RootController);
+    this.contextMenuController = this.container.resolve(ContextMenuController);
+    this.tabsController = this.container.resolve(TabsController);
     this.viewRangeService = this.container.resolve(ViewRangeService);
   }
 
@@ -109,6 +116,7 @@ export class LyraSheetVanilla {
     this.elementRefService.initColResizer(editor.colResizer);
     this.viewRangeService.init();
     this.bindResize(root);
+    this.bindTabs(editor.tabs);
     this.mountControllers(root, formulaBar, editor);
     this.lifecycle.add(
       this.dataService.dataChanged$.subscribe((data) =>
@@ -141,6 +149,9 @@ export class LyraSheetVanilla {
     this.editorController.mountDom(editor.root);
     this.editorController.onInit();
     this.editorController.afterViewInit();
+    this.contextMenuController.mount(editor.contextMenu);
+    this.contextMenuController.onInit();
+    this.bindContextMenu(editor.contextMenu);
   }
 
   private bindResize(root: HTMLDivElement): void {
@@ -153,5 +164,136 @@ export class LyraSheetVanilla {
     resize();
     window.addEventListener('resize', resize);
     this.lifecycle.add(() => window.removeEventListener('resize', resize));
+  }
+
+  private bindTabs(tabsRoot: HTMLElement): void {
+    let editingIndex: number | null = null;
+    const render = () => {
+      tabsRoot.textContent = '';
+      this.dataService.sheets.forEach((sheet, index) => {
+        const tab = document.createElement('div');
+        tab.className = 'lyra-sheet-tab';
+        tab.dataset['lyraSheetIndex'] = `${index}`;
+        if (sheet.selected) {
+          tab.classList.add('selected');
+        }
+        tab.addEventListener('click', () =>
+          this.tabsController.selectSheet(index),
+        );
+        tab.addEventListener('dblclick', () =>
+          this.tabsController.editSheetName(index),
+        );
+
+        if (editingIndex === index) {
+          const input = document.createElement('input');
+          input.className = 'name-input';
+          input.type = 'text';
+          input.value = sheet.name;
+          input.addEventListener('keydown', (evt) => {
+            if ((evt as KeyboardEvent).key === 'Enter') {
+              this.tabsController.triggerBlur(evt);
+            }
+          });
+          input.addEventListener('blur', (evt) => {
+            this.tabsController.updateSheetName(evt, index);
+          });
+          tab.appendChild(input);
+        } else {
+          const label = document.createElement('span');
+          label.textContent = sheet.name;
+          tab.appendChild(label);
+        }
+        tabsRoot.appendChild(tab);
+      });
+
+      const addTab = document.createElement('div');
+      addTab.className = 'lyra-sheet-tab';
+      addTab.dataset['lyraAddSheet'] = 'true';
+      addTab.textContent = '+';
+      addTab.addEventListener('click', () => this.tabsController.addSheet());
+      tabsRoot.appendChild(addTab);
+    };
+
+    this.lifecycle.add(this.tabsController.tabs$.subscribe(render));
+    this.lifecycle.add(
+      this.tabsController.editingIndex$.subscribe((index) => {
+        editingIndex = index;
+        render();
+        const input = tabsRoot.querySelector(
+          `[data-lyra-sheet-index="${index}"] .name-input`,
+        ) as HTMLInputElement | null;
+        input?.select();
+      }),
+    );
+    render();
+  }
+
+  private bindContextMenu(contextMenuRoot: HTMLElement): void {
+    const mainTree = document.createElement('div');
+    mainTree.className = 'lyra-sheet-contextmenu-tree';
+    const subTree = document.createElement('div');
+    subTree.className = 'lyra-sheet-contextmenu-tree';
+    let subMenuTop = 0;
+    let subMenuLeft = 0;
+    const updateSubMenuTransform = () => {
+      subTree.style.transform = `translate(${subMenuLeft}px,${subMenuTop}px)`;
+    };
+    contextMenuRoot.appendChild(mainTree);
+    contextMenuRoot.appendChild(subTree);
+
+    this.lifecycle.add(
+      this.contextMenuController.menus$.subscribe((menus) => {
+        this.renderContextMenus(mainTree, menus);
+      }),
+    );
+    this.lifecycle.add(
+      this.contextMenuController.activatedSubMenus$.subscribe((menus) => {
+        this.renderContextMenus(subTree, menus);
+      }),
+    );
+    this.lifecycle.add(
+      this.contextMenuController.offsetTop$.subscribe((top) => {
+        subMenuTop = top;
+        updateSubMenuTransform();
+      }),
+    );
+    this.lifecycle.add(
+      this.contextMenuController.offsetLeft$.subscribe((left) => {
+        subMenuLeft = left;
+        updateSubMenuTransform();
+      }),
+    );
+  }
+
+  private renderContextMenus(root: HTMLElement, menus: ContextMenus): void {
+    root.textContent = '';
+    menus.forEach((menu) => {
+      if (menu === 'DIVIDER') {
+        root.appendChild(this.createDivider('horizontal'));
+        return;
+      }
+
+      const item = document.createElement('div');
+      item.className = 'lyra-sheet-dropdown-bar';
+      item.dataset['lyraContextMenuItem'] = 'true';
+      item.textContent = menu.label;
+      if (menu.children) {
+        item.addEventListener('mouseenter', (evt) =>
+          this.contextMenuController.showSubMenus(evt, menu.children),
+        );
+      } else {
+        item.addEventListener('mouseenter', (evt) =>
+          this.contextMenuController.showSubMenus(evt),
+        );
+        item.addEventListener('click', () => menu.action());
+      }
+      root.appendChild(item);
+    });
+  }
+
+  private createDivider(direction: 'vertical' | 'horizontal'): HTMLElement {
+    const divider = document.createElement('div');
+    divider.className = `lyra-sheet-divider ${direction}`;
+    return divider;
   }
 }
