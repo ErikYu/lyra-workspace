@@ -25,6 +25,30 @@ const config: DatasheetConfig = {
   col: { width: 100, count: 5, indexWidth: 60 },
 };
 
+const dataWithRichText: Data = {
+  sheets: [
+    {
+      name: 'Sheet1',
+      selected: true,
+      data: {
+        merges: [],
+        rows: {
+          1: {
+            cells: {
+              1: {
+                richText: [[{ text: '123' }]],
+              },
+            },
+          },
+        },
+        rowCount: 10,
+        cols: {},
+        colCount: 5,
+      },
+    },
+  ],
+};
+
 describe('LyraSheetVanilla', () => {
   beforeEach(() => {
     jest
@@ -104,5 +128,30 @@ describe('LyraSheetVanilla', () => {
 
     expect(root.style.width).toBe('900px');
     expect(root.style.height).toBe('450px');
+  });
+
+  it('syncs selected cell content through the formula bar and rich text input', () => {
+    const host = document.createElement('div');
+    const sheet = new LyraSheetVanilla({ data: dataWithRichText, config });
+
+    sheet.mount(host);
+    sheet.getDataServiceForTesting().selectedSheet.selectCell(1, 1);
+
+    const formulaLabel = host.querySelector('.lyra-sheet-formula-bar-label');
+    const formulaInput = host.querySelector(
+      '.lyra-sheet-formula-bar-input',
+    ) as HTMLDivElement;
+    const richTextInput = host.querySelector(
+      '.lyra-sheet-rich-text-input-area',
+    ) as HTMLDivElement;
+
+    expect(formulaLabel?.textContent).toBe('B2');
+    expect(formulaInput.innerHTML).toContain('123');
+
+    formulaInput.innerHTML = '<div>456</div>';
+    formulaInput.dispatchEvent(new Event('focusin'));
+    formulaInput.dispatchEvent(new Event('input'));
+
+    expect(richTextInput.innerHTML).toBe('<div>456</div>');
   });
 });

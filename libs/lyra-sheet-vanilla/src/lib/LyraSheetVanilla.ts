@@ -121,9 +121,19 @@ export class LyraSheetVanilla {
   ): void {
     this.rootController.mount(root);
     this.formulaBarController.mount(formulaBar.textarea);
+    this.lifecycle.add(
+      this.formulaBarController.label$.subscribe((label) => {
+        formulaBar.label.textContent = label;
+      }),
+    );
     this.richTextInputController.mount(
       editor.richTextInput.root,
       editor.richTextInput.editable,
+    );
+    this.lifecycle.add(
+      this.richTextInputController.html$.subscribe((html) => {
+        editor.richTextInput.editable.innerHTML = html;
+      }),
     );
     this.editorController.mountDom(editor.root);
     this.editorController.onInit();

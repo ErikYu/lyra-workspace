@@ -334,15 +334,19 @@
 - Modify: `libs/lyra-sheet-vanilla/src/lib/LyraSheetVanilla.ts`
 - Test: focused vanilla DOM/controller tests
 
-- [ ] **Step 1: Write failing tests for rich text input and formula bar DOM contracts**
+- [x] **Step 1: Write failing tests for rich text input and formula bar DOM contracts**
 
   Tests must assert that the rich text editable and formula bar editable are mounted with the exact element types expected by `RichTextInputController` and `FormulaBarController`, and that input events reach the controllers.
 
-- [ ] **Step 2: Fix DOM contracts and controller mount order**
+  Result recorded on this pass: after replacing unsupported `jest-dom` matchers with standard `textContent` assertions, `yarn test-vanilla-lib` failed because `RenderedFormulaBar` had no `label` reference and the mounted vanilla sheet produced no `.lyra-sheet-formula-bar-label` text for selected cell `B2`.
+
+- [x] **Step 2: Fix DOM contracts and controller mount order**
 
   Keep controller behavior in core. Adapt vanilla DOM so the controllers receive equivalent elements to Angular.
 
-- [ ] **Step 3: Verify and commit**
+  Result recorded on this pass: `renderFormulaBar` now renders Angular-compatible label, divider, fx, and contenteditable input elements. `LyraSheetVanilla` subscribes `FormulaBarController.label$` into the label text and `RichTextInputController.html$` into the editable rich text area.
+
+- [x] **Step 3: Verify and commit**
 
   Run:
 
@@ -350,6 +354,8 @@
   yarn test-vanilla-lib
   yarn build-demo-vanilla
   ```
+
+  Result recorded on this pass: `yarn test-vanilla-lib` passed with 7 suites and 13 tests. `yarn build-demo-vanilla` passed. Nx Cloud reported remote 502 warnings, but local targets succeeded.
 
   Commit:
 
