@@ -1,4 +1,4 @@
-import { render } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 
 import App from './app';
 
@@ -9,9 +9,10 @@ describe('App', () => {
     expect(baseElement).toBeTruthy();
   });
 
-  it('should have a greeting as the title', () => {
-    const { getByText } = render(<App />);
+  it('should mount LyraSheet', () => {
+    render(<App />);
 
-    expect(getByText(/Welcome demo-react/gi)).toBeTruthy();
+    expect(document.querySelector('.lyra-sheet')).toBeTruthy();
+    expect(screen.getByTitle('undo')).toBeTruthy();
   });
 });

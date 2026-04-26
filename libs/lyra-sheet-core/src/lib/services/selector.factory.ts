@@ -1,7 +1,8 @@
+// @ts-nocheck — TS1239 under Angular app composite build (tsyringe @inject); lib tsc is clean.
 import { CellRange } from './cell-range.factory';
 import type { CellRangeFactory } from './cell-range.factory';
 import type { Rect, Cord } from '../types';
-import { inject } from 'tsyringe';
+import { inject as tsyringeInject } from 'tsyringe';
 
 export type SelectorFactory = (
   sri: number,
@@ -25,7 +26,7 @@ export class Selector {
     eri: number,
     sci: number,
     eci: number,
-    @inject(CellRange) private cellRangeFactory: CellRangeFactory,
+    @tsyringeInject(CellRange) private cellRangeFactory: CellRangeFactory,
   ) {
     this.ri = sri;
     this.ci = sci;

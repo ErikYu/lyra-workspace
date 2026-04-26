@@ -3,8 +3,8 @@ import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 /* eslint-disable */
 
 @Component({
-  selector: 'lyra-workspace-nx-welcome',
-  template: `
+    selector: 'lyra-workspace-nx-welcome',
+    template: `
     <!--
      * * * * * * * * * * * * * * * * * * * * * * * * * * * *
      This is a starter component and can be deleted.
@@ -769,10 +769,10 @@ import { Component, OnInit, ViewEncapsulation } from '@angular/core';
               Add UI library
             </summary>
             <pre><span># Generate UI lib</span>
-nx g @nrwl/angular:lib ui
+nx g &#64;nx/angular:lib ui
 
 <span># Add a component</span>
-nx g @nrwl/angular:component button --project ui</pre>
+nx g &#64;nx/angular:component button --project ui</pre>
           </details>
           <details>
             <summary>
@@ -840,8 +840,9 @@ nx affected:e2e</pre>
       </div>
     </div>
   `,
-  styles: [],
-  encapsulation: ViewEncapsulation.None,
+    styles: [],
+    encapsulation: ViewEncapsulation.None,
+    standalone: false
 })
 export class NxWelcomeComponent implements OnInit {
   constructor() {}

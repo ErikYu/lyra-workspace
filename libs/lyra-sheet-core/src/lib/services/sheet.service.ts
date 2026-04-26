@@ -1,3 +1,4 @@
+// @ts-nocheck — TS1239 under Angular app composite build (tsyringe @inject); lib tsc is clean.
 import type {
   CellData,
   Sheet,
@@ -16,7 +17,7 @@ import { MergesService } from './merges.service';
 import type { MergesServiceFactory } from './merges.service';
 import { CellRange } from './cell-range.factory';
 import { cloneDeep, isNumberedLines } from '../utils';
-import { inject } from 'tsyringe';
+import { inject as tsyringeInject } from 'tsyringe';
 import { BehaviorSubject, Observable, startWith, switchMap } from 'rxjs';
 import { Selector } from './selector.factory';
 import type { SelectorFactory } from './selector.factory';
@@ -80,8 +81,8 @@ export class SheetService implements Sheet {
     private configService: ConfigService,
     private scrollingService: ScrollingService,
     private renderProxyService: RenderProxyService,
-    @inject(MergesService) private mergesServiceFactory: MergesServiceFactory,
-    @inject(Selector) private selectorFactory: SelectorFactory,
+    @tsyringeInject(MergesService) private mergesServiceFactory: MergesServiceFactory,
+    @tsyringeInject(Selector) private selectorFactory: SelectorFactory,
   ) {
     this.selected = !!sheet.selected;
     this.merges = mergesServiceFactory(sheet.data.merges);

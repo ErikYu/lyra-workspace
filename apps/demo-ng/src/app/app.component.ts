@@ -2,9 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { Data, DatasheetConfig } from '@lyra-sheet/core';
 
 @Component({
-  selector: 'lyra-workspace-root',
-  templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss'],
+    selector: 'lyra-workspace-root',
+    templateUrl: './app.component.html',
+    styleUrls: ['./app.component.scss'],
+    standalone: false
 })
 export class AppComponent implements OnInit {
   config: DatasheetConfig = {

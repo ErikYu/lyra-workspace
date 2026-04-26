@@ -1,6 +1,6 @@
 import { ConfigService } from './config.service';
 import { CellData, SheetData, Rect } from '../types';
-import { SheetService } from './sheet.service';
+import type { SheetService } from './sheet.service';
 
 interface CellParams {
   left: number; // cell left coordinate - from right side of col-header-zone

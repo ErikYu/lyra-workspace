@@ -49,6 +49,7 @@ const config: DatasheetConfig = {
 };
 
 @Component({
+  standalone: false,
   template: `<lyra-sheet [data]="data" [config]="config"></lyra-sheet>`,
 })
 class TestHostComponent {

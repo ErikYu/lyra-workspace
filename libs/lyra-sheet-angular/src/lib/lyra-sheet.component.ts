@@ -49,6 +49,7 @@ const defaultData: Data = {
   selector: 'lyra-sheet',
   templateUrl: './lyra-sheet.component.html',
   styleUrls: ['./lyra-sheet.component.scss'],
+  standalone: false,
 })
 export class LyraSheetComponent
   implements AfterViewInit, OnChanges, OnDestroy
