@@ -293,15 +293,17 @@
 - Modify: `libs/lyra-sheet-vanilla/src/lib/LyraSheetVanilla.ts`
 - Test: `libs/lyra-sheet-vanilla/src/lib/LyraSheetVanilla.spec.ts`
 
-- [ ] **Step 1: Write failing resize lifecycle test**
+- [x] **Step 1: Write failing resize lifecycle test**
 
   Extend `LyraSheetVanilla.spec.ts` to mount with a config that reads document dimensions, dispatch `resize`, and verify root sizing/config resize behavior through DOM-visible dimensions or a test seam.
 
-- [ ] **Step 2: Implement window resize subscription**
+  Result recorded on this pass: `yarn test-vanilla-lib` failed as expected because `.lyra-sheet` root `style.width` was `""` instead of `"800px"`.
+
+- [x] **Step 2: Implement window resize subscription**
 
   Match Angular's root component behavior: set root width/height from config and call `ConfigService.resize(root)` on mount and on window resize. Store listener cleanup in `SubscriptionBag`.
 
-- [ ] **Step 3: Verify and commit**
+- [x] **Step 3: Verify and commit**
 
   Run:
 
@@ -310,6 +312,8 @@
   yarn build-vanilla-lib
   yarn build-demo-vanilla
   ```
+
+  Result recorded on this pass: `yarn test-vanilla-lib` passed with 6 suites and 11 tests. `yarn build-vanilla-lib` passed. `yarn build-demo-vanilla` passed. Nx Cloud reported remote 502 warnings, but local targets succeeded.
 
   Commit:
 

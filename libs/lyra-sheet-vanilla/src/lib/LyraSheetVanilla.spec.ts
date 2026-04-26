@@ -72,4 +72,37 @@ describe('LyraSheetVanilla', () => {
     expect(host.querySelector('.lyra-sheet')).toBeNull();
     expect(onDataChange).not.toHaveBeenCalled();
   });
+
+  it('sizes the root from config and updates it on window resize', () => {
+    const host = document.createElement('div');
+    let width = 800;
+    let height = 400;
+    const dynamicConfig: DatasheetConfig = {
+      ...config,
+      width: () => width,
+      height: () => height,
+    };
+    const sheet = new LyraSheetVanilla({ data, config: dynamicConfig });
+
+    sheet.mount(host);
+    const root = host.querySelector('.lyra-sheet') as HTMLElement;
+
+    expect(root.style.width).toBe('800px');
+    expect(root.style.height).toBe('400px');
+
+    width = 900;
+    height = 450;
+    window.dispatchEvent(new Event('resize'));
+
+    expect(root.style.width).toBe('900px');
+    expect(root.style.height).toBe('450px');
+
+    sheet.destroy();
+    width = 1000;
+    height = 500;
+    window.dispatchEvent(new Event('resize'));
+
+    expect(root.style.width).toBe('900px');
+    expect(root.style.height).toBe('450px');
+  });
 });

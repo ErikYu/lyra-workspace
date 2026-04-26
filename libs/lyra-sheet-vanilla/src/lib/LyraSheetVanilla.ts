@@ -105,6 +105,7 @@ export class LyraSheetVanilla {
     this.elementRefService.initRowResizer(editor.rowResizer);
     this.elementRefService.initColResizer(editor.colResizer);
     this.viewRangeService.init();
+    this.bindResize(root);
     this.mountControllers(root, formulaBar, editor);
     this.lifecycle.add(
       this.dataService.dataChanged$.subscribe((data) =>
@@ -127,5 +128,17 @@ export class LyraSheetVanilla {
     this.editorController.mountDom(editor.root);
     this.editorController.onInit();
     this.editorController.afterViewInit();
+  }
+
+  private bindResize(root: HTMLDivElement): void {
+    const resize = () => {
+      root.style.width = `${this.options.config.width()}px`;
+      root.style.height = `${this.options.config.height()}px`;
+      this.configService.resize(root);
+    };
+
+    resize();
+    window.addEventListener('resize', resize);
+    this.lifecycle.add(() => window.removeEventListener('resize', resize));
   }
 }
