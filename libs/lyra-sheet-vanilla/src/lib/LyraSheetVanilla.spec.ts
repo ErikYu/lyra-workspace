@@ -247,6 +247,28 @@ describe('LyraSheetVanilla', () => {
       11,
     );
   });
+
+  it('renders selected cell and autofill affordance in the selector layer', () => {
+    const host = document.createElement('div');
+    const sheet = new LyraSheetVanilla({ data, config });
+
+    sheet.mount(host);
+    sheet.getDataServiceForTesting().selectedSheet.selectCell(1, 1);
+
+    const selector = host.querySelector('.lyra-sheet-selector') as HTMLElement;
+    const autofill = host.querySelector(
+      '.lyra-sheet-selector-autofill',
+    ) as HTMLElement;
+
+    expect(selector).toBeTruthy();
+    expect(selector.style.left).toBe('100px');
+    expect(selector.style.top).toBe('25px');
+    expect(selector.style.width).toBe('100px');
+    expect(selector.style.height).toBe('25px');
+    expect(autofill).toBeTruthy();
+    expect(autofill.style.left).toBe('196px');
+    expect(autofill.style.top).toBe('46px');
+  });
 });
 
 function tabNames(host: HTMLElement): string[] {

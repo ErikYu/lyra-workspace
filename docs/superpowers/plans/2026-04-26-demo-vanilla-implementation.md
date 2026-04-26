@@ -492,6 +492,31 @@
   git commit -m "feat: add vanilla menu and tabs behavior"
   ```
 
+### Task 5.1: Restore Vanilla Selection Border
+
+**Files:**
+- Modify: `libs/lyra-sheet-vanilla/src/lib/dom/renderSelectorLayer.ts`
+- Modify: `libs/lyra-sheet-vanilla/src/lib/dom/renderEditor.ts`
+- Modify: `libs/lyra-sheet-vanilla/src/lib/LyraSheetVanilla.ts`
+- Test: `libs/lyra-sheet-vanilla/src/lib/dom/renderEditor.spec.ts`
+- Test: `libs/lyra-sheet-vanilla/src/lib/LyraSheetVanilla.spec.ts`
+
+- [x] **Step 1: Confirm root cause**
+
+  Result recorded on this pass: Angular and React render `.lyra-sheet-selector-container` inside `.lyra-sheet-editor-mask` and update `.lyra-sheet-selector` children from `DataService.selectorChanged$`. Vanilla rendered only an empty mask, so selection state changed in core but no blue border DOM existed.
+
+- [x] **Step 2: Write failing selector layer tests**
+
+  Result recorded on this pass: `yarn test-vanilla-lib` failed because `RenderedEditor` had no `selectorContainer`, and selecting a cell produced no `.lyra-sheet-selector`.
+
+- [x] **Step 3: Render and bind selector layer**
+
+  Result recorded on this pass: `renderSelectorLayer` now creates the selector container, `renderEditor` returns it, and `LyraSheetVanilla` subscribes selector/resizer/scroll/autofill streams to render `.lyra-sheet-selector`, `.lyra-sheet-selector-autofill`, and `.lyra-sheet-autofill` DOM like Angular/React.
+
+- [x] **Step 4: Verify and commit**
+
+  Result recorded on this pass: `yarn test-vanilla-lib` passed with 9 suites and 27 tests. `yarn build-demo-vanilla` and `yarn build-vanilla-lib` passed. The build reported existing Browserslist, bundle-size, and Nx Cloud 502 warnings, but local targets succeeded.
+
 ### Task 6: Port Scrollbars And Resizers
 
 **Files:**

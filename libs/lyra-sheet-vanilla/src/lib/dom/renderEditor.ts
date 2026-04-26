@@ -11,6 +11,7 @@ export interface RenderedEditor {
   root: HTMLElement;
   canvas: HTMLCanvasElement;
   mask: HTMLElement;
+  selectorContainer: HTMLElement;
   rowResizer: HTMLElement;
   colResizer: HTMLElement;
   contextMenu: HTMLElement;
@@ -21,7 +22,7 @@ export interface RenderedEditor {
 export function renderEditor(): RenderedEditor {
   const root = createElement('div', 'lyra-sheet-editor');
   const canvas = createElement('canvas');
-  const mask = renderSelectorLayer();
+  const selectorLayer = renderSelectorLayer();
   const rowResizer = createElement('div', 'lyra-sheet-resizer-row');
   const colResizer = createElement('div', 'lyra-sheet-resizer-col');
   const scrollbars = renderScrollbars();
@@ -30,7 +31,7 @@ export function renderEditor(): RenderedEditor {
   const tabs = renderTabs();
 
   root.appendChild(canvas);
-  root.appendChild(mask);
+  root.appendChild(selectorLayer.mask);
   root.appendChild(rowResizer);
   root.appendChild(colResizer);
   root.appendChild(scrollbars.vertical);
@@ -42,7 +43,8 @@ export function renderEditor(): RenderedEditor {
   return {
     root,
     canvas,
-    mask,
+    mask: selectorLayer.mask,
+    selectorContainer: selectorLayer.selectorContainer,
     rowResizer,
     colResizer,
     contextMenu,

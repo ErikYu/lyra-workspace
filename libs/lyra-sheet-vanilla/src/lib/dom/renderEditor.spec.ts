@@ -15,6 +15,9 @@ describe('renderEditor', () => {
     expect(editor.root.querySelector('.lyra-sheet-editor-mask')).toBe(
       editor.mask,
     );
+    expect(
+      editor.mask.querySelector('.lyra-sheet-selector-container'),
+    ).toBe(editor.selectorContainer);
     expect(editor.root.querySelector('.lyra-sheet-resizer-row')).toBe(
       editor.rowResizer,
     );

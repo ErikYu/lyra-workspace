@@ -1,4 +1,5 @@
 import {
+  AutofillService,
   cloneDeep,
   ConfigService,
   ContextMenuController,
@@ -10,11 +11,15 @@ import {
   ElementRefService,
   FormulaBarController,
   HistoryService,
+  LocatedRect,
   RichTextInputController,
+  ResizerService,
   RootController,
+  ScrollingService,
   TabsController,
   ViewRangeService,
 } from '@lyra-sheet/core';
+import { combineLatest } from 'rxjs';
 import { DependencyContainer } from 'tsyringe';
 import { createVanillaContainer } from './createVanillaContainer';
 import { renderEditor, RenderedEditor } from './dom/renderEditor';
@@ -43,8 +48,11 @@ export class LyraSheetVanilla {
   private readonly editorController: EditorController;
   private readonly formulaBarController: FormulaBarController;
   private readonly historyService: HistoryService;
+  private readonly autofillService: AutofillService;
   private readonly richTextInputController: RichTextInputController;
+  private readonly resizerService: ResizerService;
   private readonly rootController: RootController;
+  private readonly scrollingService: ScrollingService;
   private readonly contextMenuController: ContextMenuController;
   private readonly tabsController: TabsController;
   private readonly viewRangeService: ViewRangeService;
@@ -59,10 +67,13 @@ export class LyraSheetVanilla {
     this.editorController = this.container.resolve(EditorController);
     this.formulaBarController = this.container.resolve(FormulaBarController);
     this.historyService = this.container.resolve(HistoryService);
+    this.autofillService = this.container.resolve(AutofillService);
     this.richTextInputController = this.container.resolve(
       RichTextInputController,
     );
+    this.resizerService = this.container.resolve(ResizerService);
     this.rootController = this.container.resolve(RootController);
+    this.scrollingService = this.container.resolve(ScrollingService);
     this.contextMenuController = this.container.resolve(ContextMenuController);
     this.tabsController = this.container.resolve(TabsController);
     this.viewRangeService = this.container.resolve(ViewRangeService);
@@ -118,6 +129,7 @@ export class LyraSheetVanilla {
     this.elementRefService.initColResizer(editor.colResizer);
     this.viewRangeService.init();
     this.bindResize(root);
+    this.bindSelectorLayer(editor.selectorContainer);
     this.bindTabs(editor.tabs);
     this.mountControllers(root, formulaBar, editor);
     this.lifecycle.add(
@@ -166,6 +178,79 @@ export class LyraSheetVanilla {
     resize();
     window.addEventListener('resize', resize);
     this.lifecycle.add(() => window.removeEventListener('resize', resize));
+  }
+
+  private bindSelectorLayer(selectorContainer: HTMLElement): void {
+    selectorContainer.style.left = `${this.configService.ciw}px`;
+    selectorContainer.style.top = `${this.configService.rih}px`;
+
+    this.lifecycle.add(
+      combineLatest([
+        this.dataService.selectorChanged$,
+        this.resizerService.colResizer$,
+        this.resizerService.rowResizer$,
+        this.scrollingService.scrolled$,
+      ]).subscribe(([selectors]) => {
+        this.renderSelectorRects(
+          selectorContainer,
+          selectors.map((selector) =>
+            this.viewRangeService.locateRect(selector.range),
+          ),
+        );
+      }),
+    );
+    this.lifecycle.add(
+      this.autofillService.autofillChanged$.subscribe((rect) => {
+        this.renderAutofillRect(
+          selectorContainer,
+          rect ? this.viewRangeService.locateRect(rect) : null,
+        );
+      }),
+    );
+  }
+
+  private renderSelectorRects(
+    selectorContainer: HTMLElement,
+    rects: LocatedRect[],
+  ): void {
+    selectorContainer
+      .querySelectorAll('.lyra-sheet-selector, .lyra-sheet-selector-autofill')
+      .forEach((el) => el.remove());
+
+    rects.forEach((rect) => {
+      const selector = document.createElement('div');
+      selector.className = 'lyra-sheet-selector';
+      this.applyRectStyle(selector, rect);
+      selectorContainer.appendChild(selector);
+
+      const autofillHandle = document.createElement('div');
+      autofillHandle.className = 'lyra-sheet-selector-autofill';
+      autofillHandle.style.left = `${rect.left + rect.width - 4}px`;
+      autofillHandle.style.top = `${rect.top + rect.height - 4}px`;
+      selectorContainer.appendChild(autofillHandle);
+    });
+  }
+
+  private renderAutofillRect(
+    selectorContainer: HTMLElement,
+    rect: LocatedRect | null,
+  ): void {
+    selectorContainer.querySelector('.lyra-sheet-autofill')?.remove();
+    if (!rect) {
+      return;
+    }
+
+    const autofill = document.createElement('div');
+    autofill.className = 'lyra-sheet-autofill';
+    this.applyRectStyle(autofill, rect);
+    selectorContainer.appendChild(autofill);
+  }
+
+  private applyRectStyle(el: HTMLElement, rect: LocatedRect): void {
+    el.style.left = `${rect.left}px`;
+    el.style.top = `${rect.top}px`;
+    el.style.width = `${rect.width}px`;
+    el.style.height = `${rect.height}px`;
   }
 
   private bindTabs(tabsRoot: HTMLElement): void {
