@@ -18,6 +18,7 @@ import {
 // // eslint-disable-next-line @typescript-eslint/no-unused-vars
 // class __Registry__ {}
 
+export * from './lib/crdt/yjs-workbook';
 export * from './lib/constants';
 export * from './lib/utils';
 export * from './lib/types';
