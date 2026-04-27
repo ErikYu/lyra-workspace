@@ -2,6 +2,6 @@
   "name": "@lyra-sheet/react",
   "version": "0.0.1",
   "peerDependencies": {
-    "@lyra-sheet/vanilla": "0.0.1"
+    "@lyra-sheet/vanilla": "workspace:*"
   }
 }

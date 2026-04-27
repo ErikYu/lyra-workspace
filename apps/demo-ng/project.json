@@ -18,7 +18,8 @@
         "inlineStyleLanguage": "scss",
         "assets": ["apps/demo-ng/src/favicon.ico", "apps/demo-ng/src/assets"],
         "styles": ["apps/demo-ng/src/styles.scss"],
-        "scripts": []
+        "scripts": [],
+        "allowedCommonJsDependencies": ["dayjs"]
       },
       "configurations": {
         "production": {

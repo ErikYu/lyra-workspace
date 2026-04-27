@@ -6,49 +6,35 @@
   "tags": [],
   "targets": {
     "build": {
-      "executor": "@nx/webpack:webpack",
-      "outputs": ["{options.outputPath}"],
+      "executor": "@nx/vite:build",
+      "outputs": [
+        "{options.outputPath}"
+      ],
       "defaultConfiguration": "production",
       "options": {
-        "compiler": "babel",
-        "outputPath": "dist/apps/demo-react",
-        "index": "apps/demo-react/src/index.html",
-        "baseHref": "/",
-        "main": "apps/demo-react/src/main.tsx",
-        "polyfills": "apps/demo-react/src/polyfills.ts",
-        "tsConfig": "apps/demo-react/tsconfig.app.json",
-        "assets": [
-          "apps/demo-react/src/favicon.ico",
-          "apps/demo-react/src/assets"
-        ],
-        "styles": ["apps/demo-react/src/styles.scss"],
-        "scripts": [],
-        "webpackConfig": "@nx/react/plugins/webpack"
+        "outputPath": "dist/apps/demo-react"
       },
       "configurations": {
+        "development": {
+          "mode": "development"
+        },
         "production": {
-          "fileReplacements": [
-            {
-              "replace": "apps/demo-react/src/environments/environment.ts",
-              "with": "apps/demo-react/src/environments/environment.prod.ts"
-            }
-          ],
-          "optimization": true,
-          "outputHashing": "all",
-          "sourceMap": false,
-          "namedChunks": false,
-          "extractLicenses": true,
-          "vendorChunk": false
+          "mode": "production"
         }
       }
     },
     "serve": {
-      "executor": "@nx/webpack:dev-server",
+      "executor": "@nx/vite:dev-server",
+      "defaultConfiguration": "development",
       "options": {
         "buildTarget": "demo-react:build",
-        "hmr": true
+        "port": 12139
       },
       "configurations": {
+        "development": {
+          "buildTarget": "demo-react:build:development",
+          "hmr": true
+        },
         "production": {
           "buildTarget": "demo-react:build:production",
           "hmr": false
@@ -57,17 +43,41 @@
     },
     "lint": {
       "executor": "@nx/eslint:lint",
-      "outputs": ["{options.outputFile}"],
+      "outputs": [
+        "{options.outputFile}"
+      ],
       "options": {
-        "lintFilePatterns": ["apps/demo-react/**/*.{ts,tsx,js,jsx}"]
+        "lintFilePatterns": [
+          "apps/demo-react/**/*.{ts,tsx,js,jsx}"
+        ]
       }
     },
     "test": {
       "executor": "@nx/jest:jest",
-      "outputs": ["{workspaceRoot}/coverage/apps/demo-react"],
+      "outputs": [
+        "{workspaceRoot}/coverage/apps/demo-react"
+      ],
       "options": {
         "jestConfig": "apps/demo-react/jest.config.js",
         "passWithNoTests": true
+      }
+    },
+    "preview": {
+      "dependsOn": [
+        "build"
+      ],
+      "executor": "@nx/vite:preview-server",
+      "defaultConfiguration": "development",
+      "options": {
+        "buildTarget": "demo-react:build"
+      },
+      "configurations": {
+        "development": {
+          "buildTarget": "demo-react:build:development"
+        },
+        "production": {
+          "buildTarget": "demo-react:build:production"
+        }
       }
     }
   }

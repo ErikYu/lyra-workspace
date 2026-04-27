@@ -1,3 +1,5 @@
+import './polyfills';
+import './styles.scss';
 import { StrictMode } from 'react';
 import App from './app/app';
 import { createRoot } from 'react-dom/client';
