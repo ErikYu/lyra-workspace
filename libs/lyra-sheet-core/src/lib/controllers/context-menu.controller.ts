@@ -63,7 +63,6 @@ export class ContextMenuController {
           display: 'flex',
           left: `${left}px`,
           top: `${top}px`,
-          zIndex: '1',
         });
       }
     });

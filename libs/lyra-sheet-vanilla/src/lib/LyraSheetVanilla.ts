@@ -320,6 +320,7 @@ export class LyraSheetVanilla {
     mainTree.className = 'lyra-sheet-contextmenu-tree';
     const subTree = document.createElement('div');
     subTree.className = 'lyra-sheet-contextmenu-tree';
+    subTree.style.display = 'none';
     let subMenuTop = 0;
     let subMenuLeft = 0;
     const updateSubMenuTransform = () => {
@@ -336,6 +337,11 @@ export class LyraSheetVanilla {
     this.lifecycle.add(
       this.contextMenuController.activatedSubMenus$.subscribe((menus) => {
         this.renderContextMenus(subTree, menus);
+        if (menus.length === 0) {
+          subTree.style.display = 'none';
+        } else {
+          subTree.style.removeProperty('display');
+        }
       }),
     );
     this.lifecycle.add(
@@ -361,16 +367,20 @@ export class LyraSheetVanilla {
       }
 
       const item = document.createElement('div');
-      item.className = 'lyra-sheet-dropdown-bar';
+      item.className = 'lyra-sheet-toolbar-dropdown-bar';
+      if (menu.children) {
+        item.classList.add('lyra-contextmenu-item--submenu');
+      }
       item.dataset['lyraContextMenuItem'] = 'true';
       const content = document.createElement('div');
       content.className = 'lyra-sheet-toolbar-dropdown-bar-content';
       const label = document.createElement('span');
+      label.className = 'lyra-contextmenu-item__label';
       label.textContent = menu.label;
       const desc = document.createElement('span');
       desc.className = 'lyra-sheet-toolbar-dropdown-bar-desc';
       desc.dataset['lyraContextMenuDesc'] = 'true';
-      desc.textContent = menu.children ? '>' : menu.desc || ' ';
+      desc.textContent = menu.children ? '\u00a0' : menu.desc || '\u00a0';
       content.appendChild(label);
       content.appendChild(desc);
       item.appendChild(content);
