@@ -9,6 +9,7 @@ import {
   HistoryService,
   MergeController,
 } from '@lyra-sheet/core';
+import { BehaviorSubject } from 'rxjs';
 import { DependencyContainer } from 'tsyringe';
 import { renderToolbar } from '../dom/renderToolbar';
 import { bindToolbarActions } from './bindToolbarActions';
@@ -25,10 +26,26 @@ describe('bindToolbarActions', () => {
     rerender: jest.Mock;
   };
   let decimalController: { execute: jest.Mock };
-  let fontBoldController: { toggle: jest.Mock };
-  let fontItalicController: { toggle: jest.Mock };
-  let fontStrikeController: { toggle: jest.Mock };
-  let fontUnderlineController: { toggle: jest.Mock };
+  let fontBoldController: {
+    toggle: jest.Mock;
+    onInit: jest.Mock;
+    value$: BehaviorSubject<boolean>;
+  };
+  let fontItalicController: {
+    toggle: jest.Mock;
+    onInit: jest.Mock;
+    value$: BehaviorSubject<boolean>;
+  };
+  let fontStrikeController: {
+    toggle: jest.Mock;
+    onInit: jest.Mock;
+    value$: BehaviorSubject<boolean>;
+  };
+  let fontUnderlineController: {
+    toggle: jest.Mock;
+    onInit: jest.Mock;
+    value$: BehaviorSubject<boolean>;
+  };
   let mergeController: { applyMerge: jest.Mock };
   let container: Pick<DependencyContainer, 'resolve'>;
   let toolbar: HTMLElement;
@@ -48,10 +65,26 @@ describe('bindToolbarActions', () => {
       rerender: jest.fn(),
     };
     decimalController = { execute: jest.fn() };
-    fontBoldController = { toggle: jest.fn() };
-    fontItalicController = { toggle: jest.fn() };
-    fontStrikeController = { toggle: jest.fn() };
-    fontUnderlineController = { toggle: jest.fn() };
+    fontBoldController = {
+      toggle: jest.fn(),
+      onInit: jest.fn(),
+      value$: new BehaviorSubject(false),
+    };
+    fontItalicController = {
+      toggle: jest.fn(),
+      onInit: jest.fn(),
+      value$: new BehaviorSubject(false),
+    };
+    fontStrikeController = {
+      toggle: jest.fn(),
+      onInit: jest.fn(),
+      value$: new BehaviorSubject(false),
+    };
+    fontUnderlineController = {
+      toggle: jest.fn(),
+      onInit: jest.fn(),
+      value$: new BehaviorSubject(false),
+    };
     mergeController = { applyMerge: jest.fn() };
 
     const tokenMap = new Map<unknown, unknown>([
@@ -116,6 +149,18 @@ describe('bindToolbarActions', () => {
     expect(fontItalicController.toggle).toHaveBeenCalledTimes(1);
     expect(fontStrikeController.toggle).toHaveBeenCalledTimes(1);
     expect(fontUnderlineController.toggle).toHaveBeenCalledTimes(1);
+  });
+
+  it('syncs text style button activated state from controller value$', () => {
+    const boldButton = toolbar.querySelector<HTMLElement>(
+      '[data-lyra-action="bold"]',
+    )!;
+
+    expect(boldButton.classList.contains('activated')).toBe(false);
+    fontBoldController.value$.next(true);
+    expect(boldButton.classList.contains('activated')).toBe(true);
+    fontBoldController.value$.next(false);
+    expect(boldButton.classList.contains('activated')).toBe(false);
   });
 
   it('binds merge action to the merge controller', () => {

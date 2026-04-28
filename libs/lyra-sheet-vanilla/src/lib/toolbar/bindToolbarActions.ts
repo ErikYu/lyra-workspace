@@ -8,6 +8,7 @@ import {
   HistoryService,
   MergeController,
 } from '@lyra-sheet/core';
+import { Subscription } from 'rxjs';
 import { DependencyContainer } from 'tsyringe';
 import { AngularParityToolbarAction } from '../parity/angularParity';
 
@@ -15,6 +16,7 @@ export function bindToolbarActions(
   toolbar: HTMLElement,
   container: DependencyContainer,
 ): () => void {
+  const subscriptions = new Subscription();
   const listener = (evt: Event) => {
     const action = (evt as CustomEvent<{ action: AngularParityToolbarAction }>)
       .detail?.action;
@@ -24,9 +26,13 @@ export function bindToolbarActions(
     executeToolbarAction(action, container);
   };
 
+  bindTextStyleActivation(toolbar, container, subscriptions);
   toolbar.addEventListener('lyra-toolbar-action', listener);
 
-  return () => toolbar.removeEventListener('lyra-toolbar-action', listener);
+  return () => {
+    toolbar.removeEventListener('lyra-toolbar-action', listener);
+    subscriptions.unsubscribe();
+  };
 }
 
 function executeToolbarAction(
@@ -84,4 +90,42 @@ function applyCellFormat(
     }
   });
   dataService.rerender();
+}
+
+function bindTextStyleActivation(
+  toolbar: HTMLElement,
+  container: DependencyContainer,
+  subscriptions: Subscription,
+): void {
+  const binds: Array<{
+    action: 'bold' | 'italic' | 'strike' | 'underline';
+    controller:
+      | FontBoldController
+      | FontItalicController
+      | FontStrikeController
+      | FontUnderlineController;
+  }> = [
+    { action: 'bold', controller: container.resolve(FontBoldController) },
+    { action: 'italic', controller: container.resolve(FontItalicController) },
+    { action: 'strike', controller: container.resolve(FontStrikeController) },
+    {
+      action: 'underline',
+      controller: container.resolve(FontUnderlineController),
+    },
+  ];
+
+  binds.forEach(({ action, controller }) => {
+    controller.onInit();
+    const button = toolbar.querySelector<HTMLElement>(
+      `[data-lyra-action="${action}"]`,
+    );
+    if (!button) {
+      return;
+    }
+    subscriptions.add(
+      controller.value$.subscribe((active) => {
+        button.classList.toggle('activated', active);
+      }),
+    );
+  });
 }
