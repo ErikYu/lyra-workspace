@@ -16,6 +16,7 @@ import {
   ValignController,
   CellFormat,
 } from '@lyra-sheet/core';
+import { Subscription } from 'rxjs';
 import { DependencyContainer } from 'tsyringe';
 import { AngularParityToolbarAction } from '../parity/angularParity';
 
@@ -27,6 +28,7 @@ export function bindToolbarDropdowns(
   toolbar: HTMLElement,
   container: DependencyContainer,
 ): () => void {
+  const subscriptions = new Subscription();
   const onToolbarClick = (evt: MouseEvent) => {
     const actionEl = (evt.target as HTMLElement).closest<HTMLElement>(
       '[data-lyra-action]',
@@ -49,6 +51,7 @@ export function bindToolbarDropdowns(
   };
   const onDocumentClick = () => closeAllDropdowns(toolbar);
   const optionCleanups = bindDropdownOptions(toolbar, container);
+  bindDropdownDisplay(toolbar, container, subscriptions);
 
   toolbar.addEventListener('click', onToolbarClick);
   document.addEventListener('click', onDocumentClick);
@@ -57,7 +60,55 @@ export function bindToolbarDropdowns(
     toolbar.removeEventListener('click', onToolbarClick);
     document.removeEventListener('click', onDocumentClick);
     optionCleanups.forEach((cleanup) => cleanup());
+    subscriptions.unsubscribe();
   };
+}
+
+function bindDropdownDisplay(
+  toolbar: HTMLElement,
+  container: DependencyContainer,
+  subscriptions: Subscription,
+): void {
+  const formatController = container.resolve(FormatController);
+  const fontFamilyController = container.resolve(FontFamilyController);
+  const fontSizeController = container.resolve(FontSizeController);
+
+  formatController.onInit();
+  fontFamilyController.onInit();
+  fontSizeController.onInit();
+
+  subscriptions.add(
+    formatController.controlDisplayLabel$.subscribe((label) => {
+      setToolbarLabel(toolbar, 'format', label || 'Auto');
+    }),
+  );
+  subscriptions.add(
+    fontFamilyController.fontFamily$.subscribe((fontFamily) => {
+      setToolbarLabel(toolbar, 'font-family', fontFamily || 'Arial');
+    }),
+  );
+  subscriptions.add(
+    fontSizeController.curFontSize$.subscribe((ptSize) => {
+      if (!Number.isFinite(ptSize)) {
+        return;
+      }
+      setToolbarLabel(toolbar, 'font-size', String(ptSize));
+    }),
+  );
+}
+
+function setToolbarLabel(
+  toolbar: HTMLElement,
+  action: 'format' | 'font-family' | 'font-size',
+  label: string,
+): void {
+  const labelEl = toolbar.querySelector<HTMLElement>(
+    `[data-lyra-action="${action}"] .lyra-sheet-toolbar-label`,
+  );
+  if (!labelEl) {
+    return;
+  }
+  labelEl.textContent = label;
 }
 
 function bindDropdownOptions(

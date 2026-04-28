@@ -32,7 +32,8 @@ export abstract class ToggleActionBase {
 
   toggle() {
     if (this.textInputService.isEditing) {
-      document.execCommand(this.styleAttr, false);
+      const command = this.styleAttr === 'strike' ? 'strikeThrough' : this.styleAttr;
+      document.execCommand(command, false);
     } else {
       this.historyService.stacked(() => {
         for (const selector of this.dataService.selectedSheet.selectors) {

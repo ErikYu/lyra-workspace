@@ -2,17 +2,32 @@ import 'reflect-metadata';
 import {
   AlignController,
   FontFamilyController,
+  FontSizeController,
   FormatController,
   FormulaController,
   TextWrapController,
 } from '@lyra-sheet/core';
+import { Subject } from 'rxjs';
 import { DependencyContainer } from 'tsyringe';
 import { renderToolbar } from '../dom/renderToolbar';
 import { bindToolbarDropdowns } from './bindToolbarDropdowns';
 
 describe('bindToolbarDropdowns', () => {
-  let formatController: { applyFormat: jest.Mock };
-  let fontFamilyController: { applyFontFamily: jest.Mock };
+  let formatController: {
+    applyFormat: jest.Mock;
+    onInit: jest.Mock;
+    controlDisplayLabel$: Subject<string>;
+  };
+  let fontFamilyController: {
+    applyFontFamily: jest.Mock;
+    onInit: jest.Mock;
+    fontFamily$: Subject<string>;
+  };
+  let fontSizeController: {
+    applyFontSize: jest.Mock;
+    onInit: jest.Mock;
+    curFontSize$: Subject<number>;
+  };
   let alignController: { applyTextAlign: jest.Mock };
   let textWrapController: { applyTextWrap: jest.Mock };
   let formulaController: { applyFormula: jest.Mock };
@@ -20,8 +35,21 @@ describe('bindToolbarDropdowns', () => {
   let toolbar: HTMLElement;
 
   beforeEach(() => {
-    formatController = { applyFormat: jest.fn() };
-    fontFamilyController = { applyFontFamily: jest.fn() };
+    formatController = {
+      applyFormat: jest.fn(),
+      onInit: jest.fn(),
+      controlDisplayLabel$: new Subject<string>(),
+    };
+    fontFamilyController = {
+      applyFontFamily: jest.fn(),
+      onInit: jest.fn(),
+      fontFamily$: new Subject<string>(),
+    };
+    fontSizeController = {
+      applyFontSize: jest.fn(),
+      onInit: jest.fn(),
+      curFontSize$: new Subject<number>(),
+    };
     alignController = { applyTextAlign: jest.fn() };
     textWrapController = { applyTextWrap: jest.fn() };
     formulaController = { applyFormula: jest.fn() };
@@ -29,6 +57,7 @@ describe('bindToolbarDropdowns', () => {
     const tokenMap = new Map<unknown, unknown>([
       [FormatController, formatController],
       [FontFamilyController, fontFamilyController],
+      [FontSizeController, fontSizeController],
       [AlignController, alignController],
       [TextWrapController, textWrapController],
       [FormulaController, formulaController],
@@ -73,6 +102,26 @@ describe('bindToolbarDropdowns', () => {
     expect(textWrapController.applyTextWrap).toHaveBeenCalledWith('wrap');
     expect(formulaController.applyFormula).toHaveBeenCalledWith('SUM');
     expect(menu('formula').hidden).toBe(true);
+  });
+
+  it('syncs dropdown control labels from controller streams', () => {
+    formatController.controlDisplayLabel$.next('Percent');
+    fontFamilyController.fontFamily$.next('Georgia');
+    fontSizeController.curFontSize$.next(14);
+
+    expect(
+      toolbar.querySelector('[data-lyra-action="format"] .lyra-sheet-toolbar-label')
+        ?.textContent,
+    ).toBe('Percent');
+    expect(
+      toolbar.querySelector(
+        '[data-lyra-action="font-family"] .lyra-sheet-toolbar-label',
+      )?.textContent,
+    ).toBe('Georgia');
+    expect(
+      toolbar.querySelector('[data-lyra-action="font-size"] .lyra-sheet-toolbar-label')
+        ?.textContent,
+    ).toBe('14');
   });
 
   it('returns cleanup for dropdown listeners', () => {

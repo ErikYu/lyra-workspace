@@ -85,8 +85,6 @@ export class LyraSheetVanilla {
     const root = document.createElement('div');
     root.className = 'lyra-sheet';
     const toolbar = renderToolbar(this.container);
-    this.lifecycle.add(bindToolbarActions(toolbar, this.container));
-    this.lifecycle.add(bindToolbarDropdowns(toolbar, this.container));
     root.appendChild(toolbar);
     const formulaBar = renderFormulaBar();
     root.appendChild(formulaBar.root);
@@ -96,6 +94,8 @@ export class LyraSheetVanilla {
     host.appendChild(root);
     this.rootEl = root;
     this.initializeCore(root, formulaBar, editor);
+    this.lifecycle.add(bindToolbarActions(toolbar, this.container));
+    this.lifecycle.add(bindToolbarDropdowns(toolbar, this.container));
   }
 
   update(options: Partial<LyraSheetVanillaOptions>): void {
